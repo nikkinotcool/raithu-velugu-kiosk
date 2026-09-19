@@ -1,12 +1,30 @@
 /**
  * Advanced Speech Synthesis Utility for Raithu Velugu Kiosk
- * - Optimized for Tablet touchscreens & Kiosk hardware
- * - Prioritizes high-definition Natural / Neural / Google voices
- * - Pre-processes and cleans text to sound fluent, warm, and natural
- * - Resolves mobile Chrome / Android tablet speech cut-off and pause bugs
+ * - Dual-Engine Architecture:
+ *   1. Primary: Server-side Microsoft Azure Neural TTS (Edge-TTS) producing studio-quality,
+ *      100% human-like, natural broadcast speech in Telugu, Hindi, Indian English, etc.
+ *   2. Fallback: Browser Web Speech API (with Neural/Natural voice scoring) for offline resilience.
+ * - Touch-optimized for vertical tablet kiosks.
  */
 
-// Voice cache
+export function getApiBase() {
+  if (typeof window === 'undefined') return 'http://localhost:8000/api';
+  if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL;
+  if (window.location.hostname.includes('vercel.app')) {
+    return 'https://raithu-velugu-kiosk.onrender.com/api';
+  }
+  if (window.location.hostname !== 'localhost') {
+    return `http://${window.location.hostname}:8000/api`;
+  }
+  return 'http://localhost:8000/api';
+}
+
+// Keep track of active audio element & object URL
+let activeAudio = null;
+let activeAudioUrl = null;
+let currentKeepAlive = null;
+
+// Voice cache for browser fallback
 let cachedVoices = [];
 
 function loadVoices() {
@@ -23,65 +41,6 @@ if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
   if (window.speechSynthesis.onvoiceschanged !== undefined) {
     window.speechSynthesis.onvoiceschanged = loadVoices;
   }
-}
-
-/**
- * Finds the highest quality, most natural sounding voice for the given language.
- */
-export function getBestVoice(lang = 'en') {
-  const voices = cachedVoices.length > 0 ? cachedVoices : loadVoices();
-  if (!voices || voices.length === 0) return null;
-
-  const langCodeMap = {
-    te: ['te-IN', 'te_IN', 'telugu'],
-    hi: ['hi-IN', 'hi_IN', 'hindi'],
-    kn: ['kn-IN', 'kn_IN', 'kannada'],
-    ta: ['ta-IN', 'ta_IN', 'tamil'],
-    mr: ['mr-IN', 'mr_IN', 'marathi'],
-    en: ['en-IN', 'en_IN', 'en-GB', 'en-US', 'english']
-  };
-
-  const targets = langCodeMap[lang] || langCodeMap['en'];
-
-  // Score candidate voices based on quality keywords and language match
-  let bestVoice = null;
-  let highestScore = -1;
-
-  for (const voice of voices) {
-    const vLang = (voice.lang || '').toLowerCase().replace('_', '-');
-    const vName = (voice.name || '').toLowerCase();
-
-    let score = 0;
-
-    // 1. Check language match
-    const matchesLang = targets.some((t) => vLang.startsWith(t.toLowerCase()) || vName.includes(t.toLowerCase()));
-    if (!matchesLang) {
-      // Fallback: If no regional voice on this device, match Indian English for warm accent
-      if (vLang.startsWith('en-in') || vName.includes('india')) {
-        score += 20;
-      } else {
-        continue;
-      }
-    } else {
-      score += 50;
-    }
-
-    // 2. High-quality neural / natural voice bonuses
-    if (vName.includes('natural') || vName.includes('neural')) score += 40;
-    if (vName.includes('google')) score += 35; // Google TTS voices on Android/Chrome sound great
-    if (vName.includes('online')) score += 30;
-    if (vName.includes('premium') || vName.includes('enhanced')) score += 25;
-
-    // Avoid legacy robotic desktop voices if better ones exist
-    if (vName.includes('desktop') || vName.includes('david') || vName.includes('zira')) score -= 20;
-
-    if (score > highestScore) {
-      highestScore = score;
-      bestVoice = voice;
-    }
-  }
-
-  return bestVoice;
 }
 
 /**
@@ -136,34 +95,69 @@ export function cleanTextForSpeech(text = '', lang = 'en') {
 }
 
 /**
- * Handles text-to-speech with safety timeouts, Android Chrome keep-alive, and natural cadence.
+ * Finds the highest quality, most natural sounding local voice for the given language.
  */
-let currentKeepAlive = null;
+export function getBestVoice(lang = 'en') {
+  const voices = cachedVoices.length > 0 ? cachedVoices : loadVoices();
+  if (!voices || voices.length === 0) return null;
 
-export function speakMessage({
-  text,
-  language = 'en',
-  onStart = () => {},
-  onEnd = () => {},
-  onError = () => {}
-}) {
+  const langCodeMap = {
+    te: ['te-IN', 'te_IN', 'telugu'],
+    hi: ['hi-IN', 'hi_IN', 'hindi'],
+    kn: ['kn-IN', 'kn_IN', 'kannada'],
+    ta: ['ta-IN', 'ta_IN', 'tamil'],
+    mr: ['mr-IN', 'mr_IN', 'marathi'],
+    en: ['en-IN', 'en_IN', 'en-GB', 'en-US', 'english']
+  };
+
+  const targets = langCodeMap[lang] || langCodeMap['en'];
+
+  let bestVoice = null;
+  let highestScore = -1;
+
+  for (const voice of voices) {
+    const vLang = (voice.lang || '').toLowerCase().replace('_', '-');
+    const vName = (voice.name || '').toLowerCase();
+
+    let score = 0;
+
+    const matchesLang = targets.some((t) => vLang.startsWith(t.toLowerCase()) || vName.includes(t.toLowerCase()));
+    if (!matchesLang) {
+      if (vLang.startsWith('en-in') || vName.includes('india')) {
+        score += 20;
+      } else {
+        continue;
+      }
+    } else {
+      score += 50;
+    }
+
+    if (vName.includes('natural') || vName.includes('neural')) score += 40;
+    if (vName.includes('google')) score += 35;
+    if (vName.includes('online')) score += 30;
+    if (vName.includes('premium') || vName.includes('enhanced')) score += 25;
+    if (vName.includes('desktop') || vName.includes('david') || vName.includes('zira')) score -= 20;
+
+    if (score > highestScore) {
+      highestScore = score;
+      bestVoice = voice;
+    }
+  }
+
+  return bestVoice;
+}
+
+/**
+ * Fallback to browser SpeechSynthesis if backend neural audio is unreachable
+ */
+function speakWithBrowserFallback({ text, language, onStart, onEnd, onError }) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    onError(new Error('SpeechSynthesis not supported on this browser'));
-    return () => {};
+    onError(new Error('Speech not supported on this browser'));
+    return;
   }
 
-  // Cancel any ongoing speech and clear keep-alive
-  stopSpeech();
+  const utterance = new SpeechSynthesisUtterance(text);
 
-  const cleanText = cleanTextForSpeech(text, language);
-  if (!cleanText) {
-    onEnd();
-    return () => {};
-  }
-
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-
-  // Set language tag
   const langTagMap = {
     te: 'te-IN',
     hi: 'hi-IN',
@@ -174,13 +168,11 @@ export function speakMessage({
   };
   utterance.lang = langTagMap[language] || 'en-IN';
 
-  // Apply best natural voice
   const bestVoice = getBestVoice(language);
   if (bestVoice) {
     utterance.voice = bestVoice;
   }
 
-  // Natural warm pacing (0.91x rate prevents rushed synthetic sound)
   utterance.rate = 0.91;
   utterance.pitch = 1.02;
   utterance.volume = 1.0;
@@ -194,7 +186,6 @@ export function speakMessage({
 
   utterance.onstart = () => {
     onStart();
-    // Android Chrome bug fix: resume if paused, and periodically ping to prevent 14s cut-off
     if (window.speechSynthesis.paused) {
       window.speechSynthesis.resume();
     }
@@ -219,7 +210,6 @@ export function speakMessage({
     onError(e);
   };
 
-  // Small timeout before speak to let cancel() settle on mobile WebKit/Blink
   setTimeout(() => {
     try {
       window.speechSynthesis.resume();
@@ -229,16 +219,116 @@ export function speakMessage({
       onError(err);
     }
   }, 40);
-
-  return stopSpeech;
 }
 
-export function stopSpeech() {
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    if (currentKeepAlive) {
-      clearInterval(currentKeepAlive);
-      currentKeepAlive = null;
+/**
+ * High-definition Studio Neural Voice playback
+ */
+export async function speakMessage({
+  text,
+  language = 'en',
+  onStart = () => {},
+  onEnd = () => {},
+  onError = () => {}
+}) {
+  stopSpeech();
+
+  const cleanText = cleanTextForSpeech(text, language);
+  if (!cleanText) {
+    onEnd();
+    return;
+  }
+
+  const apiBase = getApiBase();
+
+  // 1. Attempt High-Fidelity Server Neural Voice (Microsoft Azure Neural via Edge-TTS)
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+
+    const res = await fetch(`${apiBase}/tts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: cleanText,
+        language
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      throw new Error(`Server returned ${res.status}`);
     }
-    window.speechSynthesis.cancel();
+
+    const audioBlob = await res.blob();
+    if (!audioBlob || audioBlob.size === 0) {
+      throw new Error('Empty audio stream returned');
+    }
+
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+    activeAudio = audio;
+    activeAudioUrl = audioUrl;
+
+    audio.onplay = () => {
+      onStart();
+    };
+
+    audio.onended = () => {
+      stopSpeech();
+      onEnd();
+    };
+
+    audio.onerror = (err) => {
+      stopSpeech();
+      // Fallback to browser synthesis if audio element fails
+      speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
+    };
+
+    await audio.play();
+    return;
+  } catch (err) {
+    console.warn('Neural TTS server stream failed, falling back to local voice engine:', err);
+    // 2. Seamlessly fallback to browser Web Speech API
+    speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
+  }
+}
+
+/**
+ * Immediately stops any ongoing speech playback (audio or speech synthesis)
+ */
+export function stopSpeech() {
+  if (activeAudio) {
+    try {
+      activeAudio.pause();
+      activeAudio.currentTime = 0;
+      activeAudio.src = '';
+    } catch {
+      // Ignore
+    }
+    activeAudio = null;
+  }
+
+  if (activeAudioUrl) {
+    try {
+      URL.revokeObjectURL(activeAudioUrl);
+    } catch {
+      // Ignore
+    }
+    activeAudioUrl = null;
+  }
+
+  if (currentKeepAlive) {
+    clearInterval(currentKeepAlive);
+    currentKeepAlive = null;
+  }
+
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // Ignore
+    }
   }
 }
