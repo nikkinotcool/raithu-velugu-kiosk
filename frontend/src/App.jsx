@@ -11,7 +11,12 @@ import AdminDrawer from './components/AdminDrawer';
 import SignInPage from './components/SignInPage';
 import { Loader2 } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' ? `http://${window.location.hostname}:8000/api` : 'http://localhost:8000/api');
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 
+  (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+    ? 'https://raithu-velugu-kiosk.onrender.com/api'
+    : (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+        ? `http://${window.location.hostname}:8000/api`
+        : 'http://localhost:8000/api'));
 
 const WELCOME_MESSAGES = {
   te: 'నమస్కారం! నేను **రైతు వెలుగు** — PACS సహకార సంఘాలు, చట్టపరమైన హక్కులు, PMFBY పంట బీమా మరియు ప్రభుత్వ పథకాల AI సహాయకుడిని. మీకు ఏ సమాచారం కావాలి?',
