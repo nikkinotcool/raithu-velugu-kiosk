@@ -41,15 +41,25 @@ def seed_demo_users_if_empty(db: Session):
         db.add_all([demo_farmer, demo_officer])
         db.commit()
 
+from sqlalchemy import or_
+
+def normalize_phone(val: str) -> str:
+    digits = "".join(filter(str.isdigit, val or ""))
+    if len(digits) >= 10:
+        return digits[-10:]
+    return digits
+
 @router.post("/auth/register", response_model=AuthResponse)
 @router.post("/auth/farmer-register", response_model=AuthResponse)
 def farmer_register(req: FarmerRegisterRequest, db: Session = Depends(get_db)):
     seed_demo_users_if_empty(db)
-    clean_phone = req.phone_number.strip()
+    raw_phone = req.phone_number.strip()
+    norm_phone = normalize_phone(raw_phone)
+    phone_to_use = norm_phone if len(norm_phone) == 10 else raw_phone
     clean_name = req.full_name.strip()
     clean_pass = req.password.strip()
 
-    if not clean_phone or len(clean_phone) < 10:
+    if not phone_to_use or len(phone_to_use) < 10:
         raise HTTPException(status_code=400, detail="Please enter a valid 10-digit mobile number.")
     if not clean_name:
         raise HTTPException(status_code=400, detail="Please provide your full name.")
@@ -57,7 +67,9 @@ def farmer_register(req: FarmerRegisterRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Password must be at least 4 characters/digits.")
 
     # Check if user with this phone number already exists
-    existing = db.query(User).filter(User.phone_number == clean_phone).first()
+    existing = db.query(User).filter(
+        (User.phone_number == phone_to_use) | (User.phone_number == raw_phone)
+    ).first()
     if existing:
         raise HTTPException(status_code=400, detail="An account already exists with this phone number. Please sign in instead.")
 
@@ -66,7 +78,7 @@ def farmer_register(req: FarmerRegisterRequest, db: Session = Depends(get_db)):
 
     new_user = User(
         full_name=clean_name,
-        phone_number=clean_phone,
+        phone_number=phone_to_use,
         member_id=member_code,
         role="farmer",
         preferred_language=req.language or "te",
@@ -88,21 +100,29 @@ def farmer_register(req: FarmerRegisterRequest, db: Session = Depends(get_db)):
 @router.post("/auth/farmer-login", response_model=AuthResponse)
 def farmer_login(req: FarmerLoginRequest, db: Session = Depends(get_db)):
     seed_demo_users_if_empty(db)
-    clean_phone = req.phone_number.strip()
+    raw_input = req.phone_number.strip()
+    norm_phone = normalize_phone(raw_input)
     provided_pass = (req.password or "").strip()
 
-    # Look up by phone number or member id
-    user = db.query(User).filter(
-        (User.phone_number == clean_phone) | (User.member_id == clean_phone)
-    ).first()
+    # Look up by normalized 10-digit phone, raw input, or member id
+    query_conditions = [
+        User.phone_number == raw_input,
+        User.member_id == raw_input,
+        User.member_id.ilike(raw_input)
+    ]
+    if norm_phone:
+        query_conditions.append(User.phone_number == norm_phone)
+
+    user = db.query(User).filter(or_(*query_conditions)).first()
 
     if not user:
         # Auto-register new farmer on the kiosk with provided password or default 'farmer123'
+        phone_to_store = norm_phone if len(norm_phone) == 10 else raw_input
         member_code = f"PACS-SRD-{uuid.uuid4().hex[:4].upper()}"
         user = User(
-            full_name=f"Member {clean_phone[-4:] if len(clean_phone) >= 4 else clean_phone}",
-            phone_number=clean_phone if clean_phone.isdigit() and len(clean_phone) == 10 else None,
-            member_id=clean_phone if not clean_phone.isdigit() else member_code,
+            full_name=f"Member {phone_to_store[-4:] if len(phone_to_store) >= 4 else phone_to_store}",
+            phone_number=phone_to_store,
+            member_id=member_code,
             role="farmer",
             preferred_language=req.language or "te",
             pacs_name="Kandi Primary Agricultural Credit Society",

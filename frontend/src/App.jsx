@@ -28,7 +28,23 @@ const WELCOME_MESSAGES = {
 };
 
 export default function App() {
-  const [language, setLanguage] = useState('te'); // default to Telugu
+  const [language, setLanguage] = useState(() => {
+    try {
+      return localStorage.getItem('raithu_velugu_lang') || 'te';
+    } catch {
+      return 'te';
+    }
+  });
+
+  const handleLanguageChange = (newLang) => {
+    setLanguage(newLang);
+    try {
+      localStorage.setItem('raithu_velugu_lang', newLang);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const [activeSection, setActiveSection] = useState('chat'); // 'chat' | 'grievances' | 'account'
   const [sessionId, setSessionId] = useState(() => `kiosk-${Date.now()}`);
   const [messages, setMessages] = useState([]);
@@ -180,7 +196,7 @@ export default function App() {
     return (
       <SignInPage
         language={language}
-        onLanguageChange={setLanguage}
+        onLanguageChange={handleLanguageChange}
         onLoginSuccess={handleLoginSuccess}
         apiBase={API_BASE}
       />
@@ -195,7 +211,7 @@ export default function App() {
       {/* Top Header */}
       <Header
         currentLanguage={language}
-        onLanguageChange={setLanguage}
+        onLanguageChange={handleLanguageChange}
         activeSection={activeSection}
         onOpenAdmin={() => setAdminOpen(true)}
         onResetChat={handleResetSession}
