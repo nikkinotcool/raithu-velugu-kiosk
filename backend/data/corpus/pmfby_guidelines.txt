@@ -1,0 +1,17 @@
+DOCUMENT: PMFBY Operational Guidelines & Claim Redressal
+ACT_OR_SCHEME: Pradhan Mantri Fasal Bima Yojana (PMFBY) 2024-2026 Guidelines
+SECTION: Section 4.2 - Localized Calamities & Post-Harvest Losses
+CONTENT:
+For localized calamities like hailstorm, landslide, inundation, cloud burst, and natural fire, coverage is provided on an individual farm basis. The affected farmer must intimate loss within 72 hours of occurrence of calamity directly to the insurance company portal, toll-free number 14447, Crop Insurance App, or the local PACS/Bank branch. Post-harvest losses are covered for up to 14 days for crops harvested and kept in 'cut and spread' condition in the field for drying.
+
+SECTION: Section 7.1 - Premium Rates & Farmers Share
+CONTENT:
+The maximum premium payable by the farmer is:
+- Kharif Food & Oilseeds Crops: 2.0% of Sum Insured
+- Rabi Food & Oilseeds Crops: 1.5% of Sum Insured
+- Annual Commercial / Annual Horticultural Crops: 5.0% of Sum Insured
+The balance premium is shared 50:50 between the Government of India and the respective State Government. In North-Eastern states, Centre shares 90% and State shares 10%.
+
+SECTION: Section 12.3 - Mandatory Grievance Escalation Mechanism
+CONTENT:
+Every District must have a District Level Grievance Redressal Committee (DGRC) headed by the District Magistrate / Collector with the District Agriculture Officer as Member Secretary. In case an insurance claim is improperly rejected, the farmer can lodge a complaint to the DGRC, which is mandated to dispose of the dispute within 30 days. Appeals against DGRC decisions lie with the State Level Grievance Redressal Committee (SGRC).

@@ -1,0 +1,14 @@
+{
+  "name": "raithu-velugu-sih2026",
+  "version": "1.0.0",
+  "description": "Multilingual Cooperative Governance & Legal Assistance AI Platform (SIH 2026)",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "frontend": "npm --prefix frontend run dev",
+    "backend": "python -m uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 8000 --reload"
+  },
+  "keywords": ["sih2026", "cooperative-governance", "pacs", "fastapi", "react", "rag", "bhashini", "gemma"],
+  "author": "SIH 2026 Team",
+  "license": "MIT"
+}

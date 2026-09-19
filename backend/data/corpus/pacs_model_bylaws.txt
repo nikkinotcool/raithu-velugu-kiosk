@@ -1,0 +1,17 @@
+DOCUMENT: Model Bye-laws for Primary Agricultural Credit Societies (PACS)
+ACT_OR_SCHEME: Ministry of Cooperation Model PACS Bye-laws 2023
+SECTION: Clause 5 - Membership Eligibility & Open Access
+CONTENT:
+Any individual residing within the area of operation of the Society who is a farmer, agricultural labourer, rural artisan, or small entrepreneur is eligible for membership. No eligible applicant can be refused ordinary membership without giving reasons in writing within 30 days of application submission. If no communication is received within 30 days, deemed membership applies subject to registration review by the ARCS.
+
+SECTION: Clause 18 - Rights of Active Members & One Member One Vote
+CONTENT:
+Every active member has one vote in the General Body of the Society. An active member is one who has subscribed to minimum shares and utilized at least one service/facility of the PACS (credit, input purchase, storage, or custom hiring center) in at least 2 out of the preceding 3 financial years, and attended at least one General Body meeting. Proxies are strictly prohibited in cooperative society voting.
+
+SECTION: Clause 26 - Short Term Crop Credit (KCC) and Subvention Rules
+CONTENT:
+PACS disburses crop loans to member farmers as per Scale of Finance (SoF) fixed by District Level Technical Committee (DLTC). Under Modified Interest Subvention Scheme (MISS), loans up to ₹3 Lakh carry an effective interest of 4% per annum upon prompt repayment within 12 months. The PACS Secretary is bound to issue a physical/digital passbook acknowledgement for every loan repayment within 24 hours.
+
+SECTION: Clause 44 - Member Grievance & Dispute Redressal
+CONTENT:
+Any dispute between a member and the Managing Committee or PACS Secretary concerning management, election, recovery, or denial of benefits shall be referred under Section 61/70 of the State Cooperative Societies Act to the Assistant Registrar of Cooperative Societies (ARCS) / Cooperative Tribunal.
