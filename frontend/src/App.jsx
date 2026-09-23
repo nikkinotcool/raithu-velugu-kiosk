@@ -9,6 +9,7 @@ import GrievancesSection from './components/GrievancesSection';
 import AccountSection from './components/AccountSection';
 import AdminDrawer from './components/AdminDrawer';
 import SignInPage from './components/SignInPage';
+import LodgeGrievanceModal from './components/LodgeGrievanceModal';
 import { Loader2 } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 
@@ -65,6 +66,7 @@ export default function App() {
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [activeTrackingId, setActiveTrackingId] = useState('');
   const [adminOpen, setAdminOpen] = useState(false);
+  const [lodgeModalOpen, setLodgeModalOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
 
@@ -78,9 +80,10 @@ export default function App() {
         language: language,
         sources: [],
         suggested_actions: [
-          language === 'te' ? 'PMFBY పంట నష్టం 72 గంటల క్లెయిమ్ ఎలా చేయాలి?' : 'How to claim PMFBY crop loss?',
-          language === 'te' ? 'PACS 4% క్రాప్ లోన్ నిబంధనలు' : 'PACS 4% Crop Loan rules',
-          language === 'te' ? 'సొసైటీ అవినీతిపై ఫిర్యాదు చేయండి' : 'File a grievance against PACS corruption'
+          language === 'te' ? '🌾 PMFBY పంట నష్టం 72 గంటల క్లెయిమ్' : '🌾 PMFBY Crop Insurance 72hr claim',
+          language === 'te' ? '💳 PACS 4% క్రాప్ లోన్ & వడ్డీ రాయితీ' : '💳 PACS 4% Crop Loan & subsidy',
+          language === 'te' ? '🗳️ సభ్యుల ఓటు హక్కు నిబంధనలు' : '🗳️ Member Voting & Bye-law Rights',
+          language === 'te' ? '⚠️ సొసైటీపై అధికారిక ఫిర్యాదు చేయండి' : '⚠️ File a Complaint / Raise Grievance'
         ]
       }
     ]);
@@ -181,7 +184,33 @@ export default function App() {
         role: 'assistant',
         content: welcomeText,
         language: language,
-        sources: []
+        sources: [],
+        suggested_actions: [
+          language === 'te' ? '🌾 PMFBY పంట నష్టం 72 గంటల క్లెయిమ్' : '🌾 PMFBY Crop Insurance 72hr claim',
+          language === 'te' ? '💳 PACS 4% క్రాప్ లోన్ & వడ్డీ రాయితీ' : '💳 PACS 4% Crop Loan & subsidy',
+          language === 'te' ? '🗳️ సభ్యుల ఓటు హక్కు నిబంధనలు' : '🗳️ Member Voting & Bye-law Rights',
+          language === 'te' ? '⚠️ సొసైటీపై అధికారిక ఫిర్యాదు చేయండి' : '⚠️ File a Complaint / Raise Grievance'
+        ]
+      }
+    ]);
+  };
+
+  const handleGrievanceCreated = (ticket) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'assistant',
+        content: language === 'te' 
+          ? `మీ ఫిర్యాదు విజయవంతంగా నమోదైంది! అధికారిక రసీదు స్లిప్ క్రింద సిద్ధంగా ఉంది. విచారణ గడువు: 7 నుండి 15 పని దినాలు.`
+          : `Your grievance has been successfully registered! Official receipt slip is available below. Statutory SLA: 7 to 15 working days.`,
+        language: language,
+        sources: [],
+        grievance_ticket: ticket,
+        suggested_actions: [
+          language === 'te' ? 'ఫిర్యాదు స్థితిని తనిఖీ చేయండి' : 'Track Grievance Status',
+          language === 'te' ? 'రసీదు డౌన్‌లోడ్ చేయండి' : 'Download Receipt',
+          language === 'te' ? '🌾 PMFBY పంట నష్టం 72 గంటల క్లెయిమ్' : '🌾 PMFBY Crop Insurance 72hr claim'
+        ]
       }
     ]);
   };
@@ -231,8 +260,10 @@ export default function App() {
                   key={index}
                   message={msg}
                   currentLanguage={language}
+                  currentUser={currentUser}
                   onTrackTicket={handleTrackTicket}
                   onSelectSuggestion={handleSendMessage}
+                  onOpenLodgeGrievance={() => setLodgeModalOpen(true)}
                 />
               ))}
 
@@ -305,6 +336,16 @@ export default function App() {
         isOpen={adminOpen}
         onClose={() => setAdminOpen(false)}
         apiBase={API_BASE}
+      />
+
+      {/* File Complaint / Raise Grievance Dedicated Voice & Text Modal */}
+      <LodgeGrievanceModal
+        isOpen={lodgeModalOpen}
+        onClose={() => setLodgeModalOpen(false)}
+        currentUser={currentUser}
+        language={language}
+        apiBase={API_BASE}
+        onGrievanceCreated={handleGrievanceCreated}
       />
     </div>
   );

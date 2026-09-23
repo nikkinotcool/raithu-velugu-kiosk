@@ -93,19 +93,19 @@ async def handle_chat(req: ChatRequest, db: Session = Depends(get_db)):
         ]
 
     elif intent == "greeting_intent":
-        # Conversational / Greeting: Let Qwen chat naturally and concisely without dumping legal citations
+        # Conversational / Greeting: Let LLM chat naturally and concisely without dumping legal citations
         system_instruction = (
             f"{lang_rule}\n"
-            "The user is greeting you (e.g. hello, hi, namaste). "
-            "Reply warmly, politely, and concisely in ONLY 1 to 2 sentences. "
-            "Welcome the farmer to Raithu Velugu and ask how you can help them with PACS loans, crop insurance, or membership rights today. "
-            "CRITICAL: Do NOT list legal clauses, do NOT explain bye-laws, and do NOT write long paragraphs for a simple greeting."
+            "The user greeted you (e.g., 'hello', 'hlo', 'hi', 'namaste'). "
+            "Say hello back warmly and greet the farmer politely in ONLY 1 to 2 sentences. "
+            "Welcome them to Raithu Velugu and inform them they can explore schemes or lodge a grievance from the options below. "
+            "CRITICAL: Keep it short, warm, and conversational. Do NOT quote legal sections or bye-law clauses."
         )
         suggested_actions = [
-            "How do I claim PMFBY crop loss within 72 hours?" if user_lang == "en" else "PMFBY పంట నష్టం క్లెయిమ్ 72 గంటల్లో ఎలా చేయాలి?",
-            "What are the rules for PACS 4% Crop Loan?" if user_lang == "en" else "PACS 4% క్రాప్ లోన్ నిబంధనలు ఏమిటి?",
-            "What are my voting rights in PACS elections?" if user_lang == "en" else "సొసైటీ ఎన్నికల్లో ఓటు హక్కు నిబంధనలు ఏమిటి?",
-            "File a complaint against PACS Secretary" if user_lang == "en" else "PACS సెక్రటరీపై ఫిర్యాదు నమోదు చేయండి"
+            "🌾 PMFBY Crop Insurance 72hr claim" if user_lang == "en" else "🌾 PMFBY పంట నష్టం 72 గంటల క్లెయిమ్",
+            "💳 PACS 4% Crop Loan & subsidy" if user_lang == "en" else "💳 PACS 4% క్రాప్ లోన్ & వడ్డీ రాయితీ",
+            "🗳️ Member Voting & Bye-law Rights" if user_lang == "en" else "🗳️ సభ్యుల ఓటు హక్కు నిబంధనలు",
+            "⚠️ File a Complaint / Raise Grievance" if user_lang == "en" else "⚠️ సొసైటీపై అధికారిక ఫిర్యాదు చేయండి"
         ]
 
     else:
@@ -118,9 +118,9 @@ async def handle_chat(req: ChatRequest, db: Session = Depends(get_db)):
             "Cite the specific Section / Bye-law clause from the context."
         )
         suggested_actions = [
-            "What documents are required?" if user_lang == "en" else "ఏ పత్రాలు అవసరం?",
-            "How to calculate loan interest?" if user_lang == "en" else "వడ్డీ రాయితీ ఎలా లెక్కిస్తారు?",
-            "File a complaint" if user_lang == "en" else "ఫిర్యాదు నమోదు చేయండి"
+            "🌾 What documents are required?" if user_lang == "en" else "🌾 ఏ పత్రాలు అవసరం?",
+            "💳 How to calculate loan interest?" if user_lang == "en" else "💳 వడ్డీ రాయితీ ఎలా లెక్కిస్తారు?",
+            "⚠️ File a Complaint / Raise Grievance" if user_lang == "en" else "⚠️ సొసైటీపై అధికారిక ఫిర్యాదు చేయండి"
         ]
 
     # Step 4: Generate Live Response from Qwen / LLM directly

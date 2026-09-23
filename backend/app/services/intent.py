@@ -43,13 +43,14 @@ class IntentClassifier:
 
     def classify(self, text: str) -> Tuple[str, str, float]:
         clean_text = text.strip().lower()
-        clean_stripped = re.sub(r"[^\w\s]", "", clean_text).strip()
+        # Remove standard punctuation without stripping Indic diacritics / vowels / matras
+        clean_stripped = re.sub(r"""[.,\/#!$%\^&\*;:{}=\-_`~()?"'<>@\[\]\\]""", " ", clean_text).strip()
         words = clean_stripped.split()
 
         # Check for Greeting if input is short and matches greeting tokens
         if len(words) <= 4 and (
-            any(clean_stripped == kw or clean_stripped.startswith(kw) for kw in self.GREETING_KEYWORDS) or
-            (len(words) > 0 and words[0] in self.GREETING_KEYWORDS)
+            any(clean_stripped == kw or clean_stripped.startswith(kw) or clean_text == kw for kw in self.GREETING_KEYWORDS) or
+            (len(words) > 0 and (words[0] in self.GREETING_KEYWORDS or clean_stripped in self.GREETING_KEYWORDS))
         ):
             return "greeting_intent", "Conversational Greeting", 0.98
 

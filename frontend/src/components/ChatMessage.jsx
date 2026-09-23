@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, User, BookOpen, ShieldAlert, Volume2, VolumeX, ChevronRight, Copy, Check } from 'lucide-react';
+import { Bot, User, BookOpen, ShieldAlert, Volume2, VolumeX, ChevronRight, Copy, Check, Printer, Download, AlertCircle } from 'lucide-react';
 import { speakMessage, stopSpeech } from '../utils/speech';
+import { printGrievanceReceipt, downloadReceiptFile } from '../utils/receiptGenerator';
 
 const UI_LABELS = {
   te: {
@@ -9,7 +10,9 @@ const UI_LABELS = {
     stop: 'ఆపండి',
     ticketGen: 'అధికారిక ఫిర్యాదు నమోదైంది',
     trackBtn: 'ట్రాక్ చేయండి',
-    legalRef: 'చట్టపరమైన సూచనలు (Legal References):'
+    legalRef: 'చట్టపరమైన సూచనలు (Legal References):',
+    printReceipt: 'రసీదు ప్రింట్ / PDF',
+    downloadSlip: 'డౌన్‌లోడ్'
   },
   hi: {
     advisor: 'सहकारी एआई सलाहकार',
@@ -17,7 +20,9 @@ const UI_LABELS = {
     stop: 'रोकें',
     ticketGen: 'आधिकारिक शिकायत दर्ज की गई',
     trackBtn: 'ट्रैक करें',
-    legalRef: 'कानूनी संदर्भ (Legal References):'
+    legalRef: 'कानूनी संदर्भ (Legal References):',
+    printReceipt: 'रसीद प्रिंट / PDF',
+    downloadSlip: 'डाउनलोड'
   },
   en: {
     advisor: 'Cooperative AI Advisor',
@@ -25,7 +30,9 @@ const UI_LABELS = {
     stop: 'Stop',
     ticketGen: 'Official Grievance Registered',
     trackBtn: 'Track Status',
-    legalRef: 'Legal References & Bylaw Clauses:'
+    legalRef: 'Legal References & Bylaw Clauses:',
+    printReceipt: 'Print Receipt (PDF)',
+    downloadSlip: 'Download Slip'
   },
   kn: {
     advisor: 'ಸಹಕಾರಿ AI ಸಲಹೆಗಾರ',
@@ -33,7 +40,9 @@ const UI_LABELS = {
     stop: 'ನಿಲ್ಲಿಸಿ',
     ticketGen: 'ಅಧಿಕೃತ ದೂರು ದಾಖಲಾಗಿದೆ',
     trackBtn: 'ಸ್ಥಿತಿ ಪರಿಶೀಲಿಸಿ',
-    legalRef: 'ಕಾನೂನು ಉಲ್ಲೇಖಗಳು:'
+    legalRef: 'ಕಾನೂನು ಉಲ್ಲೇಖಗಳು:',
+    printReceipt: 'ರಸೀದಿ ಮುದ್ರಣ / PDF',
+    downloadSlip: 'ಡೌನ್‌ಲೋಡ್'
   },
   ta: {
     advisor: 'கூட்டுறவு AI ஆலோசகர்',
@@ -41,7 +50,9 @@ const UI_LABELS = {
     stop: 'நிறுத்து',
     ticketGen: 'அதிகாரப்பூர்வ புகார் பதிவு',
     trackBtn: 'நிலை அறிக்கை',
-    legalRef: 'சட்ட குறிப்புகள்:'
+    legalRef: 'சட்ட குறிப்புகள்:',
+    printReceipt: 'ரசீது அச்சிடு / PDF',
+    downloadSlip: 'பதிவிறக்கு'
   },
   mr: {
     advisor: 'सहकारी AI सल्लागार',
@@ -49,11 +60,20 @@ const UI_LABELS = {
     stop: 'थांबवा',
     ticketGen: 'अधिकृत तक्रार नोंदवली',
     trackBtn: 'स्थिती ट्रॅक करा',
-    legalRef: 'कायदेशीर संदर्भ:'
+    legalRef: 'कायदेशीर संदर्भ:',
+    printReceipt: 'पावती प्रिंट / PDF',
+    downloadSlip: 'डाउनलोड'
   }
 };
 
-export default function ChatMessage({ message, currentLanguage, onTrackTicket, onSelectSuggestion }) {
+export default function ChatMessage({ 
+  message, 
+  currentLanguage, 
+  currentUser,
+  onTrackTicket, 
+  onSelectSuggestion,
+  onOpenLodgeGrievance 
+}) {
   const [isPlayingTTS, setIsPlayingTTS] = useState(false);
   const [copied, setCopied] = useState(false);
   const isUser = message.role === 'user';
@@ -157,31 +177,55 @@ export default function ChatMessage({ message, currentLanguage, onTrackTicket, o
 
         {/* Official Grievance Ticket Badge */}
         {message.grievance_ticket && (
-          <div className="mt-3 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 text-slate-900 font-sans space-y-2">
+          <div className="mt-3 p-3.5 rounded-xl bg-amber-50/90 border border-amber-200 text-slate-900 font-sans space-y-2.5 shadow-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <ShieldAlert className="w-4 h-4 text-amber-700" />
                 <span className="text-xs font-bold text-amber-950">{t.ticketGen}</span>
               </div>
-              <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-200/80 text-amber-950">
+              <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-200/90 text-amber-950">
                 {message.grievance_ticket.status}
               </span>
             </div>
 
-            <div className="flex items-center justify-between bg-white p-2 rounded-lg border border-amber-200/60 text-xs">
-              <span className="text-slate-500 font-mono text-[11px]">ID: {message.grievance_ticket.tracking_id}</span>
+            <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-amber-200 text-xs">
+              <span className="text-slate-600 font-mono text-[11px] font-bold">
+                ID: {message.grievance_ticket.tracking_id}
+              </span>
               <button 
                 onClick={() => copyToClipboard(message.grievance_ticket.tracking_id)} 
                 className="text-slate-500 hover:text-slate-800 cursor-pointer p-0.5"
                 title="Copy ID"
               >
-                {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+              </button>
+            </div>
+
+            {/* Receipt Download & Print Buttons */}
+            <div className="flex gap-1.5">
+              <button
+                type="button"
+                onClick={() => printGrievanceReceipt(message.grievance_ticket, currentUser)}
+                className="flex-1 py-1.5 px-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
+                title="Print or Save Receipt as PDF"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>{t.printReceipt}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => downloadReceiptFile(message.grievance_ticket, currentUser)}
+                className="py-1.5 px-3 rounded-lg bg-white border border-amber-300 hover:bg-amber-100 text-amber-950 font-bold text-xs transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1"
+                title="Download HTML file"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{t.downloadSlip}</span>
               </button>
             </div>
 
             <button
               onClick={() => onTrackTicket(message.grievance_ticket.tracking_id)}
-              className="w-full py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1"
+              className="w-full py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1"
             >
               <span>{t.trackBtn}</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -213,18 +257,38 @@ export default function ChatMessage({ message, currentLanguage, onTrackTicket, o
         {/* Suggested Next Action Chips */}
         {message.suggested_actions && message.suggested_actions.length > 0 && (
           <div className="mt-2.5 pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
-            {message.suggested_actions.map((act, i) => (
-              <button
-                key={i}
-                onClick={() => onSelectSuggestion(act)}
-                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 text-[11px] font-medium transition-colors cursor-pointer text-left"
-              >
-                👉 {act}
-              </button>
-            ))}
+            {message.suggested_actions.map((act, i) => {
+              const isGrievance = 
+                act.toLowerCase().includes('complaint') || 
+                act.toLowerCase().includes('grievance') || 
+                act.includes('ఫిర్యాదు') || 
+                act.includes('शिकायत');
+
+              return (
+                <button
+                  key={i}
+                  onClick={() => {
+                    if (isGrievance && onOpenLodgeGrievance) {
+                      onOpenLodgeGrievance();
+                    } else {
+                      onSelectSuggestion(act);
+                    }
+                  }}
+                  className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer text-left flex items-center gap-1.5 ${
+                    isGrievance
+                      ? 'bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 shadow-xs font-bold'
+                      : 'bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 border border-transparent'
+                  }`}
+                >
+                  {isGrievance ? <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0" /> : <span>👉</span>}
+                  <span>{act}</span>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
     </div>
   );
 }
+
