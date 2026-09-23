@@ -1,5 +1,5 @@
-import React from 'react';
-import { Globe, LayoutDashboard, RefreshCw, LogOut, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Globe, LayoutDashboard, RefreshCw, LogOut, User, Maximize, Minimize } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'te', name: 'తెలుగు', flag: '🌾' },
@@ -19,6 +19,24 @@ export default function Header({
   currentUser,
   onLogout
 }) {
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  };
+
   return (
     <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80">
       <div className="max-w-2xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
@@ -59,6 +77,15 @@ export default function Header({
               ))}
             </select>
           </div>
+
+          {/* Fullscreen Kiosk Mode Toggle */}
+          <button
+            onClick={toggleFullscreen}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+            title={isFullscreen ? 'Exit Full Screen Kiosk' : 'Enter Full Screen Kiosk Mode'}
+          >
+            {isFullscreen ? <Minimize className="w-4 h-4 text-emerald-700" /> : <Maximize className="w-4 h-4" />}
+          </button>
 
           {/* Reset Chat (only on chat section) */}
           {activeSection === 'chat' && (

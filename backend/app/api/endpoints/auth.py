@@ -98,6 +98,7 @@ def farmer_register(req: FarmerRegisterRequest, db: Session = Depends(get_db)):
     return AuthResponse(access_token=token, user=UserProfile.model_validate(new_user))
 
 @router.post("/auth/farmer-login", response_model=AuthResponse)
+@router.post("/auth/login", response_model=AuthResponse)
 def farmer_login(req: FarmerLoginRequest, db: Session = Depends(get_db)):
     seed_demo_users_if_empty(db)
     raw_input = req.phone_number.strip()

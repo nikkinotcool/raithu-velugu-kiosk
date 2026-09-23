@@ -119,6 +119,21 @@ export default function App() {
     localStorage.removeItem('raithu_velugu_token');
   };
 
+const CLOUD_FALLBACK_URL = 'https://raithu-velugu-kiosk.onrender.com/api';
+
+const apiFetch = async (endpoint, options = {}) => {
+  const primaryUrl = `${API_BASE}${endpoint}`;
+  try {
+    return await fetch(primaryUrl, options);
+  } catch (err) {
+    if (API_BASE !== CLOUD_FALLBACK_URL) {
+      console.warn(`Primary endpoint ${primaryUrl} failed (${err.message}). Retrying via cloud API...`);
+      return await fetch(`${CLOUD_FALLBACK_URL}${endpoint}`, options);
+    }
+    throw err;
+  }
+};
+
   const handleSendMessage = async (text) => {
     if (!text || loading) return;
 
@@ -131,7 +146,7 @@ export default function App() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE}/chat`, {
+      const response = await apiFetch('/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +182,7 @@ export default function App() {
         ...prev,
         {
           role: 'assistant',
-          content: `⚠️ **Notice:** Unable to reach server (${err.message}). Please ensure the backend is running on port 8000.`,
+          content: `⚠️ **Notice:** Unable to reach server (${err.message}). Please ensure your network connection is active.`,
           language: language,
           sources: []
         }
@@ -318,6 +333,10 @@ export default function App() {
             currentUser={currentUser} 
             language={language} 
             onLogout={handleLogout} 
+            onAskAI={(query) => {
+              setActiveSection('chat');
+              handleSendMessage(query);
+            }}
           />
         )}
       </main>

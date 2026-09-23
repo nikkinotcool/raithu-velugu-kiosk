@@ -271,6 +271,22 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
     return () => clearTimeout(timer);
   }, [loading]);
 
+  const CLOUD_FALLBACK_URL = 'https://raithu-velugu-kiosk.onrender.com/api';
+
+  const fetchWithFallback = async (endpoint, options = {}) => {
+    const primaryUrl = `${apiBase}${endpoint}`;
+    try {
+      return await fetch(primaryUrl, options);
+    } catch (err) {
+      if (err.name === 'AbortError') throw err;
+      if (apiBase !== CLOUD_FALLBACK_URL) {
+        console.warn(`Primary endpoint ${primaryUrl} failed (${err.message}). Retrying with cloud fallback ${CLOUD_FALLBACK_URL}${endpoint}...`);
+        return await fetch(`${CLOUD_FALLBACK_URL}${endpoint}`, options);
+      }
+      throw err;
+    }
+  };
+
   const handleFarmerLogin = async (e) => {
     e?.preventDefault();
     const cleanPhone = phoneNumber.trim();
@@ -285,7 +301,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
-      const res = await fetch(`${apiBase}/auth/farmer-login`, {
+      const res = await fetchWithFallback('/auth/farmer-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -328,7 +344,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
-      const res = await fetch(`${apiBase}/auth/officer-login`, {
+      const res = await fetchWithFallback('/auth/officer-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username_or_email: username.trim(), password: officerPassword.trim() }),
@@ -374,7 +390,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
-      const res = await fetch(`${apiBase}/auth/register`, {
+      const res = await fetchWithFallback('/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
