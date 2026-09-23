@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Mic, MicOff, Check, X } from 'lucide-react';
+import { Send, Mic, MicOff, Check, X, Loader2 } from 'lucide-react';
+import { getApiBase } from '../utils/speech';
 
 export default function ChatInput({ 
   onSendMessage, 
@@ -10,12 +11,17 @@ export default function ChatInput({
 }) {
   const [inputText, setInputText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [isProcessingSTT, setIsProcessingSTT] = useState(false);
   const [recognitionSupported, setRecognitionSupported] = useState(false);
   const [liveTranscript, setLiveTranscript] = useState('');
 
   const recognitionRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const audioChunksRef = useRef([]);
   const isRecordingRef = useRef(false);
   const baseTextRef = useRef('');
+  const capturedTextRef = useRef('');
 
   const langMap = {
     te: 'te-IN',
@@ -26,7 +32,7 @@ export default function ChatInput({
     en: 'en-IN'
   };
 
-  // Setup SpeechRecognition with continuous listening and live interim results
+  // Setup Web SpeechRecognition
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -50,58 +56,50 @@ export default function ChatInput({
         }
 
         const currentSpeech = (finalStr + interimStr).trim();
-        setLiveTranscript(currentSpeech);
+        if (currentSpeech) {
+          capturedTextRef.current = currentSpeech;
+          setLiveTranscript(currentSpeech);
 
-        const fullText = (
-          (baseTextRef.current ? baseTextRef.current + ' ' : '') + currentSpeech
-        ).trim();
+          const fullText = (
+            (baseTextRef.current ? baseTextRef.current + ' ' : '') + currentSpeech
+          ).trim();
 
-        setInputText(fullText);
+          setInputText(fullText);
+        }
       };
 
       recognition.onerror = (event) => {
-        console.warn('Speech recognition event:', event.error);
-        if (event.error === 'no-speech') {
-          // Do NOT terminate on silence; keep listening continuously
-          return;
-        }
-        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-          alert(
-            language === 'te'
-              ? 'మైక్రోఫోన్ అనుమతి నిరాకరించబడింది. దయచేసి బ్రౌజర్ సెట్టింగ్స్‌లో మైక్రోఫోన్ అనుమతించండి.'
-              : 'Microphone permission denied. Please allow microphone in your browser settings.'
-          );
-          stopRecording();
-          return;
-        }
-        if (event.error === 'aborted') {
+        console.warn('Speech recognition status:', event.error);
+        if (event.error === 'no-speech' || event.error === 'aborted') {
           return;
         }
       };
 
       recognition.onend = () => {
-        // If still supposed to be recording, restart to prevent 1-second timeout in Chrome
         if (isRecordingRef.current) {
           try {
             recognition.start();
-          } catch (e) {
-            // Already active or starting
-          }
-        } else {
-          setIsRecording(false);
-          setLiveTranscript('');
-          if (onVoiceStateChange) onVoiceStateChange(false);
+          } catch (e) {}
         }
       };
 
       recognitionRef.current = recognition;
+    } else {
+      // Browser doesn't have webkitSpeechRecognition, but has MediaRecorder
+      if (typeof window !== 'undefined' && window.MediaRecorder) {
+        setRecognitionSupported(true);
+      }
     }
 
     return () => {
       if (recognitionRef.current) {
-        isRecordingRef.current = false;
         try {
           recognitionRef.current.stop();
+        } catch (e) {}
+      }
+      if (mediaStreamRef.current) {
+        try {
+          mediaStreamRef.current.getTracks().forEach((t) => t.stop());
         } catch (e) {}
       }
     };
@@ -115,49 +113,144 @@ export default function ChatInput({
   }, [triggerVoice]);
 
   const startRecording = async () => {
-    if (!recognitionSupported) {
+    let stream = null;
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
+        mediaStreamRef.current = stream;
+      }
+    } catch (err) {
+      console.warn('Microphone permission error:', err);
       alert(
         language === 'te'
-          ? 'మీ బ్రౌజర్‌లో వాయిస్ రికార్డింగ్ సపోర్ట్ లేదు. దయచేసి Chrome లేదా Edge ఉపయోగించండి.'
-          : 'Speech recognition is not supported in this browser. Please use Chrome or Edge.'
+          ? 'దయచేసి బ్రౌజర్ సెట్టింగ్స్‌లో మైక్రోఫోన్ అనుమతి (Allow Microphone) ఇవ్వండి.'
+          : 'Microphone permission denied. Please allow microphone in your browser settings.'
       );
       return;
     }
 
-    // Warm up hardware audio input if possible
-    try {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        stream.getTracks().forEach((track) => track.stop());
+    baseTextRef.current = inputText.trim();
+    capturedTextRef.current = '';
+    setLiveTranscript('');
+    isRecordingRef.current = true;
+    setIsRecording(true);
+    if (onVoiceStateChange) onVoiceStateChange(true);
+
+    // 1. Start MediaRecorder for Whisper AI transcription fallback
+    audioChunksRef.current = [];
+    if (stream && typeof window !== 'undefined' && window.MediaRecorder) {
+      try {
+        let mimeType = 'audio/webm';
+        if (!MediaRecorder.isTypeSupported('audio/webm')) {
+          if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
+          else if (MediaRecorder.isTypeSupported('audio/ogg')) mimeType = 'audio/ogg';
+          else mimeType = '';
+        }
+        const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            audioChunksRef.current.push(e.data);
+          }
+        };
+        recorder.start(250);
+        mediaRecorderRef.current = recorder;
+      } catch (recErr) {
+        console.warn('MediaRecorder start error:', recErr);
       }
-    } catch (err) {
-      console.warn('Microphone permission check:', err);
     }
 
-    try {
-      baseTextRef.current = inputText.trim();
-      isRecordingRef.current = true;
-      setIsRecording(true);
-      setLiveTranscript('');
-      if (onVoiceStateChange) onVoiceStateChange(true);
-
-      if (recognitionRef.current) {
+    // 2. Start Web SpeechRecognition for instant live visual feedback
+    if (recognitionRef.current) {
+      try {
         recognitionRef.current.lang = langMap[language] || 'en-IN';
         recognitionRef.current.start();
+      } catch (recStartErr) {
+        console.warn('SpeechRecognition start error:', recStartErr);
       }
-    } catch (err) {
-      console.warn('SpeechRecognition start error:', err);
     }
   };
 
-  const stopRecording = () => {
+  const stopRecording = async () => {
     isRecordingRef.current = false;
     setIsRecording(false);
-    setLiveTranscript('');
     if (onVoiceStateChange) onVoiceStateChange(false);
-    try {
-      recognitionRef.current?.stop();
-    } catch (e) {}
+
+    // Stop SpeechRecognition
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+    }
+
+    // Stop MediaRecorder and grab audio blob
+    let audioBlob = null;
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try {
+        await new Promise((resolve) => {
+          mediaRecorderRef.current.onstop = () => {
+            const mimeType = mediaRecorderRef.current.mimeType || 'audio/webm';
+            audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+            resolve();
+          };
+          mediaRecorderRef.current.stop();
+        });
+      } catch (recStopErr) {
+        console.warn('MediaRecorder stop error:', recStopErr);
+      }
+    }
+
+    // Stop audio stream tracks
+    if (mediaStreamRef.current) {
+      try {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      } catch (e) {}
+      mediaStreamRef.current = null;
+    }
+
+    // If Web Speech already captured text, we're done
+    const speechResult = capturedTextRef.current.trim();
+    if (speechResult) {
+      return;
+    }
+
+    // If Web Speech was silent or unresponsive, send audio to Groq Whisper AI (/api/stt)
+    if (audioBlob && audioBlob.size > 1000) {
+      setIsProcessingSTT(true);
+      try {
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'speech.webm');
+        formData.append('language', language);
+
+        const apiBase = getApiBase();
+        const res = await fetch(`${apiBase}/stt`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.text) {
+            const fullText = (
+              (baseTextRef.current ? baseTextRef.current + ' ' : '') + data.text
+            ).trim();
+            setInputText(fullText);
+            setLiveTranscript(data.text);
+          }
+        } else {
+          console.warn('STT API returned error status:', res.status);
+        }
+      } catch (sttErr) {
+        console.warn('STT backend request failed:', sttErr);
+      } finally {
+        setIsProcessingSTT(false);
+      }
+    }
   };
 
   const toggleRecording = () => {
@@ -251,6 +344,16 @@ export default function ChatInput({
               <span>{language === 'te' ? 'పూర్తయింది' : (language === 'hi' ? 'भेजें' : 'Done')}</span>
             </button>
           </div>
+        </div>
+      )}
+
+      {/* AI Whisper Transcription In-Progress Banner */}
+      {isProcessingSTT && (
+        <div className="mb-2 p-2.5 rounded-2xl bg-gradient-to-r from-emerald-950 to-slate-900 text-white shadow-lg border border-emerald-500/30 flex items-center gap-2.5">
+          <Loader2 className="w-4 h-4 animate-spin text-emerald-400 shrink-0" />
+          <span className="text-xs font-semibold text-emerald-200">
+            {language === 'te' ? 'AI మీ వాయిస్‌ని స్పష్టంగా టెక్స్ట్‌గా మారుస్తోంది...' : 'AI is transcribing your speech...'}
+          </span>
         </div>
       )}
 

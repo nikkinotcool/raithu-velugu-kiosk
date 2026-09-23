@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, AlertTriangle, Mic, MicOff, Send, CheckCircle2, 
-  Printer, Download, ShieldAlert, ArrowRight, Building2, User, Phone 
+  Printer, Download, ShieldAlert, ArrowRight, Building2, User, Phone, Loader2 
 } from 'lucide-react';
 import { printGrievanceReceipt, downloadReceiptFile } from '../utils/receiptGenerator';
 
@@ -43,10 +43,15 @@ export default function LodgeGrievanceModal({
 
   // Speech-to-Text State
   const [isRecording, setIsRecording] = useState(false);
+  const [isProcessingSTT, setIsProcessingSTT] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const recognitionRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const audioChunksRef = useRef([]);
   const isRecordingRef = useRef(false);
   const baseDescRef = useRef('');
+  const capturedTextRef = useRef('');
 
   useEffect(() => {
     if (initialCategory) {
@@ -82,16 +87,16 @@ export default function LodgeGrievanceModal({
           if (res.isFinal) finalStr += res[0].transcript + ' ';
           else interimStr += res[0].transcript;
         }
-        const text = ((baseDescRef.current ? baseDescRef.current + ' ' : '') + finalStr + interimStr).trim();
-        setDescription(text);
+        const text = (finalStr + interimStr).trim();
+        if (text) {
+          capturedTextRef.current = text;
+          const full = ((baseDescRef.current ? baseDescRef.current + ' ' : '') + text).trim();
+          setDescription(full);
+        }
       };
 
       recognition.onerror = (event) => {
-        if (event.error === 'no-speech') return;
-        if (event.error === 'not-allowed') {
-          isRecordingRef.current = false;
-          setIsRecording(false);
-        }
+        if (event.error === 'no-speech' || event.error === 'aborted') return;
       };
 
       recognition.onend = () => {
@@ -99,41 +104,128 @@ export default function LodgeGrievanceModal({
           try {
             recognition.start();
           } catch (e) {}
-        } else {
-          setIsRecording(false);
         }
       };
 
       recognitionRef.current = recognition;
+    } else {
+      if (typeof window !== 'undefined' && window.MediaRecorder) {
+        setSpeechSupported(true);
+      }
     }
+
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {}
+      }
+      if (mediaStreamRef.current) {
+        try {
+          mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+        } catch (e) {}
+      }
+    };
   }, [language]);
 
   const toggleRecording = async () => {
-    if (!speechSupported) {
-      alert('Microphone speech-to-text is not supported on this browser.');
-      return;
-    }
-
     if (isRecording) {
       isRecordingRef.current = false;
       setIsRecording(false);
-      try {
-        recognitionRef.current?.stop();
-      } catch (e) {}
+
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {}
+      }
+
+      let audioBlob = null;
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        try {
+          await new Promise((resolve) => {
+            mediaRecorderRef.current.onstop = () => {
+              const mimeType = mediaRecorderRef.current.mimeType || 'audio/webm';
+              audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+              resolve();
+            };
+            mediaRecorderRef.current.stop();
+          });
+        } catch (e) {}
+      }
+
+      if (mediaStreamRef.current) {
+        try {
+          mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+        } catch (e) {}
+        mediaStreamRef.current = null;
+      }
+
+      // If Web Speech already worked, done
+      if (capturedTextRef.current.trim()) return;
+
+      // Otherwise, transcribe with Whisper via /api/stt
+      if (audioBlob && audioBlob.size > 1000) {
+        setIsProcessingSTT(true);
+        try {
+          const formData = new FormData();
+          formData.append('file', audioBlob, 'complaint.webm');
+          formData.append('language', language);
+
+          const res = await fetch(`${apiBase}/stt`, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.text) {
+              const full = ((baseDescRef.current ? baseDescRef.current + ' ' : '') + data.text).trim();
+              setDescription(full);
+            }
+          }
+        } catch (err) {
+          console.warn('STT fallback error:', err);
+        } finally {
+          setIsProcessingSTT(false);
+        }
+      }
     } else {
+      let stream = null;
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-          s.getTracks().forEach((t) => t.stop());
+          stream = await navigator.mediaDevices.getUserMedia({ 
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } 
+          });
+          mediaStreamRef.current = stream;
         }
-      } catch (err) {}
+      } catch (err) {
+        alert(
+          language === 'te'
+            ? 'దయచేసి బ్రౌజర్ సెట్టింగ్స్‌లో మైక్రోఫోన్ అనుమతి ఇవ్వండి.'
+            : 'Please allow microphone access in your browser settings.'
+        );
+        return;
+      }
 
-      try {
-        if (recognitionRef.current) {
-          baseDescRef.current = description.trim();
-          isRecordingRef.current = true;
-          setIsRecording(true);
+      baseDescRef.current = description.trim();
+      capturedTextRef.current = '';
+      isRecordingRef.current = true;
+      setIsRecording(true);
 
+      audioChunksRef.current = [];
+      if (stream && typeof window !== 'undefined' && window.MediaRecorder) {
+        try {
+          const recorder = new MediaRecorder(stream);
+          recorder.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data);
+          };
+          recorder.start(250);
+          mediaRecorderRef.current = recorder;
+        } catch (e) {}
+      }
+
+      if (recognitionRef.current) {
+        try {
           const langMap = {
             te: 'te-IN',
             hi: 'hi-IN',
@@ -144,11 +236,7 @@ export default function LodgeGrievanceModal({
           };
           recognitionRef.current.lang = langMap[language] || 'en-IN';
           recognitionRef.current.start();
-        }
-      } catch (err) {
-        console.warn('Speech recognition error:', err);
-        isRecordingRef.current = false;
-        setIsRecording(false);
+        } catch (e) {}
       }
     }
   };
@@ -406,6 +494,12 @@ export default function LodgeGrievanceModal({
                     <div className="absolute bottom-3 right-3 flex items-center gap-1.5 text-[10px] font-bold text-red-600 bg-white/90 px-2 py-0.5 rounded-full border border-red-200 shadow-xs">
                       <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping" />
                       <span>Audio Recording Active</span>
+                    </div>
+                  )}
+                  {isProcessingSTT && (
+                    <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-700 font-semibold animate-pulse">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-600" />
+                      <span>{language === 'te' ? 'AI మీ వాయిస్‌ని టెక్స్ట్‌గా మారుస్తోంది...' : 'AI is transcribing your voice...'}</span>
                     </div>
                   )}
                 </div>
