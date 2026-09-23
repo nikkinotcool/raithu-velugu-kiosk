@@ -32,14 +32,16 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
   const [isRecording, setIsRecording] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const recognitionRef = useRef(null);
+  const isRecordingRef = useRef(false);
+  const baseDescRef = useRef('');
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       setSpeechSupported(true);
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = true;
+      recognition.interimResults = true;
 
       const langMap = {
         te: 'te-IN',
@@ -52,30 +54,65 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
       recognition.lang = langMap[language] || 'en-IN';
 
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setDescription((prev) => (prev ? `${prev} ${transcript}` : transcript));
-        setIsRecording(false);
+        let finalStr = '';
+        let interimStr = '';
+        for (let i = 0; i < event.results.length; ++i) {
+          const res = event.results[i];
+          if (res.isFinal) finalStr += res[0].transcript + ' ';
+          else interimStr += res[0].transcript;
+        }
+        const text = ((baseDescRef.current ? baseDescRef.current + ' ' : '') + finalStr + interimStr).trim();
+        setDescription(text);
       };
 
-      recognition.onerror = () => setIsRecording(false);
-      recognition.onend = () => setIsRecording(false);
+      recognition.onerror = (event) => {
+        if (event.error === 'no-speech') return;
+        if (event.error === 'not-allowed') {
+          isRecordingRef.current = false;
+          setIsRecording(false);
+        }
+      };
+
+      recognition.onend = () => {
+        if (isRecordingRef.current) {
+          try {
+            recognition.start();
+          } catch (e) {}
+        } else {
+          setIsRecording(false);
+        }
+      };
 
       recognitionRef.current = recognition;
     }
   }, [language]);
 
-  const toggleRecording = () => {
+  const toggleRecording = async () => {
     if (!speechSupported) {
       alert('Microphone speech-to-text is not supported on this browser.');
       return;
     }
 
     if (isRecording) {
-      recognitionRef.current?.stop();
+      isRecordingRef.current = false;
       setIsRecording(false);
+      try {
+        recognitionRef.current?.stop();
+      } catch (e) {}
     } else {
       try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+          s.getTracks().forEach((t) => t.stop());
+        }
+      } catch (err) {}
+
+      try {
         if (recognitionRef.current) {
+          baseDescRef.current = description.trim();
+          isRecordingRef.current = true;
+          setIsRecording(true);
+
           const langMap = {
             te: 'te-IN',
             hi: 'hi-IN',
@@ -86,10 +123,10 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
           };
           recognitionRef.current.lang = langMap[language] || 'en-IN';
           recognitionRef.current.start();
-          setIsRecording(true);
         }
       } catch (err) {
         console.warn('Speech recognition error:', err);
+        isRecordingRef.current = false;
         setIsRecording(false);
       }
     }

@@ -67,6 +67,7 @@ export default function App() {
   const [activeTrackingId, setActiveTrackingId] = useState('');
   const [adminOpen, setAdminOpen] = useState(false);
   const [lodgeModalOpen, setLodgeModalOpen] = useState(false);
+  const [voiceTrigger, setVoiceTrigger] = useState(0);
 
   const messagesEndRef = useRef(null);
 
@@ -287,11 +288,16 @@ export default function App() {
 
             {/* Bottom Fixed-Feel Sticky Chat Controls */}
             <div className="sticky bottom-0 z-20 space-y-2 pt-1 pb-1 bg-slate-50/95 backdrop-blur-xs">
-              <QuickPrompts language={language} onSelectPrompt={handleSendMessage} />
+              <QuickPrompts 
+                language={language} 
+                onSelectPrompt={handleSendMessage} 
+                onStartVoice={() => setVoiceTrigger(Date.now())}
+              />
               <ChatInput
                 onSendMessage={handleSendMessage}
                 disabled={loading}
                 language={language}
+                triggerVoice={voiceTrigger}
               />
             </div>
           </div>

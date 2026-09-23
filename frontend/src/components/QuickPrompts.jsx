@@ -22,11 +22,29 @@ const QUICK_ACTIONS_BY_LANG = {
   ]
 };
 
-export default function QuickPrompts({ language, onSelectPrompt }) {
+export default function QuickPrompts({ language, onSelectPrompt, onStartVoice }) {
   const prompts = QUICK_ACTIONS_BY_LANG[language] || QUICK_ACTIONS_BY_LANG['en'];
+
+  const voiceLabels = {
+    te: '🎙️ మాట్లాడండి (Voice Input)',
+    hi: '🎙️ बोलकर पूछें (Voice Input)',
+    en: '🎙️ Speak Question (Voice Input)',
+    kn: '🎙️ ಮಾತನಾಡಿ (Voice Input)',
+    ta: '🎙️ பேசுங்கள் (Voice Input)',
+    mr: '🎙️ बोला (Voice Input)'
+  };
 
   return (
     <div className="w-full flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+      {/* Prominent Direct Voice Input Button on Main Screen */}
+      <button
+        type="button"
+        onClick={onStartVoice}
+        className="shrink-0 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-700 to-teal-700 hover:from-emerald-800 hover:to-teal-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1.5 border border-emerald-600"
+      >
+        <span>{voiceLabels[language] || voiceLabels['en']}</span>
+      </button>
+
       {prompts.map((item, idx) => (
         <button
           key={idx}
