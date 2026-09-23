@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Mic, MicOff, Check, X, Loader2 } from 'lucide-react';
-import { getApiBase } from '../utils/speech';
+import { fetchWithCloudFallback } from '../utils/apiClient';
 
 export default function ChatInput({ 
   onSendMessage, 
@@ -227,8 +227,7 @@ export default function ChatInput({
         formData.append('file', audioBlob, 'speech.webm');
         formData.append('language', language);
 
-        const apiBase = getApiBase();
-        const res = await fetch(`${apiBase}/stt`, {
+        const res = await fetchWithCloudFallback('/stt', {
           method: 'POST',
           body: formData
         });

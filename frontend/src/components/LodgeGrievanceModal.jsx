@@ -4,6 +4,7 @@ import {
   Printer, Download, ShieldAlert, ArrowRight, Building2, User, Phone, Loader2 
 } from 'lucide-react';
 import { printGrievanceReceipt, downloadReceiptFile } from '../utils/receiptGenerator';
+import { fetchWithCloudFallback } from '../utils/apiClient';
 
 const GRIEVANCE_CATEGORIES = {
   te: [
@@ -171,10 +172,10 @@ export default function LodgeGrievanceModal({
           formData.append('file', audioBlob, 'complaint.webm');
           formData.append('language', language);
 
-          const res = await fetch(`${apiBase}/stt`, {
+          const res = await fetchWithCloudFallback('/stt', {
             method: 'POST',
             body: formData
-          });
+          }, apiBase);
 
           if (res.ok) {
             const data = await res.json();
@@ -263,11 +264,11 @@ export default function LodgeGrievanceModal({
         user_id: currentUser?.id || null
       };
 
-      const res = await fetch(`${apiBase}/grievances`, {
+      const res = await fetchWithCloudFallback('/grievances', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      });
+      }, apiBase);
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));

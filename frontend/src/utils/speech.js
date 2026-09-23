@@ -7,6 +7,8 @@
  * - Touch-optimized for vertical tablet kiosks.
  */
 
+import { fetchWithCloudFallback } from './apiClient';
+
 export function getApiBase() {
   if (typeof window === 'undefined') return 'http://localhost:8000/api';
   if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL;
@@ -246,7 +248,7 @@ export async function speakMessage({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
 
-    const res = await fetch(`${apiBase}/tts`, {
+    const res = await fetchWithCloudFallback('/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -254,7 +256,7 @@ export async function speakMessage({
         language
       }),
       signal: controller.signal
-    });
+    }, apiBase);
     clearTimeout(timeoutId);
 
     if (!res.ok) {

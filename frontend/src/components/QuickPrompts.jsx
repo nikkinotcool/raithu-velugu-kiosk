@@ -22,16 +22,25 @@ const QUICK_ACTIONS_BY_LANG = {
   ]
 };
 
-export default function QuickPrompts({ language, onSelectPrompt, onStartVoice }) {
+export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, onOpenSchemes }) {
   const prompts = QUICK_ACTIONS_BY_LANG[language] || QUICK_ACTIONS_BY_LANG['en'];
 
   const voiceLabels = {
-    te: '🎙️ మాట్లాడండి (Voice Input)',
-    hi: '🎙️ बोलकर पूछें (Voice Input)',
-    en: '🎙️ Speak Question (Voice Input)',
-    kn: '🎙️ ಮಾತನಾಡಿ (Voice Input)',
-    ta: '🎙️ பேசுங்கள் (Voice Input)',
-    mr: '🎙️ बोला (Voice Input)'
+    te: '🎙️ మాట్లాడండి (Voice)',
+    hi: '🎙️ बोलकर पूछें (Voice)',
+    en: '🎙️ Speak (Voice)',
+    kn: '🎙️ ಮಾತನಾಡಿ (Voice)',
+    ta: '🎙️ பேசுங்கள் (Voice)',
+    mr: '🎙️ बोला (Voice)'
+  };
+
+  const schemeLabels = {
+    te: '🌾 పథకాల జాబితా (Schemes)',
+    hi: '🌾 सरकारी योजनाएं (Schemes)',
+    en: '🌾 PACS Schemes Explorer',
+    kn: '🌾 ಯೋಜನೆಗಳು (Schemes)',
+    ta: '🌾 திட்டங்கள் (Schemes)',
+    mr: '🌾 योजना यादी (Schemes)'
   };
 
   return (
@@ -44,6 +53,17 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice })
       >
         <span>{voiceLabels[language] || voiceLabels['en']}</span>
       </button>
+
+      {/* Schemes Explorer Quick Button */}
+      {onOpenSchemes && (
+        <button
+          type="button"
+          onClick={onOpenSchemes}
+          className="shrink-0 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
+        >
+          <span>{schemeLabels[language] || schemeLabels['en']}</span>
+        </button>
+      )}
 
       {prompts.map((item, idx) => (
         <button

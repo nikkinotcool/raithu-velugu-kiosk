@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, LayoutDashboard, RefreshCw, LogOut, User, Maximize, Minimize } from 'lucide-react';
+import { Globe, LayoutDashboard, RefreshCw, LogOut, User, Maximize, Minimize, BookOpen } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'te', name: 'తెలుగు', flag: '🌾' },
@@ -15,6 +15,7 @@ export default function Header({
   onLanguageChange,
   activeSection,
   onOpenAdmin,
+  onOpenSchemes,
   onResetChat,
   currentUser,
   onLogout
@@ -95,6 +96,17 @@ export default function Header({
               title="Reset Conversation"
             >
               <RefreshCw className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* Cooperative Schemes Explorer */}
+          {onOpenSchemes && (
+            <button
+              onClick={onOpenSchemes}
+              className="p-1.5 rounded-lg text-emerald-800 hover:text-emerald-950 hover:bg-emerald-50 transition-colors cursor-pointer"
+              title="PACS Schemes Explorer"
+            >
+              <BookOpen className="w-4 h-4" />
             </button>
           )}
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, RefreshCw, CheckCircle, Clock, AlertTriangle, ShieldCheck, FileSpreadsheet } from 'lucide-react';
+import { fetchWithCloudFallback } from '../utils/apiClient';
 
 export default function AdminDrawer({ isOpen, onClose, apiBase }) {
   const [grievances, setGrievances] = useState([]);
@@ -9,7 +10,7 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
   const fetchGrievances = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${apiBase}/grievances`);
+      const res = await fetchWithCloudFallback('/grievances', {}, apiBase);
       if (res.ok) {
         const data = await res.json();
         setGrievances(data);
@@ -30,9 +31,9 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
   const handleUpdateStatus = async (trackingId, newStatus) => {
     setUpdatingId(trackingId);
     try {
-      const res = await fetch(`${apiBase}/grievances/${trackingId}/status?new_status=${encodeURIComponent(newStatus)}`, {
+      const res = await fetchWithCloudFallback(`/grievances/${trackingId}/status?new_status=${encodeURIComponent(newStatus)}`, {
         method: 'PATCH'
-      });
+      }, apiBase);
       if (res.ok) {
         fetchGrievances();
       }

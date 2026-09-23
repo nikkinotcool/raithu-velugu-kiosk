@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Search, ShieldCheck, Clock, CheckCircle2, AlertCircle, Building2, User, Phone, MapPin, Printer, Download } from 'lucide-react';
 import { printGrievanceReceipt, downloadReceiptFile } from '../utils/receiptGenerator';
+import { fetchWithCloudFallback } from '../utils/apiClient';
 
 export default function GrievanceTrackerModal({ isOpen, onClose, initialTrackingId, apiBase, currentUser }) {
   const [trackingId, setTrackingId] = useState(initialTrackingId || '');
@@ -19,7 +20,7 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
     setTicket(null);
 
     try {
-      const res = await fetch(`${apiBase}/grievances/track/${encodeURIComponent(trackingId.trim())}`);
+      const res = await fetchWithCloudFallback(`/grievances/track/${encodeURIComponent(trackingId.trim())}`, {}, apiBase);
       if (!res.ok) {
         throw new Error('No ticket found with this Tracking ID. Please double check the number.');
       }

@@ -10,6 +10,7 @@ import AccountSection from './components/AccountSection';
 import AdminDrawer from './components/AdminDrawer';
 import SignInPage from './components/SignInPage';
 import LodgeGrievanceModal from './components/LodgeGrievanceModal';
+import SchemesModal from './components/SchemesModal';
 import { Loader2 } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 
@@ -67,6 +68,7 @@ export default function App() {
   const [activeTrackingId, setActiveTrackingId] = useState('');
   const [adminOpen, setAdminOpen] = useState(false);
   const [lodgeModalOpen, setLodgeModalOpen] = useState(false);
+  const [schemesModalOpen, setSchemesModalOpen] = useState(false);
   const [voiceTrigger, setVoiceTrigger] = useState(0);
 
   const messagesEndRef = useRef(null);
@@ -259,6 +261,7 @@ const apiFetch = async (endpoint, options = {}) => {
         onLanguageChange={handleLanguageChange}
         activeSection={activeSection}
         onOpenAdmin={() => setAdminOpen(true)}
+        onOpenSchemes={() => setSchemesModalOpen(true)}
         onResetChat={handleResetSession}
         currentUser={currentUser}
         onLogout={handleLogout}
@@ -307,6 +310,7 @@ const apiFetch = async (endpoint, options = {}) => {
                 language={language} 
                 onSelectPrompt={handleSendMessage} 
                 onStartVoice={() => setVoiceTrigger(Date.now())}
+                onOpenSchemes={() => setSchemesModalOpen(true)}
               />
               <ChatInput
                 onSendMessage={handleSendMessage}
@@ -371,6 +375,17 @@ const apiFetch = async (endpoint, options = {}) => {
         language={language}
         apiBase={API_BASE}
         onGrievanceCreated={handleGrievanceCreated}
+      />
+
+      {/* Cooperative Schemes Explorer Modal */}
+      <SchemesModal
+        isOpen={schemesModalOpen}
+        onClose={() => setSchemesModalOpen(false)}
+        language={language}
+        onSelectScheme={(q) => {
+          setActiveSection('chat');
+          handleSendMessage(q);
+        }}
       />
     </div>
   );

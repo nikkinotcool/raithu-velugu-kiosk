@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Building2, ShieldCheck, MapPin, Phone, Award, CheckCircle2, 
   CreditCard, Sprout, Landmark, LogOut, Database, Printer, Download,
   Calendar, FileText, AlertCircle, ArrowUpRight, HelpCircle, ChevronRight,
-  TrendingUp, Sparkles, Droplets, Info
+  TrendingUp, Sparkles, Droplets, Info, Volume2, VolumeX, Calculator, Coins
 } from 'lucide-react';
 import { printPassbookSlip, downloadPassbookSlip } from '../utils/passbookSlipGenerator';
+import { speakMessage, stopSpeech } from '../utils/speech';
 
 const STRINGS = {
   te: {
@@ -112,6 +113,41 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
     downloadPassbookSlip(currentUser, passbookData);
   };
 
+  const [isPlayingVoice, setIsPlayingVoice] = useState(false);
+  const [calcLoanAmount, setCalcLoanAmount] = useState(150000);
+
+  useEffect(() => {
+    return () => {
+      stopSpeech();
+    };
+  }, []);
+
+  const handleVoiceNarration = () => {
+    if (isPlayingVoice) {
+      stopSpeech();
+      setIsPlayingVoice(false);
+      return;
+    }
+
+    let speechText = '';
+    if (language === 'te') {
+      speechText = `నమస్కారం ${currentUser.full_name} గారూ. మీ PACS సభ్యత్వ ఐడీ ${currentUser.member_id || 'PACS-SRD-1042'}. మీకు మంజూరైన క్రాప్ లోన్ లక్షా యాభై వేల రూపాయలు, 4 శాతం వడ్డీ రాయితీ వర్తిస్తుంది. చెల్లింపు గడువు 31 మార్చి 2027. మీ వద్ద ఇంకా 4 బస్తాల యూరియా మరియు 3 బస్తాల కాంప్లెక్స్ ఎరువుల కోటా మిగిలి ఉంది.`;
+    } else if (language === 'hi') {
+      speechText = `नमस्ते ${currentUser.full_name} जी। आपकी पैक्स सदस्य आईडी ${currentUser.member_id || 'PACS-SRD-1042'} है। आपका फसल ऋण ₹1,50,000 स्वीकृत है और 4 बैग यूरिया शेष है।`;
+    } else {
+      speechText = `Namaste ${currentUser.full_name}. Your PACS Member ID is ${currentUser.member_id || 'PACS-SRD-1042'}. Your disbursed crop loan is ₹1,50,000 with 4% interest subvention. Repayment due date is 31 March 2027. You have 4 bags of Urea and 3 bags of Complex fertilizer available in your quota.`;
+    }
+
+    setIsPlayingVoice(true);
+    speakMessage({
+      text: speechText,
+      language,
+      onStart: () => setIsPlayingVoice(true),
+      onEnd: () => setIsPlayingVoice(false),
+      onError: () => setIsPlayingVoice(false)
+    });
+  };
+
   const handleQuickAsk = (query) => {
     if (typeof onAskAI === 'function') {
       onAskAI(query);
@@ -133,6 +169,20 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
         </div>
 
         <div className="flex items-center gap-1.5">
+          {/* Read Aloud Voice Button */}
+          <button
+            onClick={handleVoiceNarration}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 ${
+              isPlayingVoice
+                ? 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse'
+                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+            }`}
+            title="Read out passbook balances in voice"
+          >
+            {isPlayingVoice ? <VolumeX className="w-3.5 h-3.5 text-amber-800" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-700" />}
+            <span>{isPlayingVoice ? (language === 'te' ? 'ఆపండి' : 'Stop') : (language === 'te' ? 'వినండి' : 'Listen')}</span>
+          </button>
+
           <button
             onClick={handlePrint}
             className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
@@ -349,6 +399,69 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               >
                 {t.askAI}
               </button>
+            </div>
+          </div>
+
+          {/* Interactive KCC Zero-Interest Subvention Calculator */}
+          <div className="bg-gradient-to-br from-emerald-50/70 via-white to-emerald-50/40 border border-emerald-200/90 rounded-2xl p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-emerald-100 flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <Calculator className="w-4 h-4 text-emerald-700" />
+                <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-emerald-950">
+                  {language === 'te' ? 'వడ్డీ లేని పంట రుణాల కాలిక్యులేటర్ (Vaddi Leni Runalu)' : 'KCC Zero-Interest Scheme Calculator (4% Subvention)'}
+                </h4>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                100% Subsidy on Prompt Repayment
+              </span>
+            </div>
+
+            <div className="mt-4 space-y-3.5 text-xs">
+              <div>
+                <div className="flex justify-between font-bold text-slate-700 mb-1.5">
+                  <span>{language === 'te' ? 'పంట రుణ మొత్తం (Loan Amount):' : 'Crop Loan Amount:'}</span>
+                  <span className="text-emerald-800 text-sm font-extrabold font-mono">₹{calcLoanAmount.toLocaleString('en-IN')}</span>
+                </div>
+                <input 
+                  type="range"
+                  min="25000"
+                  max="300000"
+                  step="5000"
+                  value={calcLoanAmount}
+                  onChange={(e) => setCalcLoanAmount(Number(e.target.value))}
+                  className="w-full accent-emerald-700 cursor-pointer h-2 bg-slate-200 rounded-lg"
+                />
+                <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                  <span>₹25,000</span>
+                  <span>₹1,50,000</span>
+                  <span>₹3,00,000 (Max Limit)</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center shadow-2xs">
+                  <span className="text-[10px] text-slate-500 block uppercase font-medium">Bank Rate (7%)</span>
+                  <span className="text-xs font-bold text-slate-700 block mt-0.5">₹{Math.round(calcLoanAmount * 0.07).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
+                  <span className="text-[10px] text-emerald-600 block uppercase font-medium">Centre Subsidy (3%)</span>
+                  <span className="text-xs font-bold text-emerald-700 block mt-0.5">-₹{Math.round(calcLoanAmount * 0.03).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
+                  <span className="text-[10px] text-emerald-600 block uppercase font-medium">State Rebate (4%)</span>
+                  <span className="text-xs font-bold text-emerald-700 block mt-0.5">-₹{Math.round(calcLoanAmount * 0.04).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-emerald-700 text-white text-center shadow-xs">
+                  <span className="text-[10px] text-emerald-200 block uppercase font-bold">Farmer Net Interest</span>
+                  <span className="text-sm font-extrabold block mt-0.5">₹0 (ZERO)</span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-emerald-900 bg-emerald-100/70 p-2.5 rounded-xl border border-emerald-200 leading-snug">
+                💡 {language === 'te' 
+                  ? `రుణ గడువు (31 మార్చి 2027) లోపు చెల్లిస్తే మొత్తం ₹${Math.round(calcLoanAmount * 0.07).toLocaleString('en-IN')} వడ్డీ ప్రభుత్వమే భరిస్తుంది. మీకు వడ్డీ భారం సున్నా!`
+                  : `When repaid on or before the due date (31 March 2027), the entire interest of ₹${Math.round(calcLoanAmount * 0.07).toLocaleString('en-IN')} is absorbed by Central & State subventions. Net farmer cost is ₹0!`}
+              </p>
             </div>
           </div>
 

@@ -5,6 +5,7 @@ import {
   Printer, Download, Mic, MicOff
 } from 'lucide-react';
 import { printGrievanceReceipt, downloadReceiptFile } from '../utils/receiptGenerator';
+import { fetchWithCloudFallback } from '../utils/apiClient';
 
 const CATEGORIES = [
   { id: 'pmfby', nameTe: 'PMFBY పంట నష్టం క్లెయిమ్ ఆలస్యం / తిరస్కరణ', nameEn: 'PMFBY Crop Loss Claim Delay / Rejection', dept: 'DAIGC Insurance Committee' },
@@ -135,7 +136,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
   const fetchGrievances = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${apiBase}/grievances?limit=15`);
+      const res = await fetchWithCloudFallback('/grievances?limit=15', {}, apiBase);
       if (res.ok) {
         const data = await res.json();
         setGrievances(data);
@@ -159,7 +160,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
     setSearchError('');
     setSearchResult(null);
     try {
-      const res = await fetch(`${apiBase}/grievances/track/${encodeURIComponent(searchId.trim())}`);
+      const res = await fetchWithCloudFallback(`/grievances/track/${encodeURIComponent(searchId.trim())}`, {}, apiBase);
       if (!res.ok) {
         throw new Error(language === 'te' ? 'ఈ ట్రాకింగ్ సంఖ్యతో ఎలాంటి ఫిర్యాదు నమోదు కాలేదు.' : 'No grievance found with this Tracking ID.');
       }
@@ -192,11 +193,11 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
         state: currentUser?.state || 'Telangana'
       };
 
-      const res = await fetch(`${apiBase}/grievances`, {
+      const res = await fetchWithCloudFallback('/grievances', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      });
+      }, apiBase);
 
       if (!res.ok) throw new Error('Submission failed');
       const data = await res.json();
