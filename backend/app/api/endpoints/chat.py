@@ -54,7 +54,23 @@ async def handle_chat(req: ChatRequest, db: Session = Depends(get_db)):
     suggested_actions = []
 
     # Step 3: Branching logic for Context & Grievances
-    if intent == "grievance_complaint":
+    if intent == "grievance_inquiry":
+        # The user wants to file a complaint, but has NOT provided specific details yet
+        system_instruction = (
+            f"{lang_rule}\n"
+            "The user stated that they want to file a complaint or grievance, but has not yet described what went wrong. "
+            "Respond warmly, supportively, and empathetically. Assure them that their rights are protected under Cooperative Law. "
+            "Ask them to explain what specific problem or incident occurred (for example: PMFBY crop loss insurance delay, PACS 4% loan denial, fertilizer shortage, voting rights refusal, or Secretary misconduct). "
+            "Inform them that they can type or speak the details right here, or click the '⚠️ Open Grievance Form' button below."
+        )
+        suggested_actions = [
+            "⚠️ Open Grievance Form / ఫిర్యాదు ఫారమ్" if user_lang == "te" else "⚠️ Open Grievance Form",
+            "🌾 PMFBY పంట నష్టం క్లెయిమ్ సమస్య" if user_lang == "te" else "🌾 PMFBY Crop Loss Delay",
+            "💳 PACS లోన్ నిరాకరణ సమస్య" if user_lang == "te" else "💳 PACS Loan Refusal",
+            "⚖️ సెక్రటరీ లేదా పాలకవర్గ అవినీతి" if user_lang == "te" else "⚖️ PACS Secretary Misconduct"
+        ]
+
+    elif intent == "grievance_complaint":
         tracking_id = f"RV-GRV-{datetime.utcnow().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
         routed_authority = "District Level Grievance Redressal Committee (DGRC)" if "PMFBY" in category else "Assistant Registrar of Cooperative Societies (ARCS)"
 
@@ -82,9 +98,10 @@ async def handle_chat(req: ChatRequest, db: Session = Depends(get_db)):
 
         system_instruction = (
             f"{lang_rule}\n"
-            f"The user has lodged a complaint. Acknowledge that an official grievance ticket has been generated "
+            f"The user has submitted an official complaint with specific details. Acknowledge with deep empathy that an official grievance ticket has been generated "
             f"(Tracking ID: {tracking_id}) and forwarded to {routed_authority}. "
-            f"Reassure them with empathy and explain that the mandated inquiry will initiate within 7 working days."
+            f"Explain that the statutory inquiry will initiate within 7 to 15 working days, and reassure them that their case is logged on the National Cooperative Portal. "
+            f"Tell them they can download or print their official receipt slip using the button below."
         )
         suggested_actions = [
             "Track Grievance Status" if user_lang == "en" else "ఫిర్యాదు స్థితిని తనిఖీ చేయండి",

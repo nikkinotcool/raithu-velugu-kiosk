@@ -19,6 +19,16 @@ class IntentClassifier:
         "नमस्ते", "प्रणाम", "हेलो", "राम राम", "ಹಲೋ", "வணக்கம்"
     ]
 
+    GRIEVANCE_INQUIRY_PATTERNS = [
+        "want to file a grievance", "want to file a complaint", "how to file a grievance",
+        "how to file a complaint", "how to raise a grievance", "how to complain",
+        "i want to complain", "i need to file a grievance", "file a complaint",
+        "raise a grievance", "lodge a complaint", "lodge grievance", "file grievance",
+        "raise grievance", "register a complaint", "register complaint", "i have a complaint",
+        "ఫిర్యాదు చేయాలనుకుంటున్నాను", "ఫిర్యాదు చేయాలి", "కంప్లైంట్ చేయాలి", "ఫిర్యాదు నమోదు",
+        "शिकायत दर्ज करनी है", "शिकायत करनी है", "शिकायत कैसे करें"
+    ]
+
     GRIEVANCE_KEYWORDS = [
         "complain", "complaint", "fraud", "corruption", "bribe", "denied", "rejected",
         "delay", "refused", "harass", "scam", "illegal", "not received", "didn't get",
@@ -54,10 +64,18 @@ class IntentClassifier:
         ):
             return "greeting_intent", "Conversational Greeting", 0.98
 
-        # Check if text triggers grievance intent
+        # Check if user is asking HOW to complain or stating INTENT to file a grievance (without details yet)
+        if any(p in clean_text for p in self.GRIEVANCE_INQUIRY_PATTERNS) or (
+            any(kw in clean_text for kw in ["grievance", "complaint", "ఫిర్యాదు", "शिकायत"]) and
+            len(words) <= 7 and
+            not any(w in clean_text for w in ["bribe", "lakh", "acre", "urea", "refused", "demanded", "took", "lost", "damage", "లంచం", "తీసుకున్నారు", "నష్టం", "మోసం", "తిరస్కరించారు"])
+        ):
+            return "grievance_inquiry", "Grievance Filing Inquiry", 0.95
+
+        # Check if text triggers detailed grievance complaint with specific wrongdoing
         is_grievance = any(kw in clean_text for kw in self.GRIEVANCE_KEYWORDS)
         
-        if is_grievance:
+        if is_grievance and len(words) >= 6:
             category = "General Cooperative Governance Grievance"
             for key, cat in self.GRIEVANCE_CATEGORIES.items():
                 if key in clean_text:
