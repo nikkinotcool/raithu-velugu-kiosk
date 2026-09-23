@@ -10,10 +10,13 @@ class IntentClassifier:
     - 'scheme_application': how to apply, forms needed, document lists
     """
     GREETING_KEYWORDS = [
-        "hi", "hello", "hey", "namaste", "namaskar", "vanakkam", "halo",
-        "good morning", "good afternoon", "good evening", "how are you",
-        "who are you", "what can you do", "help", "హాయ్", "నమస్కారం", "నమస్తే",
-        "नमस्ते", "प्रणाम", "हेलो", "ಹಲೋ", "வணக்கம்"
+        "hi", "hlo", "hlw", "helo", "hello", "hey", "heya", "hy", "hii", "hiii", "helloo",
+        "namaste", "namasthe", "namaskar", "namaskaram", "vanakkam", "halo", "hola",
+        "good morning", "good afternoon", "good evening", "how are you", "how r u",
+        "who are you", "who r u", "what is your name", "what can you do", "help",
+        "pranam", "ram ram", "salam", "kiosk", "start",
+        "హాయ్", "నమస్కారం", "నమస్తే", "హలో", "బాగున్నారా",
+        "नमस्ते", "प्रणाम", "हेलो", "राम राम", "ಹಲೋ", "வணக்கம்"
     ]
 
     GRIEVANCE_KEYWORDS = [
@@ -40,10 +43,14 @@ class IntentClassifier:
 
     def classify(self, text: str) -> Tuple[str, str, float]:
         clean_text = text.strip().lower()
-        words = clean_text.split()
+        clean_stripped = re.sub(r"[^\w\s]", "", clean_text).strip()
+        words = clean_stripped.split()
 
         # Check for Greeting if input is short and matches greeting tokens
-        if len(words) <= 3 and any(clean_text == kw or clean_text.startswith(kw) for kw in self.GREETING_KEYWORDS):
+        if len(words) <= 4 and (
+            any(clean_stripped == kw or clean_stripped.startswith(kw) for kw in self.GREETING_KEYWORDS) or
+            (len(words) > 0 and words[0] in self.GREETING_KEYWORDS)
+        ):
             return "greeting_intent", "Conversational Greeting", 0.98
 
         # Check if text triggers grievance intent

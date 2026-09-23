@@ -93,12 +93,13 @@ async def handle_chat(req: ChatRequest, db: Session = Depends(get_db)):
         ]
 
     elif intent == "greeting_intent":
-        # Conversational / Greeting: Let Qwen chat naturally without dumping legal citations
+        # Conversational / Greeting: Let Qwen chat naturally and concisely without dumping legal citations
         system_instruction = (
             f"{lang_rule}\n"
-            "The user is greeting you or having a casual conversation. "
-            "Reply warmly, concisely, and naturally as 'Raithu Velugu' (AI Assistant for PACS & Cooperative Governance, Ministry of Cooperation). "
-            "Introduce yourself briefly and ask how you can assist with farming loans, PMFBY crop insurance, or cooperative society rights."
+            "The user is greeting you (e.g. hello, hi, namaste). "
+            "Reply warmly, politely, and concisely in ONLY 1 to 2 sentences. "
+            "Welcome the farmer to Raithu Velugu and ask how you can help them with PACS loans, crop insurance, or membership rights today. "
+            "CRITICAL: Do NOT list legal clauses, do NOT explain bye-laws, and do NOT write long paragraphs for a simple greeting."
         )
         suggested_actions = [
             "How do I claim PMFBY crop loss within 72 hours?" if user_lang == "en" else "PMFBY పంట నష్టం క్లెయిమ్ 72 గంటల్లో ఎలా చేయాలి?",
