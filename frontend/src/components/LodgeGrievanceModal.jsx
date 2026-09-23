@@ -161,11 +161,10 @@ export default function LodgeGrievanceModal({
         mediaStreamRef.current = null;
       }
 
-      // If Web Speech already worked, done
-      if (capturedTextRef.current.trim()) return;
+      let finalText = capturedTextRef.current.trim();
 
-      // Otherwise, transcribe with Whisper via /api/stt
-      if (audioBlob && audioBlob.size > 1000) {
+      // Transcribe recorded audio with Whisper Large V3 for native Telugu / Hindi accuracy
+      if (audioBlob && audioBlob.size > 300) {
         setIsProcessingSTT(true);
         try {
           const formData = new FormData();
@@ -179,9 +178,8 @@ export default function LodgeGrievanceModal({
 
           if (res.ok) {
             const data = await res.json();
-            if (data.text) {
-              const full = ((baseDescRef.current ? baseDescRef.current + ' ' : '') + data.text).trim();
-              setDescription(full);
+            if (data.text && data.text.trim()) {
+              finalText = data.text.trim();
             }
           }
         } catch (err) {
@@ -189,6 +187,11 @@ export default function LodgeGrievanceModal({
         } finally {
           setIsProcessingSTT(false);
         }
+      }
+
+      if (finalText) {
+        const full = ((baseDescRef.current ? baseDescRef.current + ' ' : '') + finalText).trim();
+        setDescription(full);
       }
     } else {
       let stream = null;

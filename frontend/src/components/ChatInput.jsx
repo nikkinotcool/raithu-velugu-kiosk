@@ -213,14 +213,11 @@ export default function ChatInput({
       mediaStreamRef.current = null;
     }
 
-    // If Web Speech already captured text, we're done
-    const speechResult = capturedTextRef.current.trim();
-    if (speechResult) {
-      return;
-    }
+    let finalSpeech = capturedTextRef.current.trim();
 
-    // If Web Speech was silent or unresponsive, send audio to Groq Whisper AI (/api/stt)
-    if (audioBlob && audioBlob.size > 1000) {
+    // Groq Whisper Large V3 with native Indic vocabulary prompts produces vastly superior Telugu & Hindi native script.
+    // If audio was captured, transcribe with Groq Whisper.
+    if (audioBlob && audioBlob.size > 300) {
       setIsProcessingSTT(true);
       try {
         const formData = new FormData();
@@ -234,42 +231,45 @@ export default function ChatInput({
 
         if (res.ok) {
           const data = await res.json();
-          if (data.text) {
-            const fullText = (
-              (baseTextRef.current ? baseTextRef.current + ' ' : '') + data.text
-            ).trim();
-            setInputText(fullText);
-            setLiveTranscript(data.text);
+          if (data.text && data.text.trim()) {
+            finalSpeech = data.text.trim();
           }
-        } else {
-          console.warn('STT API returned error status:', res.status);
         }
       } catch (sttErr) {
-        console.warn('STT backend request failed:', sttErr);
+        console.warn('Whisper STT request failed, falling back to Web Speech transcript:', sttErr);
       } finally {
         setIsProcessingSTT(false);
+      }
+    }
+
+    if (finalSpeech) {
+      const fullText = (
+        (baseTextRef.current ? baseTextRef.current + ' ' : '') + finalSpeech
+      ).trim();
+      setInputText(fullText);
+      setLiveTranscript(finalSpeech);
+
+      if (shouldSendDirectly && fullText) {
+        onSendMessage(fullText);
+        setInputText('');
       }
     }
   };
 
   const toggleRecording = () => {
     if (isRecording) {
-      stopRecording();
+      stopRecording(false);
     } else {
       startRecording();
     }
   };
 
   const handleSendVoiceMessage = () => {
-    stopRecording();
-    if (inputText.trim()) {
-      onSendMessage(inputText.trim());
-      setInputText('');
-    }
+    stopRecording(true);
   };
 
   const handleCancelVoice = () => {
-    stopRecording();
+    stopRecording(false);
     // restore base text if user wants to discard
     setInputText(baseTextRef.current);
   };

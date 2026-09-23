@@ -72,24 +72,59 @@ export default function App() {
   const [voiceTrigger, setVoiceTrigger] = useState(0);
 
   const messagesEndRef = useRef(null);
+  const isFirstMountRef = useRef(true);
 
-  // Initialize with welcome message when language changes or on start
+  // Initialize with welcome message on start; preserve all chat history when language is changed
   useEffect(() => {
     const welcomeText = WELCOME_MESSAGES[language] || WELCOME_MESSAGES['en'];
-    setMessages([
-      {
-        role: 'assistant',
-        content: welcomeText,
-        language: language,
-        sources: [],
-        suggested_actions: [
-          language === 'te' ? '🌾 PMFBY పంట నష్టం 72 గంటల క్లెయిమ్' : '🌾 PMFBY Crop Insurance 72hr claim',
-          language === 'te' ? '💳 PACS 4% క్రాప్ లోన్ & వడ్డీ రాయితీ' : '💳 PACS 4% Crop Loan & subsidy',
-          language === 'te' ? '🗳️ సభ్యుల ఓటు హక్కు నిబంధనలు' : '🗳️ Member Voting & Bye-law Rights',
-          language === 'te' ? '⚠️ సొసైటీపై అధికారిక ఫిర్యాదు చేయండి' : '⚠️ File a Complaint / Raise Grievance'
-        ]
+    const defaultActions = [
+      language === 'te' ? '🌾 PMFBY పంట నష్టం 72 గంటల క్లెయిమ్' : (language === 'hi' ? '🌾 PMFBY फसल नुकसान 72 घंटे क्लेम' : '🌾 PMFBY Crop Insurance 72hr claim'),
+      language === 'te' ? '💳 PACS 4% క్రాప్ లోన్ & వడ్డీ రాయితీ' : (language === 'hi' ? '💳 PACS 4% फसली ऋण एवं ब्याज अनुदान' : '💳 PACS 4% Crop Loan & subsidy'),
+      language === 'te' ? '🗳️ సభ్యుల ఓటు హక్కు నిబంధనలు' : (language === 'hi' ? '🗳️ सदस्य मतदान एवं उप-नियम अधिकार' : '🗳️ Member Voting & Bye-law Rights'),
+      language === 'te' ? '⚠️ సొసైటీపై అధికారిక ఫిర్యాదు చేయండి' : (language === 'hi' ? '⚠️ समिति के खिलाफ आधिकारिक शिकायत दर्ज करें' : '⚠️ File a Complaint / Raise Grievance')
+    ];
+
+    if (isFirstMountRef.current) {
+      isFirstMountRef.current = false;
+      setMessages([
+        {
+          role: 'assistant',
+          content: welcomeText,
+          language: language,
+          sources: [],
+          suggested_actions: defaultActions
+        }
+      ]);
+      return;
+    }
+
+    // Mid-conversation language change: PRESERVE ALL MESSAGES!
+    setMessages((prev) => {
+      // If user hasn't chatted yet (only initial welcome message exists), update welcome message in place
+      if (prev.length <= 1) {
+        return [
+          {
+            role: 'assistant',
+            content: welcomeText,
+            language: language,
+            sources: [],
+            suggested_actions: defaultActions
+          }
+        ];
       }
-    ]);
+
+      // If user has already been chatting, KEEP all previous conversation intact
+      // Just update the latest assistant suggested action buttons to the new language
+      return prev.map((msg, idx) => {
+        if (idx === prev.length - 1 && msg.role === 'assistant') {
+          return {
+            ...msg,
+            suggested_actions: defaultActions
+          };
+        }
+        return msg;
+      });
+    });
   }, [language]);
 
   // Scroll to bottom when messages update
