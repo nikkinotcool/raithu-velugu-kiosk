@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Coins, Users, AlertOctagon } from 'lucide-react';
+import { PackageCheck, PhoneCall } from 'lucide-react';
 
 const QUICK_ACTIONS_BY_LANG = {
   te: [
@@ -22,7 +22,7 @@ const QUICK_ACTIONS_BY_LANG = {
   ]
 };
 
-export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, onOpenSchemes }) {
+export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, onOpenSchemes, onOpenStock, onOpenHelplines }) {
   const prompts = QUICK_ACTIONS_BY_LANG[language] || QUICK_ACTIONS_BY_LANG['en'];
 
   const voiceLabels = {
@@ -35,12 +35,21 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
   };
 
   const schemeLabels = {
-    te: '🌾 పథకాల జాబితా (Schemes)',
-    hi: '🌾 सरकारी योजनाएं (Schemes)',
-    en: '🌾 PACS Schemes Explorer',
-    kn: '🌾 ಯೋಜನೆಗಳು (Schemes)',
-    ta: '🌾 திட்டங்கள் (Schemes)',
-    mr: '🌾 योजना यादी (Schemes)'
+    te: '🌾 పథకాలు (Schemes)',
+    hi: '🌾 योजनाएं (Schemes)',
+    en: '🌾 Schemes Explorer'
+  };
+
+  const stockLabels = {
+    te: '📦 ఎరువుల స్టాక్ (Stock)',
+    hi: '📦 खाद स्टॉक (Stock)',
+    en: '📦 Fertilizer Stock'
+  };
+
+  const helplineLabels = {
+    te: '📞 హెల్ప్‌లైన్లు (Helplines)',
+    hi: '📞 हेल्पलाइन (Helplines)',
+    en: '📞 Helplines'
   };
 
   return (
@@ -62,6 +71,30 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
           className="shrink-0 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
         >
           <span>{schemeLabels[language] || schemeLabels['en']}</span>
+        </button>
+      )}
+
+      {/* Live Fertilizer Stock Board Quick Button */}
+      {onOpenStock && (
+        <button
+          type="button"
+          onClick={onOpenStock}
+          className="shrink-0 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
+        >
+          <PackageCheck className="w-3.5 h-3.5 text-emerald-700" />
+          <span>{stockLabels[language] || stockLabels['en']}</span>
+        </button>
+      )}
+
+      {/* Emergency Helplines Quick Button */}
+      {onOpenHelplines && (
+        <button
+          type="button"
+          onClick={onOpenHelplines}
+          className="shrink-0 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
+        >
+          <PhoneCall className="w-3.5 h-3.5 text-amber-700" />
+          <span>{helplineLabels[language] || helplineLabels['en']}</span>
         </button>
       )}
 

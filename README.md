@@ -69,6 +69,23 @@ Under the **Ministry of Cooperation, Government of India**, Primary Agricultural
 ### 7. 🌐 High Availability & Cloud Resilience
 - Frontend is powered by `apiClient.js` with dual-tier fallback: seamlessly connects to local edge servers, automatically falling back to Render cloud backend with zero user downtime or "Failed to fetch" errors.
 
+### 8. 📦 Live PACS Fertilizer & Certified Seed Stock Board
+- Real-time inventory monitoring showing bags in stock for **Neem-Coated Urea (420 bags)**, **DAP 18:46:0 (180 bags)**, **MOP (95 bags)**, **Complex 20:20:0:13 (210 bags)**, and **Certified Telangana Sona Paddy Seeds (140 bags)**.
+- Full price transparency: Displays Central Government Subsidized Price vs Open Market MRP and farmer savings per bag (e.g. Urea saves ₹2,183.50/bag).
+- Built-in **Landholding Quota Calculator** and voice announcement (TTS).
+
+### 9. 📞 Emergency Farmer Helplines & Cooperative Directory
+- Instant one-touch directory with verified national and district contacts:
+  - *Kisan Call Centre (KCC Toll-Free: 1800-180-1551)*
+  - *PMFBY 72-Hour Crop Loss Claim Desk (Toll-Free: 14447)*
+  - *Sangareddy District ARCS Cooperative Office (08455-276342)*
+  - *DCCB Sangareddy Branch Manager (08455-272188)*
+  - *Kandi Village Agricultural Extension Officer (AEO: +91 94409 01824)*
+  - *National Cyber & Financial Fraud Helpline (1930)*
+
+### 10. 🔊 Voice Audio Readout (TTS) for Grievances & Passbook
+- Low-literacy rural farmers can tap **"🔊 వినండి (Listen to Status)"** to hear their complaint tracking status, assigned authority, and resolution timeline spoken in their mother tongue.
+
 ---
 
 ## 🏗️ System Architecture

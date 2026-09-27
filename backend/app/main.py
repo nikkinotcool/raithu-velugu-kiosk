@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.db.session import engine, Base
 from app.db import models
-from app.api.endpoints import chat, grievance, auth, tts, stt
+from app.api.endpoints import chat, grievance, auth, tts, stt, stock
 
 # Create DB tables
 Base.metadata.create_all(bind=engine)
@@ -31,6 +31,7 @@ app.include_router(chat.router, prefix=settings.API_V1_STR, tags=["Chat & Legal 
 app.include_router(grievance.router, prefix=settings.API_V1_STR, tags=["Grievance Redressal"])
 app.include_router(tts.router, prefix=settings.API_V1_STR, tags=["Speech & Voice (TTS)"])
 app.include_router(stt.router, prefix=settings.API_V1_STR, tags=["Speech-to-Text (STT)"])
+app.include_router(stock.router, prefix=settings.API_V1_STR, tags=["PACS Fertilizer Stock & Helplines"])
 
 @app.get("/")
 def root():

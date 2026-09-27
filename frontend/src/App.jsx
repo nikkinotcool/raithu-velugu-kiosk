@@ -11,6 +11,8 @@ import AdminDrawer from './components/AdminDrawer';
 import SignInPage from './components/SignInPage';
 import LodgeGrievanceModal from './components/LodgeGrievanceModal';
 import SchemesModal from './components/SchemesModal';
+import FertilizerStockModal from './components/FertilizerStockModal';
+import HelplineModal from './components/HelplineModal';
 import { Loader2 } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 
@@ -69,6 +71,8 @@ export default function App() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [lodgeModalOpen, setLodgeModalOpen] = useState(false);
   const [schemesModalOpen, setSchemesModalOpen] = useState(false);
+  const [stockModalOpen, setStockModalOpen] = useState(false);
+  const [helplineModalOpen, setHelplineModalOpen] = useState(false);
   const [voiceTrigger, setVoiceTrigger] = useState(0);
 
   // Kiosk Inactivity Privacy Auto-Reset Timer
@@ -352,6 +356,8 @@ const apiFetch = async (endpoint, options = {}) => {
         activeSection={activeSection}
         onOpenAdmin={() => setAdminOpen(true)}
         onOpenSchemes={() => setSchemesModalOpen(true)}
+        onOpenStock={() => setStockModalOpen(true)}
+        onOpenHelplines={() => setHelplineModalOpen(true)}
         onResetChat={handleResetSession}
         currentUser={currentUser}
         onLogout={handleLogout}
@@ -401,6 +407,8 @@ const apiFetch = async (endpoint, options = {}) => {
                 onSelectPrompt={handleSendMessage} 
                 onStartVoice={() => setVoiceTrigger(Date.now())}
                 onOpenSchemes={() => setSchemesModalOpen(true)}
+                onOpenStock={() => setStockModalOpen(true)}
+                onOpenHelplines={() => setHelplineModalOpen(true)}
               />
               <ChatInput
                 onSendMessage={handleSendMessage}
@@ -448,6 +456,8 @@ const apiFetch = async (endpoint, options = {}) => {
         onClose={() => setTrackerOpen(false)}
         initialTrackingId={activeTrackingId}
         apiBase={API_BASE}
+        currentUser={currentUser}
+        language={language}
       />
 
       {/* PACS Admin Drawer */}
@@ -476,6 +486,23 @@ const apiFetch = async (endpoint, options = {}) => {
           setActiveSection('chat');
           handleSendMessage(q);
         }}
+      />
+
+      {/* Live Fertilizer & Seed Stock Modal */}
+      <FertilizerStockModal
+        isOpen={stockModalOpen}
+        onClose={() => setStockModalOpen(false)}
+        language={language}
+        apiBase={API_BASE}
+        currentUser={currentUser}
+      />
+
+      {/* Emergency Farmer Helplines & Authorities Modal */}
+      <HelplineModal
+        isOpen={helplineModalOpen}
+        onClose={() => setHelplineModalOpen(false)}
+        language={language}
+        apiBase={API_BASE}
       />
 
       {/* Kiosk Inactivity Privacy Warning Modal */}
