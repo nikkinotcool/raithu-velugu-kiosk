@@ -9,11 +9,13 @@ export const CLOUD_API_BASE = 'https://raithu-velugu-kiosk.onrender.com/api';
 export function getApiBase() {
   if (typeof window === 'undefined') return CLOUD_API_BASE;
   if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL;
-  if (window.location.hostname.includes('vercel.app')) {
+  const h = window.location.hostname;
+  const isLocal = h === 'localhost' || h.startsWith('127.') || h.startsWith('192.168.') || h.startsWith('10.');
+  if (!isLocal) {
     return CLOUD_API_BASE;
   }
-  if (window.location.hostname !== 'localhost') {
-    return `http://${window.location.hostname}:8000/api`;
+  if (h !== 'localhost') {
+    return `http://${h}:8000/api`;
   }
   return 'http://localhost:8000/api';
 }

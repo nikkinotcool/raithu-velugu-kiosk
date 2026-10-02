@@ -10,13 +10,15 @@
 import { fetchWithCloudFallback } from './apiClient';
 
 export function getApiBase() {
-  if (typeof window === 'undefined') return 'http://localhost:8000/api';
+  if (typeof window === 'undefined') return 'https://raithu-velugu-kiosk.onrender.com/api';
   if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL;
-  if (window.location.hostname.includes('vercel.app')) {
+  const h = window.location.hostname;
+  const isLocal = h === 'localhost' || h.startsWith('127.') || h.startsWith('192.168.') || h.startsWith('10.');
+  if (!isLocal) {
     return 'https://raithu-velugu-kiosk.onrender.com/api';
   }
-  if (window.location.hostname !== 'localhost') {
-    return `http://${window.location.hostname}:8000/api`;
+  if (h !== 'localhost') {
+    return `http://${h}:8000/api`;
   }
   return 'http://localhost:8000/api';
 }

@@ -2,7 +2,8 @@
 ### AI-Powered Voice & Touch Kiosk for Primary Agricultural Credit Societies (PACS)
 > **Empowering Rural Indian Farmers through Multilingual AI, Financial Inclusion, and Transparent Cooperative Governance.**
 
-[![Vite](https://img.shields.io/badge/Frontend-Vite%20%2B%20React%2018-646CFF?logo=vite)](https://frontend-alpha-lovat-73.vercel.app)
+[![Domain](https://img.shields.io/badge/Domain-raithuvelugu.in-009688?logo=googlechrome&logoColor=white)](https://raithuvelugu.in)
+[![Vite](https://img.shields.io/badge/Frontend-Vite%20%2B%20React%2018-646CFF?logo=vite)](https://raithuvelugu.in)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20Python%203.11-009688?logo=fastapi)](https://raithu-velugu-kiosk.onrender.com/api)
 [![Groq](https://img.shields.io/badge/Voice%20AI-Groq%20Whisper%20Large%20V3-F55036)](https://groq.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -17,7 +18,8 @@ Under the **Ministry of Cooperation, Government of India**, Primary Agricultural
 
 ## 🚀 Live Deployments
 
-- **🖥️ Kiosk Web Application**: [https://frontend-alpha-lovat-73.vercel.app](https://frontend-alpha-lovat-73.vercel.app)
+- **🌐 Official Custom Domain**: [https://raithuvelugu.in](https://raithuvelugu.in)
+- **🖥️ Vercel App Mirror**: [https://frontend-alpha-lovat-73.vercel.app](https://frontend-alpha-lovat-73.vercel.app)
 - **⚡ Cloud API Server**: [https://raithu-velugu-kiosk.onrender.com/api](https://raithu-velugu-kiosk.onrender.com/api)
 - **📚 Interactive API Docs (Swagger)**: [https://raithu-velugu-kiosk.onrender.com/docs](https://raithu-velugu-kiosk.onrender.com/docs)
 
