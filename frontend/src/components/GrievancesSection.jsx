@@ -272,7 +272,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
               <button
                 type="submit"
                 disabled={loading || !searchId.trim()}
-                className="px-4 py-2 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-xs transition-all cursor-pointer shadow-xs border border-slate-800"
+                className="px-4 py-2 rounded-xl bg-blue-800 hover:bg-blue-900 disabled:opacity-50 text-white font-bold text-xs transition-all cursor-pointer shadow-sm border border-blue-700/60"
               >
                 {loading ? '...' : (language === 'te' ? 'ట్రాక్' : 'Track')}
               </button>
@@ -304,7 +304,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
                   <button
                     type="button"
                     onClick={() => printGrievanceReceipt(searchResult, currentUser)}
-                    className="flex-1 py-1.5 px-3 rounded-lg bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs border border-slate-800"
+                    className="flex-1 py-1.5 px-3 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm border border-blue-700/60"
                   >
                     <Printer className="w-3.5 h-3.5" />
                     <span>{language === 'te' ? 'రసీదు ప్రింట్ / PDF' : 'Print Receipt (PDF)'}</span>
@@ -400,7 +400,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
         <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-7 shadow-xs">
           {newTicketCreated ? (
             <div className="text-center py-6 space-y-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center mx-auto border border-slate-800">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center mx-auto border border-blue-600/50">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="font-heading text-lg font-bold text-slate-900">
@@ -415,7 +415,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
                 <button
                   type="button"
                   onClick={() => printGrievanceReceipt(newTicketCreated, currentUser)}
-                  className="flex-1 py-2 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs border border-slate-800"
+                  className="flex-1 py-2 px-4 rounded-xl bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-sm border border-blue-700/60"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>{language === 'te' ? 'రసీదు ప్రింట్ / PDF' : 'Print / Save Receipt'}</span>
@@ -522,7 +522,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
               <button
                 type="submit"
                 disabled={submitting || !description.trim()}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800 active:scale-98"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-600/50 active:scale-98"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{submitting ? '...' : (language === 'te' ? 'ఫిర్యాదు సమర్పించండి & రసీదు పొందండి' : 'Submit Grievance & Get Receipt')}</span>

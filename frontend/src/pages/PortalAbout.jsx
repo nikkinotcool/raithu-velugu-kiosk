@@ -90,7 +90,7 @@ export default function PortalAbout({ onLaunchKiosk }) {
       </div>
 
       {/* Why Raithu Velugu Section */}
-      <div className="p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white space-y-6 border border-slate-800 shadow-xl">
+      <div className="p-8 rounded-3xl bg-gradient-to-br from-[#0c2340] via-[#102e54] to-[#184275] text-white space-y-6 border border-blue-800/60 shadow-xl">
         <h3 className="font-heading text-2xl font-black">
           How Raithu Velugu Solves Grassroots Information Asymmetry
         </h3>
@@ -101,7 +101,7 @@ export default function PortalAbout({ onLaunchKiosk }) {
         <div>
           <button
             onClick={onLaunchKiosk}
-            className="px-6 py-3 rounded-xl bg-white text-slate-950 font-bold text-xs sm:text-sm hover:bg-slate-100 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+            className="px-6 py-3 rounded-xl bg-white text-blue-950 font-bold text-xs sm:text-sm hover:bg-blue-50 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
           >
             <Bot className="w-4 h-4 text-amber-500" />
             <span>Launch Kiosk Prototype</span>

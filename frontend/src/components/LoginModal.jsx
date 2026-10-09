@@ -184,7 +184,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
             <button
               type="submit"
               disabled={loading || !phoneNumber.trim()}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800"
+              className="w-full py-2.5 px-4 rounded-xl bg-blue-800 hover:bg-blue-900 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-700/60"
             >
               <span>{loading ? 'Verifying...' : 'Access Kiosk Account'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -236,7 +236,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
             <button
               type="submit"
               disabled={loading || !username.trim() || !password.trim()}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800"
+              className="w-full py-2.5 px-4 rounded-xl bg-blue-800 hover:bg-blue-900 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-700/60"
             >
               <span>{loading ? 'Authenticating...' : 'Officer Login (Admin Access)'}</span>
               <ArrowRight className="w-4 h-4" />

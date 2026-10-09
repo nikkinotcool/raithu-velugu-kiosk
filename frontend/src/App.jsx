@@ -62,25 +62,102 @@ export default function App() {
     }
   };
 
-  // Portal Website vs Kiosk Touchscreen View Mode
-  const [viewMode, setViewMode] = useState(() => {
-    try {
-      if (typeof window !== 'undefined' && window.location.hash === '#kiosk') return 'kiosk';
-      return localStorage.getItem('raithu_velugu_view') || 'portal';
-    } catch {
-      return 'portal';
-    }
-  });
-  const [portalPage, setPortalPage] = useState('home'); // 'home' | 'about' | 'schemes' | 'grievances'
+  // URL Routing Engine: Supports '/', '/about-pacs', '/schemes', '/grievance', '/chatbot'
+  const resolveRouteFromPath = () => {
+    if (typeof window === 'undefined') return { viewMode: 'portal', portalPage: 'home' };
+    const rawPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
+    const hash = window.location.hash.toLowerCase();
 
-  const handleSetViewMode = (mode) => {
-    setViewMode(mode);
-    try {
-      localStorage.setItem('raithu_velugu_view', mode);
-    } catch (e) {
-      console.error(e);
+    if (rawPath === '/chatbot' || rawPath === '/kiosk' || hash === '#kiosk') {
+      return { viewMode: 'kiosk', portalPage: 'home' };
     }
+    if (rawPath === '/about-pacs' || rawPath === '/about' || rawPath.includes('about')) {
+      return { viewMode: 'portal', portalPage: 'about' };
+    }
+    if (rawPath === '/schemes' || rawPath === '/law') {
+      return { viewMode: 'portal', portalPage: 'schemes' };
+    }
+    if (rawPath === '/grievance' || rawPath === '/grievances') {
+      return { viewMode: 'portal', portalPage: 'grievances' };
+    }
+    return { viewMode: 'portal', portalPage: 'home' };
   };
+
+  const initialRoute = resolveRouteFromPath();
+  const [viewMode, setViewMode] = useState(initialRoute.viewMode);
+  const [portalPage, setPortalPage] = useState(initialRoute.portalPage);
+
+  const navigateTo = (target, replace = false) => {
+    let path = '/';
+    let targetViewMode = 'portal';
+    let targetPortalPage = 'home';
+    let title = 'Raithu Velugu • National DPI & Voice AI for PACS';
+
+    if (target === 'chatbot' || target === 'kiosk' || target === '/chatbot') {
+      path = '/chatbot';
+      targetViewMode = 'kiosk';
+      targetPortalPage = 'home';
+      title = 'AI Assistant & Kiosk • Raithu Velugu';
+    } else if (target === 'about' || target === 'about-pacs' || target === '/about-pacs' || target === '/about') {
+      path = '/about-pacs';
+      targetViewMode = 'portal';
+      targetPortalPage = 'about';
+      title = 'About PACS • Raithu Velugu';
+    } else if (target === 'schemes' || target === '/schemes') {
+      path = '/schemes';
+      targetViewMode = 'portal';
+      targetPortalPage = 'schemes';
+      title = 'Cooperative Schemes & Laws • Raithu Velugu';
+    } else if (target === 'grievance' || target === 'grievances' || target === '/grievance') {
+      path = '/grievance';
+      targetViewMode = 'portal';
+      targetPortalPage = 'grievances';
+      title = 'Statutory Grievance Redressal • Raithu Velugu';
+    } else {
+      path = '/';
+      targetViewMode = 'portal';
+      targetPortalPage = 'home';
+      title = 'Raithu Velugu • National DPI & Voice AI for PACS';
+    }
+
+    if (typeof window !== 'undefined') {
+      if (window.location.pathname !== path) {
+        if (replace) {
+          window.history.replaceState({ path }, '', path);
+        } else {
+          window.history.pushState({ path }, '', path);
+        }
+      }
+      document.title = title;
+    }
+
+    setViewMode(targetViewMode);
+    setPortalPage(targetPortalPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Sync state with browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const currentRoute = resolveRouteFromPath();
+      setViewMode(currentRoute.viewMode);
+      setPortalPage(currentRoute.portalPage);
+      if (currentRoute.viewMode === 'kiosk') {
+        document.title = 'AI Assistant & Kiosk • Raithu Velugu';
+      } else if (currentRoute.portalPage === 'about') {
+        document.title = 'About PACS • Raithu Velugu';
+      } else if (currentRoute.portalPage === 'schemes') {
+        document.title = 'Cooperative Schemes & Laws • Raithu Velugu';
+      } else if (currentRoute.portalPage === 'grievances') {
+        document.title = 'Statutory Grievance Redressal • Raithu Velugu';
+      } else {
+        document.title = 'Raithu Velugu • National DPI & Voice AI for PACS';
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const [activeSection, setActiveSection] = useState('chat'); // 'chat' | 'grievances' | 'account'
   const [sessionId, setSessionId] = useState(() => `kiosk-${Date.now()}`);
@@ -374,8 +451,8 @@ const apiFetch = async (endpoint, options = {}) => {
       >
         <PortalNavbar
           currentPage={portalPage}
-          onNavigate={(page) => setPortalPage(page)}
-          onLaunchKiosk={() => handleSetViewMode('kiosk')}
+          onNavigate={(page) => navigateTo(page)}
+          onLaunchKiosk={() => navigateTo('/chatbot')}
           onOpenStock={() => setStockModalOpen(true)}
           onOpenHelplines={() => setHelplineModalOpen(true)}
         />
@@ -383,35 +460,35 @@ const apiFetch = async (endpoint, options = {}) => {
         <main className="flex-1">
           {portalPage === 'home' && (
             <PortalHome
-              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+              onLaunchKiosk={() => navigateTo('/chatbot')}
               onOpenStock={() => setStockModalOpen(true)}
               onOpenHelplines={() => setHelplineModalOpen(true)}
-              onNavigate={(page) => setPortalPage(page)}
+              onNavigate={(page) => navigateTo(page)}
             />
           )}
 
           {portalPage === 'about' && (
             <PortalAbout
-              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+              onLaunchKiosk={() => navigateTo('/chatbot')}
             />
           )}
 
           {portalPage === 'schemes' && (
             <PortalSchemes
-              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+              onLaunchKiosk={() => navigateTo('/chatbot')}
             />
           )}
 
           {portalPage === 'grievances' && (
             <PortalGrievance
-              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+              onLaunchKiosk={() => navigateTo('/chatbot')}
               apiBase={API_BASE}
             />
           )}
         </main>
 
         <PortalFooter
-          onLaunchKiosk={() => handleSetViewMode('kiosk')}
+          onLaunchKiosk={() => navigateTo('/chatbot')}
           onOpenHelplines={() => setHelplineModalOpen(true)}
         />
 
@@ -436,7 +513,7 @@ const apiFetch = async (endpoint, options = {}) => {
           onClose={() => setSchemesModalOpen(false)}
           language="en"
           onSelectScheme={(q) => {
-            handleSetViewMode('kiosk');
+            navigateTo('/chatbot');
             setActiveSection('chat');
             handleSendMessage(q);
           }}
@@ -463,9 +540,9 @@ const apiFetch = async (endpoint, options = {}) => {
         onLanguageChange={handleLanguageChange}
         onLoginSuccess={(user, token) => {
           handleLoginSuccess(user, token);
-          handleSetViewMode('kiosk');
+          navigateTo('/chatbot');
         }}
-        onBackToPortal={() => handleSetViewMode('portal')}
+        onBackToPortal={() => navigateTo('/')}
         apiBase={API_BASE}
       />
     );
@@ -488,7 +565,7 @@ const apiFetch = async (endpoint, options = {}) => {
         onResetChat={handleResetSession}
         currentUser={currentUser}
         onLogout={handleLogout}
-        onBackToPortal={() => handleSetViewMode('portal')}
+        onBackToPortal={() => navigateTo('/')}
       />
 
       {/* Main Content Area (Vertical Portrait Optimized) */}
@@ -512,7 +589,7 @@ const apiFetch = async (endpoint, options = {}) => {
 
               {loading && (
                 <div className="flex items-center gap-2.5 my-2">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center shrink-0 text-xs shadow-xs border border-slate-800">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center shrink-0 text-xs shadow-md border border-blue-600/50">
                     🌾
                   </div>
                   <div className="p-3 rounded-2xl rounded-tl-xs bg-white border border-slate-200/80 shadow-xs flex items-center gap-2 text-xs text-slate-600 font-medium">
@@ -655,7 +732,7 @@ const apiFetch = async (endpoint, options = {}) => {
             </div>
             <button
               onClick={() => resetIdleTimer()}
-              className="w-full py-2.5 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs shadow-md border border-slate-800 transition-all cursor-pointer active:scale-95"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white font-bold text-xs shadow-md border border-blue-600/50 transition-all cursor-pointer active:scale-95"
             >
               {language === 'te' ? 'నేను ఇక్కడే ఉన్నాను (కొనసాగించండి)' : "I'm still here (Continue)"}
             </button>

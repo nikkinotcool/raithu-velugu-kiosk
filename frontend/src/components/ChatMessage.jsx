@@ -117,7 +117,7 @@ export default function ChatMessage({
     <div className={`flex w-full gap-2.5 sm:gap-3 my-2.5 sm:my-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
       {/* Assistant Avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 flex items-center justify-center text-amber-400 shrink-0 font-bold text-xs shadow-xs border border-slate-800">
+        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 flex items-center justify-center text-amber-300 shrink-0 font-bold text-xs shadow-md border border-blue-600/50">
           🌾
         </div>
       )}
@@ -127,7 +127,7 @@ export default function ChatMessage({
         data-lang={lang}
         className={`max-w-[90%] sm:max-w-[80%] rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-sm ${
           isUser 
-            ? 'bg-slate-950 text-white rounded-tr-xs font-medium shadow-xs leading-relaxed border border-slate-800' 
+            ? 'bg-gradient-to-r from-blue-700 to-indigo-800 text-white rounded-tr-xs font-medium shadow-md leading-relaxed border border-blue-600/50' 
             : 'bg-white text-slate-800 rounded-tl-xs border border-slate-200/90 shadow-2xs'
         }`}
       >
@@ -206,7 +206,7 @@ export default function ChatMessage({
               <button
                 type="button"
                 onClick={() => printGrievanceReceipt(message.grievance_ticket, currentUser)}
-                className="flex-1 py-1.5 px-2.5 rounded-lg bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1.5 border border-slate-800"
+                className="flex-1 py-1.5 px-2.5 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border border-blue-700/60"
                 title="Print or Save Receipt as PDF"
               >
                 <Printer className="w-3.5 h-3.5 text-amber-400" />

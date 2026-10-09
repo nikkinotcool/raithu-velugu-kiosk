@@ -468,7 +468,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
       <header className="px-4 py-3 sm:px-8 border-b border-slate-200/70 bg-white shadow-xs">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center font-bold text-sm shadow-xs border border-slate-800">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center font-bold text-sm shadow-md border border-blue-600/50">
               🌾
             </div>
             <div>
@@ -487,7 +487,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
               <button
                 type="button"
                 onClick={onBackToPortal}
-                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+                className="px-3 py-1.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white border border-blue-700/60 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
               >
                 <span>← {language === 'te' ? 'పోర్టల్ హోమ్' : (language === 'hi' ? 'पोर्टल होम' : 'Back to Portal')}</span>
               </button>
@@ -643,7 +643,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   <button
                     type="submit"
                     disabled={loading || !phoneNumber.trim()}
-                    className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800 active:scale-98 mt-2"
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-600/50 active:scale-98 mt-2"
                   >
                     {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                     <span>{loading ? t.btnVerifying : t.btnSignIn}</span>
@@ -802,7 +802,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
               <button
                 type="submit"
                 disabled={loading || !regName.trim() || !regPhone.trim() || !regPassword.trim()}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800 active:scale-98 mt-3"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-600/50 active:scale-98 mt-3"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 <span>{loading ? t.btnCreating : t.btnRegister}</span>

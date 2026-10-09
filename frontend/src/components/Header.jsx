@@ -62,7 +62,7 @@ export default function Header({
   return (
     <header className="sticky top-0 z-30 w-full bg-white/98 backdrop-blur-md border-b border-slate-200/80">
       {/* Top Weather & Agro-Advisory Banner */}
-      <div className="w-full bg-slate-950 text-slate-300 text-[10px] sm:text-[11px] py-1 px-4 flex items-center justify-between overflow-x-auto no-scrollbar font-medium border-b border-slate-800">
+      <div className="w-full bg-[#091e3a] text-blue-100 text-[10px] sm:text-[11px] py-1 px-4 flex items-center justify-between overflow-x-auto no-scrollbar font-medium border-b border-blue-900/60">
         <div className="flex items-center gap-1.5 whitespace-nowrap">
           <CloudSun className="w-3.5 h-3.5 text-amber-400 shrink-0" />
           <span>{weatherTips[currentLanguage] || weatherTips['en']}</span>
@@ -77,7 +77,7 @@ export default function Header({
       <div className="max-w-2xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
         {/* Brand Area */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center text-base sm:text-lg font-bold shadow-xs shrink-0 border border-slate-800">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center text-base sm:text-lg font-bold shadow-md shrink-0 border border-blue-600/50">
             🌾
           </div>
           <div>
@@ -125,7 +125,7 @@ export default function Header({
           {onBackToPortal && (
             <button
               onClick={onBackToPortal}
-              className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
+              className="px-2.5 py-1 rounded-lg bg-blue-800 hover:bg-blue-900 text-white border border-blue-700/60 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-sm shrink-0"
               title="Return to Website Portal"
             >
               <span>← {currentLanguage === 'te' ? 'పోర్టల్' : (currentLanguage === 'hi' ? 'पोर्टल' : 'Portal')}</span>

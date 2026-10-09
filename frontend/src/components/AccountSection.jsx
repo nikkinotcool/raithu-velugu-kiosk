@@ -185,7 +185,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
 
           <button
             onClick={handlePrint}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+            className="px-2.5 py-1.5 rounded-lg bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold border border-blue-700/60 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
             title="Print Official Member Slip"
           >
             <Printer className="w-3.5 h-3.5" />
@@ -209,7 +209,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
       </div>
 
       {/* Premium Executive Member Smart Passbook Card */}
-      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white rounded-3xl p-5 sm:p-7 shadow-xl border border-slate-800 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#0c2340] via-[#102e54] to-[#184275] text-white rounded-3xl p-5 sm:p-7 shadow-xl border border-blue-800/60 relative overflow-hidden">
         {/* Soft Decorative Ambient Background */}
         <div className="absolute -right-12 -bottom-12 w-56 h-56 rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
         <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />
@@ -395,7 +395,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <button
                 type="button"
                 onClick={() => handleQuickAsk(language === 'te' ? 'PACS క్రాప్ లోన్ 4% వడ్డీ రాయితీ నిబంధనలు మరియు సకాలంలో చెల్లింపు ప్రయోజనాలు ఏమిటి?' : 'What are the rules for PACS 4% crop loan interest subvention and renewal?')}
-                className="px-3 py-1 bg-slate-950 hover:bg-blue-950 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs border border-slate-800"
+                className="px-3 py-1 bg-blue-800 hover:bg-blue-900 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-sm border border-blue-700/60"
               >
                 {t.askAI}
               </button>
@@ -451,7 +451,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                   <span className="text-[10px] text-blue-800 block uppercase font-medium">State Rebate (4%)</span>
                   <span className="text-xs font-bold text-blue-950 block mt-0.5">-₹{Math.round(calcLoanAmount * 0.04).toLocaleString('en-IN')}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-950 text-white text-center shadow-xs border border-slate-800">
+                <div className="p-2.5 rounded-xl bg-blue-900 text-white text-center shadow-xs border border-blue-800">
                   <span className="text-[10px] text-amber-400 block uppercase font-bold">Farmer Net Interest</span>
                   <span className="text-sm font-extrabold block mt-0.5">₹0 (ZERO)</span>
                 </div>
@@ -581,7 +581,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <button
                 type="button"
                 onClick={() => handleQuickAsk(language === 'te' ? 'సొసైటీలో తదుపరి యూరియా మరియు డీఏపీ స్టాక్ ఎప్పుడు వస్తుంది? ప్రభుత్వ సబ్సిడీ ధరలు ఏమిటి?' : 'When will next Urea and DAP stocks arrive at the PACS society? What are the subsidized rates?')}
-                className="px-3 py-1 bg-slate-950 hover:bg-blue-950 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs border border-slate-800"
+                className="px-3 py-1 bg-blue-800 hover:bg-blue-900 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-sm border border-blue-700/60"
               >
                 {t.askAI}
               </button>
@@ -724,7 +724,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                 <button
                   type="button"
                   onClick={() => handleQuickAsk(language === 'te' ? 'నా నేల పరీక్షలో pH 7.2 మరియు జింక్ లోపం ఉంది. వరి పంటకు సరైన ఎరువుల యాజమాన్యం ఏమిటి?' : 'My soil test shows pH 7.2 and zinc deficiency. What is the recommended fertilizer management for paddy?')}
-                  className="px-3 py-1 bg-slate-950 hover:bg-blue-950 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs border border-slate-800"
+                  className="px-3 py-1 bg-blue-800 hover:bg-blue-900 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-sm border border-blue-700/60"
                 >
                   {t.askAI}
                 </button>

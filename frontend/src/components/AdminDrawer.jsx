@@ -181,7 +181,7 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
               onClick={() => setFilterStatus('Resolved')}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 filterStatus === 'Resolved'
-                  ? 'bg-slate-950 text-white border border-slate-800'
+                  ? 'bg-blue-800 text-white border border-blue-700'
                   : 'bg-blue-50 text-blue-950 border border-blue-200 hover:bg-blue-100'
               }`}
             >
@@ -247,7 +247,7 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
                   <button
                     onClick={() => handleUpdateStatus(g.tracking_id, 'Resolved')}
                     disabled={updatingId === g.tracking_id || g.status === 'Resolved'}
-                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-slate-950 hover:bg-blue-950 disabled:opacity-40 text-white border border-slate-800 transition-colors cursor-pointer shadow-xs"
+                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-blue-800 hover:bg-blue-900 disabled:opacity-40 text-white border border-blue-700/60 transition-colors cursor-pointer shadow-xs"
                   >
                     Mark Resolved
                   </button>

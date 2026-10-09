@@ -173,7 +173,7 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
           <button
             type="submit"
             disabled={loading || !trackingId.trim()}
-            className="px-5 py-2.5 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold border border-slate-800 text-sm transition-all cursor-pointer shadow-md shadow-slate-950/20 shrink-0"
+            className="px-5 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 disabled:opacity-50 text-white font-bold border border-blue-700/60 text-sm transition-all cursor-pointer shadow-md shadow-slate-950/20 shrink-0"
           >
             {loading ? t.tracking : t.trackBtn}
           </button>
@@ -235,7 +235,7 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
                 <button
                   type="button"
                   onClick={() => printGrievanceReceipt(ticket, currentUser)}
-                  className="flex-1 py-2 px-3 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs border border-slate-800 transition-colors"
+                  className="flex-1 py-2 px-3 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm border border-blue-700/60 transition-colors"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>{t.printPdf}</span>

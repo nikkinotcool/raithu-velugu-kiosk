@@ -105,7 +105,7 @@ export default function PortalHome({
           
           {/* Top Dignified Authority Badge */}
           <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-200 text-xs font-semibold shadow-xs">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0d2a54] border border-blue-700/60 text-blue-100 text-xs font-semibold shadow-sm">
               <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
               <span>Smart India Hackathon 2026 • Ministry of Cooperation</span>
             </div>
@@ -114,7 +114,7 @@ export default function PortalHome({
           {/* Main Headline */}
           <div className="text-center max-w-4xl mx-auto space-y-6">
             <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black text-slate-950 tracking-tight leading-tight sm:leading-none">
-              India’s Sovereign <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900">Voice AI & DPI</span> for Primary Agricultural Credit Societies
+              India’s Sovereign <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800">Voice AI & DPI</span> for Primary Agricultural Credit Societies
             </h1>
 
             <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
@@ -125,11 +125,11 @@ export default function PortalHome({
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
               <button
                 onClick={onLaunchKiosk}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-slate-950 hover:bg-blue-950 active:bg-black text-white font-bold text-sm sm:text-base shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2.5 border border-slate-800 hover:border-slate-700"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 active:scale-98 text-white font-bold text-sm sm:text-base shadow-lg shadow-blue-900/25 transition-all cursor-pointer flex items-center justify-center gap-2.5 border border-blue-600/50"
               >
-                <Bot className="w-5 h-5 text-amber-400 shrink-0" />
+                <Bot className="w-5 h-5 text-amber-300 shrink-0" />
                 <span>Talk to Raithu Velugu Today</span>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
+                <ArrowRight className="w-4 h-4 text-blue-200" />
               </button>
 
               <button
@@ -218,7 +218,7 @@ export default function PortalHome({
 
       {/* 3. INTERACTIVE AUDIO & DEMO TEASER SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white p-6 sm:p-12 shadow-xl border border-slate-800 relative overflow-hidden">
+        <div className="rounded-3xl bg-gradient-to-br from-[#0c2340] via-[#102e54] to-[#184275] text-white p-6 sm:p-12 shadow-xl border border-blue-800/60 relative overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             
             <div className="space-y-4">
@@ -244,7 +244,7 @@ export default function PortalHome({
               <div className="pt-3">
                 <button
                   onClick={onLaunchKiosk}
-                  className="px-6 py-3 rounded-xl bg-white text-slate-950 font-bold text-xs sm:text-sm shadow-sm hover:bg-slate-100 transition-colors cursor-pointer flex items-center gap-2"
+                  className="px-6 py-3 rounded-xl bg-white text-blue-950 font-bold text-xs sm:text-sm shadow-sm hover:bg-blue-50 transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <Bot className="w-4 h-4 text-blue-900" />
                   <span>Try Voice Assistant Now</span>

@@ -3,14 +3,14 @@ import { PhoneCall, ShieldCheck, Heart, ExternalLink, MapPin } from 'lucide-reac
 
 export default function PortalFooter({ onLaunchKiosk, onOpenHelplines }) {
   return (
-    <footer className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800/90">
+    <footer className="bg-[#08182b] text-slate-300 pt-16 pb-12 border-t border-blue-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800/80">
           
           {/* Col 1: Brand & Purpose */}
           <div className="md:col-span-1 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-amber-400 flex items-center justify-center text-lg font-bold border border-slate-700">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center text-lg font-bold border border-blue-600/50">
                 🌾
               </div>
               <span className="font-heading text-xl font-black text-white">
@@ -93,7 +93,7 @@ export default function PortalFooter({ onLaunchKiosk, onOpenHelplines }) {
             <h4 className="text-xs font-black uppercase tracking-wider text-white">
               Emergency Assistance
             </h4>
-            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+            <div className="p-3.5 rounded-xl bg-[#0d2342] border border-blue-900/60 space-y-2 text-xs">
               <div className="flex items-center gap-2 text-amber-400 font-bold">
                 <PhoneCall className="w-3.5 h-3.5" />
                 <span>Kisan Call Centre: 1800-180-1551</span>
@@ -109,7 +109,7 @@ export default function PortalFooter({ onLaunchKiosk, onOpenHelplines }) {
             </div>
             <button
               onClick={onOpenHelplines}
-              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-bold text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-800"
+              className="w-full py-2.5 rounded-xl bg-[#122e54] hover:bg-blue-800 text-xs font-bold text-white transition-colors cursor-pointer border border-blue-700/60"
             >
               Open Complete Directory
             </button>

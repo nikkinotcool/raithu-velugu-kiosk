@@ -348,7 +348,7 @@ export default function LodgeGrievanceModal({
           {createdTicket ? (
             /* SUCCESS TICKET CREATED VIEW */
             <div className="text-center py-4 space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center mx-auto border border-slate-800 shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center mx-auto border border-blue-600/50 shadow-xs">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
@@ -390,7 +390,7 @@ export default function LodgeGrievanceModal({
                 <button
                   type="button"
                   onClick={handlePrintReceipt}
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800 active:scale-98 transition-all"
+                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-600/50 active:scale-98 transition-all"
                 >
                   <Printer className="w-4 h-4" />
                   <span>{language === 'te' ? 'రసీదు ప్రింట్ / సేవ్ (PDF)' : 'Print / Save Official Receipt (PDF)'}</span>
@@ -513,7 +513,7 @@ export default function LodgeGrievanceModal({
               <button
                 type="submit"
                 disabled={submitting || !description.trim()}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800 active:scale-98"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-600/50 active:scale-98"
               >
                 <Send className="w-4 h-4" />
                 <span>{submitting ? (language === 'te' ? 'సమర్పిస్తోంది...' : 'Submitting...') : (language === 'te' ? 'ఫిర్యాదు సమర్పించండి & రసీదు పొందండి' : 'Submit Grievance & Get Receipt')}</span>

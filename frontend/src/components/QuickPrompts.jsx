@@ -58,7 +58,7 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
       <button
         type="button"
         onClick={onStartVoice}
-        className="shrink-0 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 hover:from-black hover:to-slate-900 text-amber-300 font-bold text-xs transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1.5 border border-slate-800"
+        className="shrink-0 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-amber-300 font-bold text-xs transition-all cursor-pointer shadow-md whitespace-nowrap active:scale-95 flex items-center gap-1.5 border border-blue-600/50"
       >
         <span>{voiceLabels[language] || voiceLabels['en']}</span>
       </button>

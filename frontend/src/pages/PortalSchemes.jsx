@@ -111,7 +111,7 @@ export default function PortalSchemes({ onLaunchKiosk }) {
       </div>
 
       {/* CTA Bottom Banner */}
-      <div className="p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-slate-800 shadow-xl">
+      <div className="p-8 rounded-3xl bg-gradient-to-br from-[#0c2340] via-[#102e54] to-[#184275] text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-blue-800/60 shadow-xl">
         <div className="space-y-2 text-center sm:text-left">
           <h3 className="font-heading text-xl font-bold">
             Have a Question on Any Scheme? Ask the AI Assistant
@@ -122,7 +122,7 @@ export default function PortalSchemes({ onLaunchKiosk }) {
         </div>
         <button
           onClick={onLaunchKiosk}
-          className="px-6 py-3 rounded-xl bg-white text-slate-950 font-bold text-xs sm:text-sm shadow-sm hover:bg-slate-100 transition-colors flex items-center gap-2 cursor-pointer shrink-0"
+          className="px-6 py-3 rounded-xl bg-white text-blue-950 font-bold text-xs sm:text-sm shadow-sm hover:bg-blue-50 transition-colors flex items-center gap-2 cursor-pointer shrink-0"
         >
           <Bot className="w-4 h-4 text-amber-500" />
           <span>Launch Kiosk AI</span>

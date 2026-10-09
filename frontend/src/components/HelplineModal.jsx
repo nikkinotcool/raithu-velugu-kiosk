@@ -236,7 +236,7 @@ export default function HelplineModal({ isOpen, onClose, language = 'te', apiBas
 
                     <a
                       href={`tel:${item.number.replace(/\s+/g, '')}`}
-                      className="px-3 py-1 rounded-lg bg-slate-950 hover:bg-blue-950 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-xs border border-slate-800 transition-colors"
+                      className="px-3 py-1 rounded-lg bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-sm border border-blue-700/60 transition-colors"
                     >
                       <PhoneCall className="w-3 h-3" />
                       <span>{item.number}</span>

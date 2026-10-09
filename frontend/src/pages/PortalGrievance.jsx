@@ -104,7 +104,7 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
           <button
             type="submit"
             disabled={loading || !trackingId.trim()}
-            className="px-6 py-3 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-sm transition-all cursor-pointer shadow-xs border border-slate-800 shrink-0"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-sm transition-all cursor-pointer shadow-md border border-blue-600/50 shrink-0"
           >
             {loading ? 'Searching...' : 'Track Ticket'}
           </button>
@@ -197,7 +197,7 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
                 <button
                   type="button"
                   onClick={() => printGrievanceReceipt(ticket)}
-                  className="px-4 py-2 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs border border-slate-800"
+                  className="px-4 py-2 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm border border-blue-700/60"
                 >
                   <Printer className="w-3.5 h-3.5 text-amber-400" />
                   <span>Print Receipt</span>
@@ -229,7 +229,7 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
         <div className="pt-2">
           <button
             onClick={onLaunchKiosk}
-            className="px-6 py-3 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs sm:text-sm shadow-xs flex items-center gap-2 cursor-pointer border border-slate-800 transition-colors"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 cursor-pointer border border-blue-600/50 transition-colors"
           >
             <Bot className="w-4 h-4 text-amber-400" />
             <span>Lodge a Complaint via Voice Kiosk</span>

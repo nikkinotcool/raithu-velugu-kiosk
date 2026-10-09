@@ -61,7 +61,7 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 border border-slate-800 flex items-center justify-center font-bold text-lg shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 border border-blue-600/50 flex items-center justify-center font-bold text-lg shadow-sm">
               🌾
             </div>
             <div>
@@ -123,7 +123,7 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
                         onSelectScheme(scheme.query);
                       }
                     }}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-950 hover:bg-blue-950 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs border border-slate-800 active:scale-95"
+                    className="px-3.5 py-1.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm border border-blue-700/60 active:scale-95"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>{language === 'te' ? 'ఈ పథకం గురించి AI ని అడగండి' : 'Ask AI About This Scheme'}</span>

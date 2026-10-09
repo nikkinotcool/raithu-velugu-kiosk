@@ -274,7 +274,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
             <button
               onClick={() => setFilter('all')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                filter === 'all' ? 'bg-slate-950 text-white shadow-xs border border-slate-800' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                filter === 'all' ? 'bg-blue-800 text-white shadow-xs border border-blue-700' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {t.filterAll}
@@ -282,7 +282,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
             <button
               onClick={() => setFilter('fertilizer')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                filter === 'fertilizer' ? 'bg-slate-950 text-white shadow-xs border border-slate-800' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                filter === 'fertilizer' ? 'bg-blue-800 text-white shadow-xs border border-blue-700' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {t.filterFertilizer}
@@ -290,7 +290,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
             <button
               onClick={() => setFilter('seeds')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                filter === 'seeds' ? 'bg-slate-950 text-white shadow-xs border border-slate-800' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                filter === 'seeds' ? 'bg-blue-800 text-white shadow-xs border border-blue-700' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {t.filterSeeds}
@@ -360,7 +360,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
         </div>
 
         {/* Member Personalized Entitlement Box */}
-        <div className="mt-4 p-3 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white shadow-md border border-slate-800">
+        <div className="mt-4 p-3 rounded-2xl bg-gradient-to-r from-[#0c2340] via-[#102e54] to-[#184275] text-white shadow-md border border-blue-800/60">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs font-bold flex items-center gap-1 text-amber-400">
               <Sparkles className="w-3.5 h-3.5" />

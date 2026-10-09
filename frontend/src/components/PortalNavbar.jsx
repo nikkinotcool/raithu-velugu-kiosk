@@ -18,7 +18,7 @@ export default function PortalNavbar({
   return (
     <nav className="sticky top-0 z-50 bg-white/98 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
       {/* Top Sovereign Ministry & Authority Strip */}
-      <div className="w-full bg-slate-950 text-slate-300 text-[11px] py-1.5 px-4 font-medium border-b border-slate-800/90">
+      <div className="w-full bg-[#091e3a] text-blue-100 text-[11px] py-1.5 px-4 font-medium border-b border-blue-900/60">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
@@ -43,7 +43,7 @@ export default function PortalNavbar({
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3 cursor-pointer select-none group shrink-0"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center text-xl shadow-xs border border-slate-800 group-hover:border-slate-700 transition-colors">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center text-xl shadow-md shadow-blue-900/20 border border-blue-600/50 group-hover:border-blue-500 transition-colors">
               🌾
             </div>
             <div className="flex flex-col">
@@ -124,11 +124,11 @@ export default function PortalNavbar({
             {/* Primary CTA Button: Launch Kiosk / Voice Assistant */}
             <button
               onClick={onLaunchKiosk}
-              className="px-4 sm:px-5 py-2.5 rounded-xl bg-slate-950 hover:bg-blue-950 active:bg-black text-white font-bold text-xs sm:text-sm shadow-xs transition-all cursor-pointer flex items-center gap-2 border border-slate-800 hover:border-slate-700"
+              className="px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 active:scale-98 text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-900/25 transition-all cursor-pointer flex items-center gap-2 border border-blue-600/50"
             >
-              <Bot className="w-4 h-4 text-amber-400 shrink-0" />
+              <Bot className="w-4 h-4 text-amber-300 shrink-0" />
               <span>Talk to Raithu Velugu</span>
-              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              <ArrowRight className="w-3.5 h-3.5 text-blue-200" />
             </button>
 
             {/* Mobile Hamburger Toggle */}
