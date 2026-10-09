@@ -369,12 +369,10 @@ const apiFetch = async (endpoint, options = {}) => {
   if (viewMode === 'portal') {
     return (
       <div 
-        data-lang={language}
-        className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-emerald-600 selection:text-white"
+        data-lang="en"
+        className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-slate-900 selection:text-white"
       >
         <PortalNavbar
-          currentLanguage={language}
-          onLanguageChange={handleLanguageChange}
           currentPage={portalPage}
           onNavigate={(page) => setPortalPage(page)}
           onLaunchKiosk={() => handleSetViewMode('kiosk')}
@@ -385,7 +383,6 @@ const apiFetch = async (endpoint, options = {}) => {
         <main className="flex-1">
           {portalPage === 'home' && (
             <PortalHome
-              currentLanguage={language}
               onLaunchKiosk={() => handleSetViewMode('kiosk')}
               onOpenStock={() => setStockModalOpen(true)}
               onOpenHelplines={() => setHelplineModalOpen(true)}
@@ -395,21 +392,18 @@ const apiFetch = async (endpoint, options = {}) => {
 
           {portalPage === 'about' && (
             <PortalAbout
-              currentLanguage={language}
               onLaunchKiosk={() => handleSetViewMode('kiosk')}
             />
           )}
 
           {portalPage === 'schemes' && (
             <PortalSchemes
-              currentLanguage={language}
               onLaunchKiosk={() => handleSetViewMode('kiosk')}
             />
           )}
 
           {portalPage === 'grievances' && (
             <PortalGrievance
-              currentLanguage={language}
               onLaunchKiosk={() => handleSetViewMode('kiosk')}
               apiBase={API_BASE}
             />
@@ -417,16 +411,15 @@ const apiFetch = async (endpoint, options = {}) => {
         </main>
 
         <PortalFooter
-          currentLanguage={language}
           onLaunchKiosk={() => handleSetViewMode('kiosk')}
           onOpenHelplines={() => setHelplineModalOpen(true)}
         />
 
-        {/* Global Modals accessible on Portal as well */}
+        {/* Global Modals accessible on Portal as well (English in Portal) */}
         <FertilizerStockModal
           isOpen={stockModalOpen}
           onClose={() => setStockModalOpen(false)}
-          language={language}
+          language="en"
           apiBase={API_BASE}
           currentUser={currentUser}
         />
@@ -434,20 +427,21 @@ const apiFetch = async (endpoint, options = {}) => {
         <HelplineModal
           isOpen={helplineModalOpen}
           onClose={() => setHelplineModalOpen(false)}
-          language={language}
+          language="en"
           apiBase={API_BASE}
         />
 
         <SchemesModal
           isOpen={schemesModalOpen}
           onClose={() => setSchemesModalOpen(false)}
-          language={language}
+          language="en"
           onSelectScheme={(q) => {
             handleSetViewMode('kiosk');
             setActiveSection('chat');
             handleSendMessage(q);
           }}
         />
+
 
         <GrievanceTrackerModal
           isOpen={trackerOpen}

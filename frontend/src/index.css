@@ -2,7 +2,8 @@
 
 @layer base {
   :root {
-    --font-base: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-base: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
     --font-telugu: 'Noto Sans Telugu', 'Plus Jakarta Sans', sans-serif;
     --font-devanagari: 'Noto Sans Devanagari', 'Plus Jakarta Sans', sans-serif;
     --font-kannada: 'Noto Sans Kannada', 'Plus Jakarta Sans', sans-serif;
@@ -17,6 +18,11 @@
     padding: 0;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    letter-spacing: -0.025em;
   }
 }
 
