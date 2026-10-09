@@ -235,7 +235,7 @@ const STRINGS = {
   }
 };
 
-export default function SignInPage({ language, onLanguageChange, onLoginSuccess, apiBase }) {
+export default function SignInPage({ language, onLanguageChange, onLoginSuccess, apiBase, onBackToPortal }) {
   const [authMode, setAuthMode] = useState('signin'); // 'signin' | 'register'
   const [activeTab, setActiveTab] = useState('farmer'); // 'farmer' | 'officer'
   
@@ -481,18 +481,30 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
             </div>
           </div>
 
-          {/* Clean Language Selector */}
-          <div className="relative flex items-center">
-            <Globe className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-            <select
-              value={language}
-              onChange={(e) => onLanguageChange(e.target.value)}
-              className="pl-7 pr-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border-0 cursor-pointer transition-colors"
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.code} value={l.code}>{l.flag} {l.name}</option>
-              ))}
-            </select>
+          {/* Controls: Back to Portal & Language Selector */}
+          <div className="flex items-center gap-2">
+            {onBackToPortal && (
+              <button
+                type="button"
+                onClick={onBackToPortal}
+                className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+              >
+                <span>← {language === 'te' ? 'పోర్టల్ హోమ్' : (language === 'hi' ? 'पोर्टल होम' : 'Back to Portal')}</span>
+              </button>
+            )}
+
+            <div className="relative flex items-center">
+              <Globe className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+              <select
+                value={language}
+                onChange={(e) => onLanguageChange(e.target.value)}
+                className="pl-7 pr-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border-0 cursor-pointer transition-colors"
+              >
+                {LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code}>{l.flag} {l.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </header>

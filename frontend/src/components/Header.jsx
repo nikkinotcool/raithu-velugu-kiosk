@@ -20,7 +20,8 @@ export default function Header({
   onOpenHelplines,
   onResetChat,
   currentUser,
-  onLogout
+  onLogout,
+  onBackToPortal
 }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -117,6 +118,17 @@ export default function Header({
             >
               <PhoneCall className="w-3.5 h-3.5 text-amber-700" />
               <span className="hidden md:inline">{helplineBtnLabels[currentLanguage] || helplineBtnLabels['en']}</span>
+            </button>
+          )}
+
+          {/* Back to Portal Button */}
+          {onBackToPortal && (
+            <button
+              onClick={onBackToPortal}
+              className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
+              title="Return to Website Portal"
+            >
+              <span>← {currentLanguage === 'te' ? 'పోర్టల్' : (currentLanguage === 'hi' ? 'पोर्टल' : 'Portal')}</span>
             </button>
           )}
 

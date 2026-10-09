@@ -13,6 +13,12 @@ import LodgeGrievanceModal from './components/LodgeGrievanceModal';
 import SchemesModal from './components/SchemesModal';
 import FertilizerStockModal from './components/FertilizerStockModal';
 import HelplineModal from './components/HelplineModal';
+import PortalNavbar from './components/PortalNavbar';
+import PortalFooter from './components/PortalFooter';
+import PortalHome from './pages/PortalHome';
+import PortalAbout from './pages/PortalAbout';
+import PortalSchemes from './pages/PortalSchemes';
+import PortalGrievance from './pages/PortalGrievance';
 import { Loader2 } from 'lucide-react';
 
 const isLocalHost = typeof window !== 'undefined' && (
@@ -51,6 +57,26 @@ export default function App() {
     setLanguage(newLang);
     try {
       localStorage.setItem('raithu_velugu_lang', newLang);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Portal Website vs Kiosk Touchscreen View Mode
+  const [viewMode, setViewMode] = useState(() => {
+    try {
+      if (typeof window !== 'undefined' && window.location.hash === '#kiosk') return 'kiosk';
+      return localStorage.getItem('raithu_velugu_view') || 'portal';
+    } catch {
+      return 'portal';
+    }
+  });
+  const [portalPage, setPortalPage] = useState('home'); // 'home' | 'about' | 'schemes' | 'grievances'
+
+  const handleSetViewMode = (mode) => {
+    setViewMode(mode);
+    try {
+      localStorage.setItem('raithu_velugu_view', mode);
     } catch (e) {
       console.error(e);
     }
@@ -339,13 +365,113 @@ const apiFetch = async (endpoint, options = {}) => {
     setTrackerOpen(true);
   };
 
-  // Dedicated Sign-In Screen when not logged in
+  // PORTAL WEBSITE VIEW (Default public facing website at raithuvelugu.in)
+  if (viewMode === 'portal') {
+    return (
+      <div 
+        data-lang={language}
+        className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-emerald-600 selection:text-white"
+      >
+        <PortalNavbar
+          currentLanguage={language}
+          onLanguageChange={handleLanguageChange}
+          currentPage={portalPage}
+          onNavigate={(page) => setPortalPage(page)}
+          onLaunchKiosk={() => handleSetViewMode('kiosk')}
+          onOpenStock={() => setStockModalOpen(true)}
+          onOpenHelplines={() => setHelplineModalOpen(true)}
+        />
+
+        <main className="flex-1">
+          {portalPage === 'home' && (
+            <PortalHome
+              currentLanguage={language}
+              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+              onOpenStock={() => setStockModalOpen(true)}
+              onOpenHelplines={() => setHelplineModalOpen(true)}
+              onNavigate={(page) => setPortalPage(page)}
+            />
+          )}
+
+          {portalPage === 'about' && (
+            <PortalAbout
+              currentLanguage={language}
+              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+            />
+          )}
+
+          {portalPage === 'schemes' && (
+            <PortalSchemes
+              currentLanguage={language}
+              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+            />
+          )}
+
+          {portalPage === 'grievances' && (
+            <PortalGrievance
+              currentLanguage={language}
+              onLaunchKiosk={() => handleSetViewMode('kiosk')}
+              apiBase={API_BASE}
+            />
+          )}
+        </main>
+
+        <PortalFooter
+          currentLanguage={language}
+          onLaunchKiosk={() => handleSetViewMode('kiosk')}
+          onOpenHelplines={() => setHelplineModalOpen(true)}
+        />
+
+        {/* Global Modals accessible on Portal as well */}
+        <FertilizerStockModal
+          isOpen={stockModalOpen}
+          onClose={() => setStockModalOpen(false)}
+          language={language}
+          apiBase={API_BASE}
+          currentUser={currentUser}
+        />
+
+        <HelplineModal
+          isOpen={helplineModalOpen}
+          onClose={() => setHelplineModalOpen(false)}
+          language={language}
+          apiBase={API_BASE}
+        />
+
+        <SchemesModal
+          isOpen={schemesModalOpen}
+          onClose={() => setSchemesModalOpen(false)}
+          language={language}
+          onSelectScheme={(q) => {
+            handleSetViewMode('kiosk');
+            setActiveSection('chat');
+            handleSendMessage(q);
+          }}
+        />
+
+        <GrievanceTrackerModal
+          isOpen={trackerOpen}
+          onClose={() => setTrackerOpen(false)}
+          initialTrackingId={activeTrackingId}
+          apiBase={API_BASE}
+          currentUser={currentUser}
+          language={language}
+        />
+      </div>
+    );
+  }
+
+  // KIOSK MODE: Dedicated Sign-In Screen when not logged in
   if (!currentUser) {
     return (
       <SignInPage
         language={language}
         onLanguageChange={handleLanguageChange}
-        onLoginSuccess={handleLoginSuccess}
+        onLoginSuccess={(user, token) => {
+          handleLoginSuccess(user, token);
+          handleSetViewMode('kiosk');
+        }}
+        onBackToPortal={() => handleSetViewMode('portal')}
         apiBase={API_BASE}
       />
     );
@@ -368,6 +494,7 @@ const apiFetch = async (endpoint, options = {}) => {
         onResetChat={handleResetSession}
         currentUser={currentUser}
         onLogout={handleLogout}
+        onBackToPortal={() => handleSetViewMode('portal')}
       />
 
       {/* Main Content Area (Vertical Portrait Optimized) */}
