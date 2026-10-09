@@ -111,7 +111,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-5">
-          <div className="p-3 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300">
+          <div className="p-3 rounded-xl bg-blue-50 text-blue-950 border border-blue-200">
             <Building2 className="w-6 h-6" />
           </div>
           <div>
@@ -131,7 +131,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
             onClick={() => { setActiveTab('farmer'); setError(''); }}
             className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === 'farmer'
-                ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
+                ? 'bg-white text-blue-950 font-bold shadow-xs border border-slate-200'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -143,7 +143,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
             onClick={() => { setActiveTab('officer'); setError(''); }}
             className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === 'officer'
-                ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
+                ? 'bg-white text-blue-950 font-bold shadow-xs border border-slate-200'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -173,7 +173,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="e.g. 9876543210 or PACS-KD-1042"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
               <p className="text-[11px] text-slate-500 mt-1">
@@ -184,7 +184,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
             <button
               type="submit"
               disabled={loading || !phoneNumber.trim()}
-              className="w-full py-2.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-800/20"
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800"
             >
               <span>{loading ? 'Verifying...' : 'Access Kiosk Account'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -195,7 +195,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
               <button
                 type="button"
                 onClick={handleQuickDemoFarmer}
-                className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 underline cursor-pointer"
+                className="text-xs font-semibold text-blue-900 hover:text-blue-950 underline cursor-pointer"
               >
                 🌾 Quick Demo: Login as K. Ramu (Active Member)
               </button>
@@ -213,7 +213,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="e.g. SEC-SRD-09"
-                className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+                className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
 
@@ -228,7 +228,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
             </div>
@@ -236,7 +236,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
             <button
               type="submit"
               disabled={loading || !username.trim() || !password.trim()}
-              className="w-full py-2.5 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800"
             >
               <span>{loading ? 'Authenticating...' : 'Officer Login (Admin Access)'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -247,7 +247,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, apiBase })
               <button
                 type="button"
                 onClick={handleQuickDemoOfficer}
-                className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 underline cursor-pointer"
+                className="text-xs font-semibold text-blue-900 hover:text-blue-950 underline cursor-pointer"
               >
                 🏛️ Quick Demo: Login as PACS Secretary
               </button>

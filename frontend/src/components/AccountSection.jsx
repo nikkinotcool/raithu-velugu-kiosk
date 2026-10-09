@@ -159,7 +159,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
       {/* Top Banner & Quick Controls */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <div>
-          <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-blue-950 flex items-center gap-1.5">
             <Landmark className="w-3.5 h-3.5" />
             {t.passbookTitle}
           </span>
@@ -175,17 +175,17 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
             className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 ${
               isPlayingVoice
                 ? 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse'
-                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+                : 'bg-blue-50 hover:bg-blue-100 text-blue-950 border-blue-200'
             }`}
             title="Read out passbook balances in voice"
           >
-            {isPlayingVoice ? <VolumeX className="w-3.5 h-3.5 text-amber-800" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-700" />}
+            {isPlayingVoice ? <VolumeX className="w-3.5 h-3.5 text-amber-800" /> : <Volume2 className="w-3.5 h-3.5 text-blue-800" />}
             <span>{isPlayingVoice ? (language === 'te' ? 'ఆపండి' : 'Stop') : (language === 'te' ? 'వినండి' : 'Listen')}</span>
           </button>
 
           <button
             onClick={handlePrint}
-            className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
             title="Print Official Member Slip"
           >
             <Printer className="w-3.5 h-3.5" />
@@ -209,10 +209,10 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
       </div>
 
       {/* Premium Executive Member Smart Passbook Card */}
-      <div className="bg-gradient-to-br from-emerald-800 via-emerald-900 to-slate-950 text-white rounded-3xl p-5 sm:p-7 shadow-xl shadow-emerald-950/25 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white rounded-3xl p-5 sm:p-7 shadow-xl border border-slate-800 relative overflow-hidden">
         {/* Soft Decorative Ambient Background */}
-        <div className="absolute -right-12 -bottom-12 w-56 h-56 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
-        <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-emerald-400/10 blur-2xl pointer-events-none" />
+        <div className="absolute -right-12 -bottom-12 w-56 h-56 rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />
 
         <div className="relative z-10">
           <div className="flex items-start justify-between gap-3">
@@ -225,11 +225,11 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                   <h2 className="font-heading text-lg sm:text-2xl font-bold tracking-tight">
                     {currentUser.full_name}
                   </h2>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-400/20 border border-emerald-300/40 text-emerald-200 text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-300/40 text-amber-300 text-[10px] font-bold">
                     ✓ {t.activeMember}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-emerald-200/80 font-mono mt-1 flex-wrap">
+                <div className="flex items-center gap-2 text-xs text-slate-300 font-mono mt-1 flex-wrap">
                   <span>ID: <strong className="text-white">{currentUser.member_id || 'PACS-SRD-1042'}</strong></span>
                   <span>•</span>
                   <span>Ph: <strong className="text-white">{currentUser.phone_number || 'N/A'}</strong></span>
@@ -243,33 +243,33 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           {/* 3 Key Stats Highlight Bars */}
           <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mt-5 pt-4 border-t border-white/10">
             <div className="bg-white/5 backdrop-blur-xs rounded-xl p-2.5 sm:p-3 border border-white/10">
-              <span className="text-[10px] uppercase font-bold text-emerald-200/70 block mb-0.5">
+              <span className="text-[10px] uppercase font-bold text-amber-300/80 block mb-0.5">
                 {t.shareCapital}
               </span>
               <span className="text-sm sm:text-base font-bold text-white block">
                 ₹15,000
               </span>
-              <span className="text-[10px] text-emerald-300/80">150 Shares (Voting)</span>
+              <span className="text-[10px] text-slate-300">150 Shares (Voting)</span>
             </div>
 
             <div className="bg-white/5 backdrop-blur-xs rounded-xl p-2.5 sm:p-3 border border-white/10">
-              <span className="text-[10px] uppercase font-bold text-emerald-200/70 block mb-0.5">
+              <span className="text-[10px] uppercase font-bold text-amber-300/80 block mb-0.5">
                 {t.landArea}
               </span>
               <span className="text-sm sm:text-base font-bold text-white block">
                 {passbookData.landArea}
               </span>
-              <span className="text-[10px] text-emerald-300/80">Khata: {passbookData.khataNo}</span>
+              <span className="text-[10px] text-slate-300">Khata: {passbookData.khataNo}</span>
             </div>
 
             <div className="bg-white/5 backdrop-blur-xs rounded-xl p-2.5 sm:p-3 border border-white/10">
-              <span className="text-[10px] uppercase font-bold text-emerald-200/70 block mb-0.5">
+              <span className="text-[10px] uppercase font-bold text-amber-300/80 block mb-0.5">
                 {t.loanLimit}
               </span>
               <span className="text-sm sm:text-base font-bold text-white block">
                 {passbookData.loanLimit}
               </span>
-              <span className="text-[10px] text-emerald-300/80">{t.subventionNote}</span>
+              <span className="text-[10px] text-slate-300">{t.subventionNote}</span>
             </div>
           </div>
         </div>
@@ -282,7 +282,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           onClick={() => setActiveTab('loan')}
           className={`flex-1 min-w-[120px] py-2 px-2 rounded-xl transition-all cursor-pointer text-center whitespace-nowrap ${
             activeTab === 'loan'
-              ? 'bg-white text-emerald-900 shadow-sm'
+              ? 'bg-white text-blue-950 font-bold shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/50'
           }`}
         >
@@ -293,7 +293,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           onClick={() => setActiveTab('fertilizer')}
           className={`flex-1 min-w-[120px] py-2 px-2 rounded-xl transition-all cursor-pointer text-center whitespace-nowrap ${
             activeTab === 'fertilizer'
-              ? 'bg-white text-emerald-900 shadow-sm'
+              ? 'bg-white text-blue-950 font-bold shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/50'
           }`}
         >
@@ -304,7 +304,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           onClick={() => setActiveTab('insurance')}
           className={`flex-1 min-w-[120px] py-2 px-2 rounded-xl transition-all cursor-pointer text-center whitespace-nowrap ${
             activeTab === 'insurance'
-              ? 'bg-white text-emerald-900 shadow-sm'
+              ? 'bg-white text-blue-950 font-bold shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/50'
           }`}
         >
@@ -315,7 +315,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           onClick={() => setActiveTab('land')}
           className={`flex-1 min-w-[120px] py-2 px-2 rounded-xl transition-all cursor-pointer text-center whitespace-nowrap ${
             activeTab === 'land'
-              ? 'bg-white text-emerald-900 shadow-sm'
+              ? 'bg-white text-blue-950 font-bold shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/50'
           }`}
         >
@@ -330,12 +330,12 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-emerald-700" />
+                <CreditCard className="w-4 h-4 text-blue-800" />
                 <h3 className="font-heading text-sm font-bold text-slate-900">
                   {language === 'te' ? 'క్రాప్ లోన్ పరిమితి & ప్రస్తుత నిల్వ' : 'Kisan Credit Card (KCC) Limit & Balance'}
                 </h3>
               </div>
-              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200">
+              <span className="px-2 py-0.5 bg-blue-50 text-blue-950 text-[10px] font-bold rounded-full border border-blue-200">
                 Standard Active Loan
               </span>
             </div>
@@ -348,14 +348,14 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                 <span className="text-base font-bold text-slate-900 block mt-0.5">
                   {passbookData.loanDisbursed}
                 </span>
-                <span className="text-[10px] text-emerald-700 font-medium">Kharif 2026</span>
+                <span className="text-[10px] text-blue-800 font-semibold">Kharif 2026</span>
               </div>
 
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <span className="text-[10px] text-slate-500 font-semibold block uppercase">
                   {language === 'te' ? 'వడ్డీ రేటు' : 'Interest Rate'}
                 </span>
-                <span className="text-base font-bold text-emerald-700 block mt-0.5">
+                <span className="text-base font-bold text-blue-950 block mt-0.5">
                   4.0% p.a.
                 </span>
                 <span className="text-[10px] text-slate-500">3% PRI Applied</span>
@@ -383,10 +383,10 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
             </div>
 
             {/* AI Action Banner */}
-            <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 flex items-center justify-between gap-3">
+            <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-100 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-700 shrink-0" />
-                <span className="text-xs text-emerald-950 font-medium">
+                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                <span className="text-xs text-slate-900 font-medium">
                   {language === 'te' 
                     ? '4% వడ్డీ రాయితీ లేదా రుణం రెన్యూవల్ గురించి ఏమైనా సందేహాలు ఉన్నాయా?' 
                     : 'Questions about KCC 4% interest subvention or renewal rules?'}
@@ -395,7 +395,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <button
                 type="button"
                 onClick={() => handleQuickAsk(language === 'te' ? 'PACS క్రాప్ లోన్ 4% వడ్డీ రాయితీ నిబంధనలు మరియు సకాలంలో చెల్లింపు ప్రయోజనాలు ఏమిటి?' : 'What are the rules for PACS 4% crop loan interest subvention and renewal?')}
-                className="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs"
+                className="px-3 py-1 bg-slate-950 hover:bg-blue-950 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs border border-slate-800"
               >
                 {t.askAI}
               </button>
@@ -403,15 +403,15 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           </div>
 
           {/* Interactive KCC Zero-Interest Subvention Calculator */}
-          <div className="bg-gradient-to-br from-emerald-50/70 via-white to-emerald-50/40 border border-emerald-200/90 rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-emerald-100 flex-wrap gap-2">
+          <div className="bg-gradient-to-br from-blue-50/70 via-white to-slate-50 border border-blue-200/90 rounded-2xl p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-blue-100 flex-wrap gap-2">
               <div className="flex items-center gap-2">
-                <Calculator className="w-4 h-4 text-emerald-700" />
-                <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-emerald-950">
+                <Calculator className="w-4 h-4 text-blue-800" />
+                <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-blue-950">
                   {language === 'te' ? 'వడ్డీ లేని పంట రుణాల కాలిక్యులేటర్ (Vaddi Leni Runalu)' : 'KCC Zero-Interest Scheme Calculator (4% Subvention)'}
                 </h4>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+              <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-950 text-[10px] font-bold">
                 100% Subsidy on Prompt Repayment
               </span>
             </div>
@@ -420,7 +420,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <div>
                 <div className="flex justify-between font-bold text-slate-700 mb-1.5">
                   <span>{language === 'te' ? 'పంట రుణ మొత్తం (Loan Amount):' : 'Crop Loan Amount:'}</span>
-                  <span className="text-emerald-800 text-sm font-extrabold font-mono">₹{calcLoanAmount.toLocaleString('en-IN')}</span>
+                  <span className="text-blue-950 text-sm font-extrabold font-mono">₹{calcLoanAmount.toLocaleString('en-IN')}</span>
                 </div>
                 <input 
                   type="range"
@@ -429,7 +429,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                   step="5000"
                   value={calcLoanAmount}
                   onChange={(e) => setCalcLoanAmount(Number(e.target.value))}
-                  className="w-full accent-emerald-700 cursor-pointer h-2 bg-slate-200 rounded-lg"
+                  className="w-full accent-blue-800 cursor-pointer h-2 bg-slate-200 rounded-lg"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
                   <span>₹25,000</span>
@@ -443,21 +443,21 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                   <span className="text-[10px] text-slate-500 block uppercase font-medium">Bank Rate (7%)</span>
                   <span className="text-xs font-bold text-slate-700 block mt-0.5">₹{Math.round(calcLoanAmount * 0.07).toLocaleString('en-IN')}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
-                  <span className="text-[10px] text-emerald-600 block uppercase font-medium">Centre Subsidy (3%)</span>
-                  <span className="text-xs font-bold text-emerald-700 block mt-0.5">-₹{Math.round(calcLoanAmount * 0.03).toLocaleString('en-IN')}</span>
+                <div className="p-2.5 rounded-xl bg-white border border-blue-200 text-center shadow-2xs">
+                  <span className="text-[10px] text-blue-800 block uppercase font-medium">Centre Subsidy (3%)</span>
+                  <span className="text-xs font-bold text-blue-950 block mt-0.5">-₹{Math.round(calcLoanAmount * 0.03).toLocaleString('en-IN')}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
-                  <span className="text-[10px] text-emerald-600 block uppercase font-medium">State Rebate (4%)</span>
-                  <span className="text-xs font-bold text-emerald-700 block mt-0.5">-₹{Math.round(calcLoanAmount * 0.04).toLocaleString('en-IN')}</span>
+                <div className="p-2.5 rounded-xl bg-white border border-blue-200 text-center shadow-2xs">
+                  <span className="text-[10px] text-blue-800 block uppercase font-medium">State Rebate (4%)</span>
+                  <span className="text-xs font-bold text-blue-950 block mt-0.5">-₹{Math.round(calcLoanAmount * 0.04).toLocaleString('en-IN')}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-emerald-700 text-white text-center shadow-xs">
-                  <span className="text-[10px] text-emerald-200 block uppercase font-bold">Farmer Net Interest</span>
+                <div className="p-2.5 rounded-xl bg-slate-950 text-white text-center shadow-xs border border-slate-800">
+                  <span className="text-[10px] text-amber-400 block uppercase font-bold">Farmer Net Interest</span>
                   <span className="text-sm font-extrabold block mt-0.5">₹0 (ZERO)</span>
                 </div>
               </div>
 
-              <p className="text-[11px] text-emerald-900 bg-emerald-100/70 p-2.5 rounded-xl border border-emerald-200 leading-snug">
+              <p className="text-[11px] text-blue-950 bg-blue-50 p-2.5 rounded-xl border border-blue-200 leading-snug">
                 💡 {language === 'te' 
                   ? `రుణ గడువు (31 మార్చి 2027) లోపు చెల్లిస్తే మొత్తం ₹${Math.round(calcLoanAmount * 0.07).toLocaleString('en-IN')} వడ్డీ ప్రభుత్వమే భరిస్తుంది. మీకు వడ్డీ భారం సున్నా!`
                   : `When repaid on or before the due date (31 March 2027), the entire interest of ₹${Math.round(calcLoanAmount * 0.07).toLocaleString('en-IN')} is absorbed by Central & State subventions. Net farmer cost is ₹0!`}
@@ -475,7 +475,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 transition-colors border border-slate-100">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-950 flex items-center justify-center font-bold text-xs shrink-0 border border-blue-200">
                     CR
                   </div>
                   <div>
@@ -484,7 +484,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="font-bold text-emerald-700 block">+₹1,50,000</span>
+                  <span className="font-bold text-blue-950 block">+₹1,50,000</span>
                   <span className="text-[10px] text-slate-400">10-Jul-2026</span>
                 </div>
               </div>
@@ -515,12 +515,12 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <Sprout className="w-4 h-4 text-emerald-700" />
+                <Sprout className="w-4 h-4 text-blue-800" />
                 <h3 className="font-heading text-sm font-bold text-slate-900">
                   {language === 'te' ? 'ఖరీఫ్ 2026 సబ్సిడీ ఎరువుల కోటా (DBT)' : 'Kharif 2026 Subsidized Fertilizer Allocation (DBT)'}
                 </h3>
               </div>
-              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200">
+              <span className="px-2 py-0.5 bg-blue-50 text-blue-950 text-[10px] font-bold rounded-full border border-blue-200">
                 Aadhaar PoS Linked
               </span>
             </div>
@@ -530,13 +530,13 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <div className="flex items-center justify-between text-xs mb-1.5">
                 <div className="font-bold text-slate-900 flex items-center gap-1.5">
                   <span>🌿 Neem Coated Urea (45 kg)</span>
-                  <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-100 px-1.5 py-0.5 rounded">₹266.50/bag</span>
+                  <span className="text-[10px] text-blue-950 font-semibold bg-blue-100 px-1.5 py-0.5 rounded">₹266.50/bag</span>
                 </div>
-                <span className="font-bold text-emerald-800">4 Bags Available (8 of 12 lifted)</span>
+                <span className="font-bold text-blue-950">4 Bags Available (8 of 12 lifted)</span>
               </div>
               {/* Progress bar */}
               <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                <div className="bg-emerald-600 h-2 rounded-full" style={{ width: '66.6%' }} />
+                <div className="bg-blue-700 h-2 rounded-full" style={{ width: '66.6%' }} />
               </div>
             </div>
 
@@ -559,20 +559,20 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <div className="flex items-center justify-between text-xs mb-1.5">
                 <div className="font-bold text-slate-900 flex items-center gap-1.5">
                   <span>🌱 Complex NPK (20:20:0:13)</span>
-                  <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-100 px-1.5 py-0.5 rounded">₹1,200/bag</span>
+                  <span className="text-[10px] text-blue-950 font-semibold bg-blue-100 px-1.5 py-0.5 rounded">₹1,200/bag</span>
                 </div>
-                <span className="font-bold text-emerald-800">3 Bags Available (5 of 8 lifted)</span>
+                <span className="font-bold text-blue-950">3 Bags Available (5 of 8 lifted)</span>
               </div>
               <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                <div className="bg-emerald-600 h-2 rounded-full" style={{ width: '62.5%' }} />
+                <div className="bg-blue-700 h-2 rounded-full" style={{ width: '62.5%' }} />
               </div>
             </div>
 
             {/* Ask AI Banner */}
-            <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 flex items-center justify-between gap-3 mt-4">
+            <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-100 flex items-center justify-between gap-3 mt-4">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-700 shrink-0" />
-                <span className="text-xs text-emerald-950 font-medium">
+                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                <span className="text-xs text-slate-900 font-medium">
                   {language === 'te' 
                     ? 'తదుపరి ఎరువుల స్టాక్ ఎప్పుడు వస్తుందో తెలుసుకోవాలా?' 
                     : 'Want to check next fertilizer stock arrival date and price rules?'}
@@ -581,7 +581,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <button
                 type="button"
                 onClick={() => handleQuickAsk(language === 'te' ? 'సొసైటీలో తదుపరి యూరియా మరియు డీఏపీ స్టాక్ ఎప్పుడు వస్తుంది? ప్రభుత్వ సబ్సిడీ ధరలు ఏమిటి?' : 'When will next Urea and DAP stocks arrive at the PACS society? What are the subsidized rates?')}
-                className="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs"
+                className="px-3 py-1 bg-slate-950 hover:bg-blue-950 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs border border-slate-800"
               >
                 {t.askAI}
               </button>
@@ -596,12 +596,12 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-700" />
+                <ShieldCheck className="w-4 h-4 text-blue-800" />
                 <h3 className="font-heading text-sm font-bold text-slate-900">
                   {language === 'te' ? 'ప్రధాన మంత్రి ఫసల్ బీమా యోజన (PMFBY)' : 'Pradhan Mantri Fasal Bima Yojana (PMFBY)'}
                 </h3>
               </div>
-              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200">
+              <span className="px-2 py-0.5 bg-blue-50 text-blue-950 text-[10px] font-bold rounded-full border border-blue-200">
                 Policy Active
               </span>
             </div>
@@ -617,19 +617,19 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                 <span className="text-[10px] text-slate-500 font-semibold block uppercase">Insured Crop & Extent</span>
                 <span className="font-bold text-slate-900 block mt-0.5">Paddy Fine • 3.50 Acres</span>
-                <span className="text-[10px] text-emerald-700">Kharif Season 2026</span>
+                <span className="text-[10px] text-blue-800">Kharif Season 2026</span>
               </div>
 
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                 <span className="text-[10px] text-slate-500 font-semibold block uppercase">Total Sum Insured</span>
-                <span className="font-bold text-emerald-700 text-sm block mt-0.5">{passbookData.sumInsured}</span>
+                <span className="font-bold text-blue-950 text-sm block mt-0.5">{passbookData.sumInsured}</span>
                 <span className="text-[10px] text-slate-500">₹53,000 / Acre</span>
               </div>
 
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                 <span className="text-[10px] text-slate-500 font-semibold block uppercase">Farmer Premium Paid</span>
                 <span className="font-bold text-slate-900 text-sm block mt-0.5">{passbookData.premiumPaid}</span>
-                <span className="text-[10px] text-emerald-700">98% Govt Subsidized</span>
+                <span className="text-[10px] text-blue-800">98% Govt Subsidized</span>
               </div>
             </div>
 
@@ -665,12 +665,12 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
           <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-emerald-700" />
+                <MapPin className="w-4 h-4 text-blue-800" />
                 <h3 className="font-heading text-sm font-bold text-slate-900">
                   {language === 'te' ? 'భూమి రికార్డులు (Dharani RoR 1B)' : 'Land Holdings (Dharani RoR 1B Record)'}
                 </h3>
               </div>
-              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200">
+              <span className="px-2 py-0.5 bg-blue-50 text-blue-950 text-[10px] font-bold rounded-full border border-blue-200">
                 Verified Pattadar
               </span>
             </div>
@@ -681,7 +681,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                   <span className="font-bold text-slate-900 block">Survey No. 142/A • Wet Land (ఆయకట్టు)</span>
                   <span className="text-[11px] text-slate-500">Extent: 2.00 Acres • Crop: Paddy (Fine Sona)</span>
                 </div>
-                <span className="font-mono font-bold text-emerald-700">Khata: 894</span>
+                <span className="font-mono font-bold text-blue-950">Khata: 894</span>
               </div>
 
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
@@ -689,24 +689,24 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                   <span className="font-bold text-slate-900 block">Survey No. 143/B • Dry Land (మెట్ట భూమి)</span>
                   <span className="text-[11px] text-slate-500">Extent: 1.50 Acres • Crop: Cotton & Red Gram</span>
                 </div>
-                <span className="font-mono font-bold text-emerald-700">Khata: 894</span>
+                <span className="font-mono font-bold text-blue-950">Khata: 894</span>
               </div>
             </div>
 
             {/* Soil Health Summary */}
             <div className="mt-4 pt-3 border-t border-slate-100">
               <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 flex items-center gap-1.5">
-                <Droplets className="w-3.5 h-3.5 text-emerald-600" />
+                <Droplets className="w-3.5 h-3.5 text-blue-700" />
                 {t.soilHealth} (SHC-2026-SRD)
               </h4>
               <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="p-2 bg-emerald-50/60 rounded-lg border border-emerald-100 text-center">
+                <div className="p-2 bg-blue-50/60 rounded-lg border border-blue-100 text-center">
                   <span className="text-[10px] text-slate-500 block">pH Level</span>
-                  <span className="font-bold text-emerald-800">7.2 (Neutral)</span>
+                  <span className="font-bold text-blue-950">7.2 (Neutral)</span>
                 </div>
-                <div className="p-2 bg-emerald-50/60 rounded-lg border border-emerald-100 text-center">
+                <div className="p-2 bg-blue-50/60 rounded-lg border border-blue-100 text-center">
                   <span className="text-[10px] text-slate-500 block">Organic Carbon</span>
-                  <span className="font-bold text-emerald-800">0.58% (Medium)</span>
+                  <span className="font-bold text-blue-950">0.58% (Medium)</span>
                 </div>
                 <div className="p-2 bg-amber-50/60 rounded-lg border border-amber-100 text-center">
                   <span className="text-[10px] text-slate-500 block">Zinc Recommendation</span>
@@ -715,8 +715,8 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
               </div>
 
               {/* Ask AI Soil Banner */}
-              <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 flex items-center justify-between gap-3 mt-3">
-                <span className="text-xs text-emerald-950 font-medium">
+              <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-100 flex items-center justify-between gap-3 mt-3">
+                <span className="text-xs text-slate-900 font-medium">
                   {language === 'te' 
                     ? 'నేల ఆరోగ్య కార్డు ప్రకారం ఎరువుల మోతాదు గురించి AI సలహా తీసుకోండి' 
                     : 'Get fertilizer dose advice tailored to your Soil Health Card'}
@@ -724,7 +724,7 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
                 <button
                   type="button"
                   onClick={() => handleQuickAsk(language === 'te' ? 'నా నేల పరీక్షలో pH 7.2 మరియు జింక్ లోపం ఉంది. వరి పంటకు సరైన ఎరువుల యాజమాన్యం ఏమిటి?' : 'My soil test shows pH 7.2 and zinc deficiency. What is the recommended fertilizer management for paddy?')}
-                  className="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs"
+                  className="px-3 py-1 bg-slate-950 hover:bg-blue-950 text-white rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs border border-slate-800"
                 >
                   {t.askAI}
                 </button>
@@ -737,11 +737,11 @@ export default function AccountSection({ currentUser, language, onLogout, onAskA
       {/* Cloud Synchronized Status Pill */}
       <div className="px-4 py-2.5 rounded-xl bg-slate-100 text-[11px] text-slate-500 flex items-center justify-between font-sans border border-slate-200/60">
         <span className="flex items-center gap-2">
-          <Database className="w-3.5 h-3.5 text-emerald-700" />
+          <Database className="w-3.5 h-3.5 text-blue-800" />
           <span>Synchronized with <strong>National Cooperative Database (NCD)</strong> & DCCB Sangareddy</span>
         </span>
-        <span className="text-emerald-700 font-bold flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="text-blue-950 font-bold flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
           Live Ledger
         </span>
       </div>

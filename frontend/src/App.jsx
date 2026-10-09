@@ -474,7 +474,7 @@ const apiFetch = async (endpoint, options = {}) => {
   return (
     <div 
       data-lang={language}
-      className="flex flex-col h-screen overflow-hidden bg-slate-50 text-slate-900 selection:bg-emerald-600 selection:text-white"
+      className="flex flex-col h-screen overflow-hidden bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white"
     >
       {/* Top Header */}
       <Header
@@ -512,11 +512,11 @@ const apiFetch = async (endpoint, options = {}) => {
 
               {loading && (
                 <div className="flex items-center gap-2.5 my-2">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-700 flex items-center justify-center text-white shrink-0 text-xs shadow-xs">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center shrink-0 text-xs shadow-xs border border-slate-800">
                     🌾
                   </div>
                   <div className="p-3 rounded-2xl rounded-tl-xs bg-white border border-slate-200/80 shadow-xs flex items-center gap-2 text-xs text-slate-600 font-medium">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-700 shrink-0" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-900 shrink-0" />
                     <span>
                       {language === 'en' 
                         ? 'Consulting Cooperative Law Knowledge Base & Groq AI...' 
@@ -655,7 +655,7 @@ const apiFetch = async (endpoint, options = {}) => {
             </div>
             <button
               onClick={() => resetIdleTimer()}
-              className="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95"
+              className="w-full py-2.5 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs shadow-md border border-slate-800 transition-all cursor-pointer active:scale-95"
             >
               {language === 'te' ? 'నేను ఇక్కడే ఉన్నాను (కొనసాగించండి)' : "I'm still here (Continue)"}
             </button>

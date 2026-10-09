@@ -297,7 +297,7 @@ export default function ChatInput({
     <form onSubmit={handleSubmit} className="w-full relative">
       {/* Live Voice Assistant Active Floating Banner */}
       {isRecording && (
-        <div className="mb-2 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-900 text-white shadow-lg border border-emerald-500/40 flex items-center justify-between gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="mb-2 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white shadow-lg border border-slate-800 flex items-center justify-between gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <div className="flex items-center gap-2.5 min-w-0">
             {/* Pulsing Mic Indicator */}
             <div className="relative flex items-center justify-center shrink-0">
@@ -309,13 +309,13 @@ export default function ChatInput({
 
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-emerald-300">
+                <span className="text-xs font-bold text-amber-400">
                   {language === 'te' ? 'వింటున్నాము... మాట్లాడండి' : (language === 'hi' ? 'सुन रहे हैं... बोलिए' : 'Listening... Speak now')}
                 </span>
                 <span className="flex items-center gap-0.5">
-                  <span className="w-1 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                  <span className="w-1 h-3.5 bg-emerald-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1 h-2 bg-emerald-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                  <span className="w-1 h-2 bg-amber-400 rounded-full animate-pulse" />
+                  <span className="w-1 h-3.5 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
                 </span>
               </div>
               <p className="text-[11px] text-slate-200 font-medium truncate mt-0.5">
@@ -337,7 +337,7 @@ export default function ChatInput({
               type="button"
               onClick={handleSendVoiceMessage}
               disabled={!inputText.trim()}
-              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold text-xs flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-95"
+              className="px-3 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-600 disabled:opacity-40 text-white font-bold text-xs flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-95 border border-blue-600"
             >
               <Check className="w-3.5 h-3.5" />
               <span>{language === 'te' ? 'పూర్తయింది' : (language === 'hi' ? 'भेजें' : 'Done')}</span>
@@ -348,9 +348,9 @@ export default function ChatInput({
 
       {/* AI Whisper Transcription In-Progress Banner */}
       {isProcessingSTT && (
-        <div className="mb-2 p-2.5 rounded-2xl bg-gradient-to-r from-emerald-950 to-slate-900 text-white shadow-lg border border-emerald-500/30 flex items-center gap-2.5">
-          <Loader2 className="w-4 h-4 animate-spin text-emerald-400 shrink-0" />
-          <span className="text-xs font-semibold text-emerald-200">
+        <div className="mb-2 p-2.5 rounded-2xl bg-gradient-to-r from-slate-950 to-blue-950 text-white shadow-lg border border-slate-800 flex items-center gap-2.5">
+          <Loader2 className="w-4 h-4 animate-spin text-amber-400 shrink-0" />
+          <span className="text-xs font-semibold text-slate-200">
             {language === 'te' ? 'AI మీ వాయిస్‌ని స్పష్టంగా టెక్స్ట్‌గా మారుస్తోంది...' : 'AI is transcribing your speech...'}
           </span>
         </div>
@@ -359,8 +359,8 @@ export default function ChatInput({
       {/* Input Bar */}
       <div className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-2xl bg-white border transition-all ${
         isRecording 
-          ? 'border-emerald-600 ring-2 ring-emerald-500/20 shadow-md shadow-emerald-700/10' 
-          : 'border-slate-200/90 shadow-md shadow-slate-200/50 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/15'
+          ? 'border-red-600 ring-2 ring-red-500/20 shadow-md' 
+          : 'border-slate-200/90 shadow-md shadow-slate-200/50 focus-within:border-blue-700 focus-within:ring-2 focus-within:ring-blue-500/15'
       }`}>
         {/* Mic Button */}
         <button
@@ -370,7 +370,7 @@ export default function ChatInput({
           className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 touch-manipulation ${
             isRecording
               ? 'bg-red-600 text-white shadow-md shadow-red-500/30'
-              : 'text-slate-500 hover:text-emerald-700 hover:bg-emerald-50/80 bg-slate-50 border border-slate-200/70'
+              : 'text-slate-600 hover:text-blue-900 hover:bg-blue-50/80 bg-slate-50 border border-slate-200/70'
           }`}
           title={isRecording ? 'Stop Recording' : 'Voice Input (మాట్లాడండి)'}
           aria-label={isRecording ? 'Stop Recording' : 'Voice Input'}
@@ -378,7 +378,7 @@ export default function ChatInput({
           {isRecording ? (
             <MicOff className="w-4 h-4 animate-pulse" />
           ) : (
-            <Mic className="w-4 h-4 text-emerald-700" />
+            <Mic className="w-4 h-4 text-blue-900" />
           )}
         </button>
 
@@ -396,9 +396,9 @@ export default function ChatInput({
         <button
           type="submit"
           disabled={!inputText.trim() || disabled}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-30 disabled:hover:bg-emerald-700 text-white font-semibold transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 shadow-xs"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-30 disabled:hover:bg-slate-950 text-white font-semibold transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 shadow-xs border border-slate-800"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-4 h-4 text-amber-400" />
         </button>
       </div>
     </form>

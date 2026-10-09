@@ -145,7 +145,7 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300">
+          <div className="p-3 rounded-2xl bg-blue-50 text-blue-950 border border-blue-200">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
@@ -167,13 +167,13 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               placeholder={t.placeholder}
-              className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-500/20"
             />
           </div>
           <button
             type="submit"
             disabled={loading || !trackingId.trim()}
-            className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold text-sm transition-all cursor-pointer shadow-md shadow-emerald-800/20 shrink-0"
+            className="px-5 py-2.5 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold border border-slate-800 text-sm transition-all cursor-pointer shadow-md shadow-slate-950/20 shrink-0"
           >
             {loading ? t.tracking : t.trackBtn}
           </button>
@@ -196,12 +196,12 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
                   type="button"
                   onClick={handleSpeakStatus}
                   disabled={isSpeaking}
-                  className="px-2.5 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                  className="px-2.5 py-0.5 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-950 border border-blue-200 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  <Volume2 className={`w-3 h-3 ${isSpeaking ? 'animate-bounce text-emerald-600' : 'text-emerald-700'}`} />
+                  <Volume2 className={`w-3 h-3 ${isSpeaking ? 'animate-bounce text-blue-700' : 'text-blue-800'}`} />
                   <span>{isSpeaking ? t.speaking : t.listen}</span>
                 </button>
-                <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-50 text-blue-950 border border-blue-200">
                   {ticket.status}
                 </span>
               </div>
@@ -214,8 +214,8 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
               </div>
               <div>
                 <span className="text-slate-500 font-medium block">{t.authority}:</span>
-                <span className="font-bold text-emerald-900 flex items-center gap-1.5 mt-0.5">
-                  <Building2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                <span className="font-bold text-blue-950 flex items-center gap-1.5 mt-0.5">
+                  <Building2 className="w-3.5 h-3.5 text-blue-800 shrink-0" />
                   {ticket.routed_to}
                 </span>
               </div>
@@ -227,7 +227,7 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
               </div>
               <div className="flex justify-between text-slate-600 pt-2 border-t border-slate-200 text-[11px] font-medium">
                 <span>{t.registered}: {new Date(ticket.created_at).toLocaleString()}</span>
-                <span className="text-emerald-800 font-bold">{t.sla}</span>
+                <span className="text-blue-950 font-bold">{t.sla}</span>
               </div>
 
               {/* Receipt Action Buttons */}
@@ -235,7 +235,7 @@ export default function GrievanceTrackerModal({ isOpen, onClose, initialTracking
                 <button
                   type="button"
                   onClick={() => printGrievanceReceipt(ticket, currentUser)}
-                  className="flex-1 py-2 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+                  className="flex-1 py-2 px-3 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs border border-slate-800 transition-colors"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>{t.printPdf}</span>

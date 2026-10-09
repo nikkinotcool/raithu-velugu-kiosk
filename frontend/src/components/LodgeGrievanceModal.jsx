@@ -348,7 +348,7 @@ export default function LodgeGrievanceModal({
           {createdTicket ? (
             /* SUCCESS TICKET CREATED VIEW */
             <div className="text-center py-4 space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 flex items-center justify-center mx-auto border border-slate-800 shadow-xs">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
@@ -367,7 +367,7 @@ export default function LodgeGrievanceModal({
                   <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px]">
                     Tracking ID
                   </span>
-                  <span className="font-mono font-bold text-sm text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="font-mono font-bold text-sm text-blue-950 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                     {createdTicket.tracking_id}
                   </span>
                 </div>
@@ -390,7 +390,7 @@ export default function LodgeGrievanceModal({
                 <button
                   type="button"
                   onClick={handlePrintReceipt}
-                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-800/20 active:scale-98 transition-all"
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800 active:scale-98 transition-all"
                 >
                   <Printer className="w-4 h-4" />
                   <span>{language === 'te' ? 'రసీదు ప్రింట్ / సేవ్ (PDF)' : 'Print / Save Official Receipt (PDF)'}</span>
@@ -428,7 +428,7 @@ export default function LodgeGrievanceModal({
               {/* Member Summary Pill */}
               <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs flex items-center justify-between text-slate-600">
                 <div className="flex items-center gap-2">
-                  <User className="w-3.5 h-3.5 text-emerald-700" />
+                  <User className="w-3.5 h-3.5 text-blue-800" />
                   <span className="font-semibold text-slate-800">{currentUser?.full_name || 'Member'}</span>
                   <span className="text-[10px] text-slate-400">({currentUser?.phone_number || 'Kiosk'})</span>
                 </div>
@@ -445,7 +445,7 @@ export default function LodgeGrievanceModal({
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white cursor-pointer"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-blue-700 focus:bg-white cursor-pointer"
                 >
                   {categories.map((c) => (
                     <option key={c.id} value={c.name}>
@@ -468,10 +468,10 @@ export default function LodgeGrievanceModal({
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                         isRecording
                           ? 'bg-red-600 text-white animate-pulse'
-                          : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+                          : 'bg-blue-50 text-blue-950 hover:bg-blue-100 border border-blue-200'
                       }`}
                     >
-                      {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5 text-emerald-700" />}
+                      {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5 text-blue-800" />}
                       <span>{isRecording ? (language === 'te' ? 'వింటున్నాము...' : 'Listening...') : (language === 'te' ? '🎙️ మాట్లాడండి (Voice)' : '🎙️ Speak (Voice Mic)')}</span>
                     </button>
                   )}
@@ -491,7 +491,7 @@ export default function LodgeGrievanceModal({
                             : 'Provide dates, PACS personnel involved, and specific resolution required...')
                     }
                     className={`w-full p-3.5 rounded-xl bg-slate-50 border text-xs sm:text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white transition-all ${
-                      isRecording ? 'border-red-400 ring-2 ring-red-400/20 bg-red-50/20' : 'border-slate-200 focus:border-emerald-600'
+                      isRecording ? 'border-red-400 ring-2 ring-red-400/20 bg-red-50/20' : 'border-slate-200 focus:border-blue-700'
                     }`}
                   />
                   {isRecording && (
@@ -501,8 +501,8 @@ export default function LodgeGrievanceModal({
                     </div>
                   )}
                   {isProcessingSTT && (
-                    <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-700 font-semibold animate-pulse">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-600" />
+                    <div className="mt-2 flex items-center gap-1.5 text-xs text-blue-800 font-semibold animate-pulse">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-800" />
                       <span>{language === 'te' ? 'AI మీ వాయిస్‌ని టెక్స్ట్‌గా మారుస్తోంది...' : 'AI is transcribing your voice...'}</span>
                     </div>
                   )}
@@ -513,7 +513,7 @@ export default function LodgeGrievanceModal({
               <button
                 type="submit"
                 disabled={submitting || !description.trim()}
-                className="w-full py-2.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-800/20 active:scale-98"
+                className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-950 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-slate-800 active:scale-98"
               >
                 <Send className="w-4 h-4" />
                 <span>{submitting ? (language === 'te' ? 'సమర్పిస్తోంది...' : 'Submitting...') : (language === 'te' ? 'ఫిర్యాదు సమర్పించండి & రసీదు పొందండి' : 'Submit Grievance & Get Receipt')}</span>

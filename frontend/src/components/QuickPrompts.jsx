@@ -58,7 +58,7 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
       <button
         type="button"
         onClick={onStartVoice}
-        className="shrink-0 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-700 to-teal-700 hover:from-emerald-800 hover:to-teal-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1.5 border border-emerald-600"
+        className="shrink-0 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 hover:from-black hover:to-slate-900 text-amber-300 font-bold text-xs transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1.5 border border-slate-800"
       >
         <span>{voiceLabels[language] || voiceLabels['en']}</span>
       </button>
@@ -68,7 +68,7 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
         <button
           type="button"
           onClick={onOpenSchemes}
-          className="shrink-0 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
+          className="shrink-0 px-3 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-950 border border-blue-200/80 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
         >
           <span>{schemeLabels[language] || schemeLabels['en']}</span>
         </button>
@@ -79,9 +79,9 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
         <button
           type="button"
           onClick={onOpenStock}
-          className="shrink-0 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
+          className="shrink-0 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-200/80 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
         >
-          <PackageCheck className="w-3.5 h-3.5 text-emerald-700" />
+          <PackageCheck className="w-3.5 h-3.5 text-amber-700" />
           <span>{stockLabels[language] || stockLabels['en']}</span>
         </button>
       )}
@@ -93,7 +93,7 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
           onClick={onOpenHelplines}
           className="shrink-0 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95 flex items-center gap-1"
         >
-          <PhoneCall className="w-3.5 h-3.5 text-amber-700" />
+          <PhoneCall className="w-3.5 h-3.5 text-blue-800" />
           <span>{helplineLabels[language] || helplineLabels['en']}</span>
         </button>
       )}
@@ -102,7 +102,7 @@ export default function QuickPrompts({ language, onSelectPrompt, onStartVoice, o
         <button
           key={idx}
           onClick={() => onSelectPrompt(item.query)}
-          className="shrink-0 px-3 py-1.5 rounded-full bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 border border-slate-200/80 hover:border-emerald-300 text-xs font-medium transition-all cursor-pointer shadow-2xs whitespace-nowrap active:scale-95"
+          className="shrink-0 px-3 py-1.5 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-950 border border-slate-200/90 hover:border-blue-300 text-xs font-medium transition-all cursor-pointer shadow-2xs whitespace-nowrap active:scale-95"
         >
           {item.label}
         </button>

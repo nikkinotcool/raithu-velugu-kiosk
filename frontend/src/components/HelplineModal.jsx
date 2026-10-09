@@ -165,7 +165,7 @@ export default function HelplineModal({ isOpen, onClose, language = 'te', apiBas
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300">
+          <div className="p-3 rounded-2xl bg-blue-50 text-blue-950 border border-blue-200">
             <PhoneCall className="w-6 h-6" />
           </div>
           <div>
@@ -187,7 +187,7 @@ export default function HelplineModal({ isOpen, onClose, language = 'te', apiBas
             return (
               <div
                 key={item.id}
-                className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-emerald-300 transition-all shadow-xs"
+                className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-blue-300 transition-all shadow-xs"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -198,7 +198,7 @@ export default function HelplineModal({ isOpen, onClose, language = 'te', apiBas
                   </div>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 border ${
                     item.toll_free
-                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      ? 'bg-blue-100 text-blue-950 border-blue-300'
                       : 'bg-slate-200 text-slate-700 border-slate-300'
                   }`}>
                     {item.toll_free ? t.tollFree : t.directLine}
@@ -223,8 +223,8 @@ export default function HelplineModal({ isOpen, onClose, language = 'te', apiBas
                     >
                       {copiedId === item.id ? (
                         <>
-                          <Check className="w-3 h-3 text-emerald-600" />
-                          <span className="text-emerald-700">{t.copied}</span>
+                          <Check className="w-3 h-3 text-blue-700" />
+                          <span className="text-blue-800">{t.copied}</span>
                         </>
                       ) : (
                         <>
@@ -236,7 +236,7 @@ export default function HelplineModal({ isOpen, onClose, language = 'te', apiBas
 
                     <a
                       href={`tel:${item.number.replace(/\s+/g, '')}`}
-                      className="px-3 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-xs transition-colors"
+                      className="px-3 py-1 rounded-lg bg-slate-950 hover:bg-blue-950 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-xs border border-slate-800 transition-colors"
                     >
                       <PhoneCall className="w-3 h-3" />
                       <span>{item.number}</span>

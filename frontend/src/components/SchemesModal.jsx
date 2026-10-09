@@ -5,7 +5,7 @@ const SCHEMES = [
   {
     id: 'chc',
     icon: Tractor,
-    badgeColor: 'emerald',
+    badgeColor: 'blue',
     titleTe: 'PACS కస్టమ్ హైరింగ్ సెంటర్ (CHC యంత్రాల అద్దె)',
     titleEn: 'PACS Custom Hiring Centre (Farm Machinery Rental)',
     descTe: 'రైతులకు సబ్సిడీ రేట్లలో ట్రాక్టర్లు, కంబైన్డ్ హార్వెస్టర్లు, రొటవేటర్లు మరియు డ్రోన్ స్ప్రేయింగ్ అద్దె సదుపాయం.',
@@ -61,7 +61,7 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-700 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-amber-400 border border-slate-800 flex items-center justify-center font-bold text-lg shadow-sm">
               🌾
             </div>
             <div>
@@ -92,18 +92,18 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
             return (
               <div 
                 key={scheme.id}
-                className="p-4 rounded-2xl border border-slate-200/90 bg-white hover:border-emerald-300 hover:shadow-md transition-all space-y-2.5"
+                className="p-4 rounded-2xl border border-slate-200/90 bg-white hover:border-blue-300 hover:shadow-md transition-all space-y-2.5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">
+                    <div className="p-2 rounded-xl bg-blue-50 text-blue-950 border border-blue-200 shrink-0">
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
                       <h3 className="font-heading text-sm font-bold text-slate-900 leading-snug">
                         {title}
                       </h3>
-                      <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                      <span className="text-[11px] font-bold text-blue-950 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200/60 inline-block mt-0.5">
                         ✓ {subsidy}
                       </span>
                     </div>
@@ -123,7 +123,7 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
                         onSelectScheme(scheme.query);
                       }
                     }}
-                    className="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-950 hover:bg-blue-950 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs border border-slate-800 active:scale-95"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>{language === 'te' ? 'ఈ పథకం గురించి AI ని అడగండి' : 'Ask AI About This Scheme'}</span>

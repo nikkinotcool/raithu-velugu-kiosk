@@ -58,7 +58,7 @@ const PILLARS = [
     title: 'Zero / 4% Crop Loan & Subvention Calculator',
     desc: 'District Scale of Finance calculation (₹38,000/acre for Kharif Paddy) coupled with Prompt Repayment Incentive (PRI 3% + GOI 3% subvention) validation.',
     badge: 'KCC Subvention',
-    iconBg: 'bg-emerald-50 text-emerald-700'
+    iconBg: 'bg-blue-50 text-blue-900'
   },
   {
     icon: Clock,
