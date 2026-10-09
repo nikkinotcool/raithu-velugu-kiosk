@@ -33,24 +33,42 @@ export default function PortalAbout({ currentLanguage, onLaunchKiosk }) {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-            <span className="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-bold">రాష్ట్ర స్థాయి / Apex Level</span>
-            <h3 className="font-bold text-sm text-slate-900">StCB (రాష్ట్ర సహకార అపెక్స్ బ్యాంక్)</h3>
+            <span className="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-bold">
+              {isTe ? 'రాష్ట్ర స్థాయి / Apex Level' : 'State Apex Level'}
+            </span>
+            <h3 className="font-bold text-sm text-slate-900">
+              {isTe ? 'StCB (రాష్ట్ర సహకార అపెక్స్ బ్యాంక్)' : 'StCB (State Apex Cooperative Bank)'}
+            </h3>
             <p className="text-xs text-slate-500">
-              రాష్ట్ర స్థాయిలో నాబార్డ్ (NABARD) నుండి నిధులు సమీకరించి జిల్లాలకు పంపిణీ చేస్తుంది.
+              {isTe 
+                ? 'రాష్ట్ర స్థాయిలో నాబార్డ్ (NABARD) నుండి నిధులు సమీకరించి జిల్లాలకు పంపిణీ చేస్తుంది.'
+                : 'Mobilizes credit from NABARD at the state level and refinances district cooperative networks.'}
             </p>
           </div>
           <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-            <span className="px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 text-[10px] font-bold">జిల్లా స్థాయి / District Level</span>
-            <h3 className="font-bold text-sm text-slate-900">DCCB (జిల్లా కేంద్ర సహకార బ్యాంక్)</h3>
+            <span className="px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 text-[10px] font-bold">
+              {isTe ? 'జిల్లా స్థాయి / District Level' : 'District Level'}
+            </span>
+            <h3 className="font-bold text-sm text-slate-900">
+              {isTe ? 'DCCB (జిల్లా కేంద్ర సహకార బ్యాంక్)' : 'DCCB (District Central Cooperative Bank)'}
+            </h3>
             <p className="text-xs text-slate-500">
-              సంగారెడ్డి వంటి జిల్లాల్లో PACS సంఘాలను పర్యవేక్షించి క్రాప్ లోన్ క్రెడిట్ పరిమితిని మంజూరు చేస్తుంది.
+              {isTe
+                ? 'సంగారెడ్డి వంటి జిల్లాల్లో PACS సంఘాలను పర్యవేక్షించి క్రాప్ లోన్ క్రెడిట్ పరిమితిని మంజూరు చేస్తుంది.'
+                : 'Supervises PACS networks in districts like Sangareddy and approves seasonal crop loan credit limits.'}
             </p>
           </div>
           <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-300 space-y-2">
-            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">గ్రామ స్థాయి / Grassroots Level</span>
-            <h3 className="font-bold text-sm text-emerald-950 font-black">PACS (ప్రాథమిక వ్యవసాయ సంఘం)</h3>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+              {isTe ? 'గ్రామ స్థాయి / Grassroots Level' : 'Village Grassroots Level'}
+            </span>
+            <h3 className="font-bold text-sm text-emerald-950 font-black">
+              {isTe ? 'PACS (ప్రాథమిక వ్యవసాయ సంఘం)' : 'PACS (Primary Agricultural Credit Society)'}
+            </h3>
             <p className="text-xs text-emerald-800 font-medium">
-              రైతులతో నేరుగా అనుసంధానమై ఎరువులు, విత్తనాలు, స్వల్పకాలిక రుణాలు మరియు ధాన్య సేకరణ నిర్వహిస్తుంది.
+              {isTe
+                ? 'రైతులతో నేరుగా అనుసంధానమై ఎరువులు, విత్తనాలు, స్వల్పకాలిక రుణాలు మరియు ధాన్య సేకరణ నిర్వహిస్తుంది.'
+                : 'Directly interfaces with village farmers for crop loans, fertilizer distribution, and MSP procurement.'}
             </p>
           </div>
         </div>

@@ -14,7 +14,7 @@ export default function PortalFooter({ currentLanguage, onLaunchKiosk, onOpenHel
                 🌾
               </div>
               <span className="font-heading text-xl font-black text-white">
-                రైతు వెలుగు
+                {currentLanguage === 'en' ? 'Raithu Velugu' : (currentLanguage === 'hi' ? 'रैतु वेलुगु' : 'రైతు వెలుగు')}
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">

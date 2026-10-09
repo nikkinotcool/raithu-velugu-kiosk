@@ -6,10 +6,34 @@ import {
 } from 'lucide-react';
 
 const STATS = [
-  { value: '1,02,000+', label_te: 'కంప్యూటరీకరణలో ఉన్న PACS సంఘాలు', label_en: 'PACS Being Computerized in India' },
-  { value: '4% వడ్డీ', label_te: 'రైతులకు స్వల్పకాలిక పంట రుణం (KCC)', label_en: 'Short-Term Crop Loan Subvention' },
-  { value: '72 గంటలు', label_te: 'PMFBY పంట నష్టం తెలియజేసే గడువు', label_en: 'Statutory PMFBY Loss SLA' },
-  { value: '100% వాయిస్', label_te: 'తెలుగు & హిందీ మాతృభాష AI మద్దతు', label_en: 'Native Indic Script Transcription' },
+  { 
+    value_en: '1,02,000+', 
+    value_te: '1,02,000+', 
+    value_hi: '1,02,000+', 
+    label_te: 'కంప్యూటరీకరణలో ఉన్న PACS సంఘాలు', 
+    label_en: 'PACS Being Computerized Across India' 
+  },
+  { 
+    value_en: '4% Interest', 
+    value_te: '4% వడ్డీ', 
+    value_hi: '4% ब्याज', 
+    label_te: 'రైతులకు స్వల్పకాలిక పంట రుణం (KCC)', 
+    label_en: 'Short-Term Crop Loan Subvention (KCC)' 
+  },
+  { 
+    value_en: '72 Hours', 
+    value_te: '72 గంటలు', 
+    value_hi: '72 घंटे', 
+    label_te: 'PMFBY పంట నష్టం తెలియజేసే గడువు', 
+    label_en: 'Statutory PMFBY Loss Reporting SLA' 
+  },
+  { 
+    value_en: '100% Voice AI', 
+    value_te: '100% వాయిస్ AI', 
+    value_hi: '100% वॉइस AI', 
+    label_te: 'తెలుగు & హిందీ మాతృభాష AI మద్దతు', 
+    label_en: 'Native Indic Script Transcription' 
+  },
 ];
 
 const PILLARS = [
@@ -106,15 +130,15 @@ export default function PortalHome({
     <div className="space-y-16 sm:space-y-24 pb-16">
       
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-10 sm:pt-16 pb-12 sm:pb-20 bg-gradient-to-b from-emerald-50/70 via-slate-50 to-white">
+      <section className="relative overflow-hidden pt-8 sm:pt-14 pb-12 sm:pb-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Top Pill */}
+          {/* Top Pill / Badge (Clean, static, non-spinning) */}
           <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/80 border border-emerald-300 text-emerald-900 text-xs font-extrabold shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-700 animate-spin" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold shadow-2xs">
+              <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
               <span>
-                {isTe ? 'స్మార్ట్ ఇండియా హ్యాకథాన్ 2026 • సహకార మంత్రిత్వ శాఖ' : 'Smart India Hackathon 2026 • Ministry of Cooperation'}
+                {isTe ? 'స్మార్ట్ ఇండియా హ్యాకథాన్ 2026 • సహకార మంత్రిత్వ శాఖ' : (isHi ? 'स्मार्ट इंडिया हैकथॉन 2026 • सहकारिता मंत्रालय' : 'Smart India Hackathon 2026 • Ministry of Cooperation')}
               </span>
             </div>
           </div>
@@ -145,18 +169,18 @@ export default function PortalHome({
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
               <button
                 onClick={onLaunchKiosk}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-700 hover:from-emerald-800 hover:to-teal-800 text-white font-black text-base shadow-lg shadow-emerald-700/25 transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-3 border border-emerald-500/30"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-bold text-sm sm:text-base shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2.5 border border-emerald-600/50"
               >
                 <Bot className="w-5 h-5 text-emerald-200" />
                 <span>
-                  {isTe ? 'టాక్ టు రైతు వెలుగు (AI కియోస్క్ ప్రారంభించండి)' : 'Talk to Raithu Velugu Today'}
+                  {isTe ? 'టాక్ టు రైతు వెలుగు (కియోస్క్ ప్రారంభించండి)' : 'Talk to Raithu Velugu Today'}
                 </span>
                 <ArrowRight className="w-4 h-4 text-emerald-200" />
               </button>
 
               <button
                 onClick={onOpenStock}
-                className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-sm border border-slate-300 shadow-xs hover:border-emerald-400 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 font-bold text-sm border border-slate-300 shadow-2xs hover:border-slate-400 transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
                 <PackageCheck className="w-4.5 h-4.5 text-emerald-700" />
                 <span>{isTe ? 'లైవ్ ఎరువుల నిల్వల బోర్డు' : 'Live Fertilizer Stock Board'}</span>
@@ -169,24 +193,24 @@ export default function PortalHome({
               <strong className="text-slate-800 font-mono">9390336984</strong>
               <span> | PIN: </span>
               <strong className="text-slate-800 font-mono">7171</strong>
-              <span className="text-emerald-700 font-bold ml-2">
-                (Member: C. Nikhil, Kandi PACS)
+              <span className="text-emerald-700 font-semibold ml-2">
+                ({isTe ? 'సభ్యుడు: సి. నిఖిల్, కంది PACS' : 'Member: C. Nikhil, Kandi PACS'})
               </span>
             </div>
 
           </div>
 
           {/* Live Metrics Grid */}
-          <div className="mt-14 sm:mt-20 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+          <div className="mt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
             {STATS.map((s, idx) => (
               <div 
                 key={idx}
-                className="p-4 sm:p-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:border-emerald-300 transition-all text-center"
+                className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs hover:border-slate-300 transition-all text-center"
               >
-                <div className="text-2xl sm:text-3xl font-black text-emerald-800 font-heading">
-                  {s.value}
+                <div className="text-2xl sm:text-3xl font-black text-emerald-800 font-heading tracking-tight">
+                  {isTe ? s.value_te : (isHi ? s.value_hi : s.value_en)}
                 </div>
-                <div className="text-xs sm:text-xs text-slate-600 font-bold mt-1">
+                <div className="text-xs text-slate-600 font-medium mt-1 leading-snug">
                   {isTe ? s.label_te : s.label_en}
                 </div>
               </div>
@@ -256,18 +280,18 @@ export default function PortalHome({
               </p>
 
               <div className="pt-2 flex flex-wrap gap-2 text-xs">
-                <span className="px-3 py-1.5 rounded-xl bg-white/10 font-mono">
-                  🗣️ "నాకు యూరియా కోటా ఎంత ఉంది?"
+                <span className="px-3 py-1.5 rounded-lg bg-white/10 text-emerald-100 font-medium">
+                  🗣️ {isTe ? '"నాకు యూరియా కోటా ఎంత ఉంది?"' : '"What is my eligible Urea fertilizer quota?"'}
                 </span>
-                <span className="px-3 py-1.5 rounded-xl bg-white/10 font-mono">
-                  🗣️ "వర్షానికి పంట పోయింది, క్లెయిమ్ ఎలా చేయాలి?"
+                <span className="px-3 py-1.5 rounded-lg bg-white/10 text-emerald-100 font-medium">
+                  🗣️ {isTe ? '"వర్షానికి పంట పోయింది, క్లెయిమ్ ఎలా చేయాలి?"' : '"Crop was damaged by rainfall, how do I file insurance claim?"'}
                 </span>
               </div>
 
               <div className="pt-3">
                 <button
                   onClick={onLaunchKiosk}
-                  className="px-6 py-3 rounded-xl bg-white text-emerald-950 font-black text-xs sm:text-sm shadow-md hover:bg-emerald-50 transition-all cursor-pointer flex items-center gap-2"
+                  className="px-6 py-3 rounded-xl bg-white text-emerald-950 font-bold text-xs sm:text-sm shadow-sm hover:bg-emerald-50 transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <Bot className="w-4 h-4 text-emerald-800" />
                   <span>{isTe ? 'వాయిస్ కియోస్క్ పరీక్షించండి' : 'Try Voice Assistant Now'}</span>
@@ -287,21 +311,21 @@ export default function PortalHome({
                 </span>
               </div>
               <div className="space-y-1.5 text-xs">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center py-0.5">
                   <span className="text-slate-300">{isTe ? 'సభ్యుడి పేరు' : 'Member Name'}:</span>
-                  <strong className="text-white">C. Nikhil (కంది PACS)</strong>
+                  <strong className="text-white font-medium">C. Nikhil ({isTe ? 'కంది PACS' : 'Kandi PACS'})</strong>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center py-0.5">
                   <span className="text-slate-300">{isTe ? 'భూమి వివరాలు' : 'Landholding'}:</span>
-                  <strong className="text-white">3.00 ఎకరాలు (Sy. No. 142/A)</strong>
+                  <strong className="text-white font-medium">{isTe ? '3.00 ఎకరాలు (Sy. No. 142/A)' : '3.00 Acres (Sy. No. 142/A)'}</strong>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center py-0.5">
                   <span className="text-slate-300">{isTe ? '4% క్రాప్ లోన్ అర్హత' : 'KCC Loan Entitlement'}:</span>
-                  <strong className="text-amber-300 font-bold">₹1,14,000 (ఖరీఫ్ వరి)</strong>
+                  <strong className="text-amber-300 font-bold">{isTe ? '₹1,14,000 (ఖరీఫ్ వరి)' : '₹1,14,000 (Kharif Paddy)'}</strong>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center py-0.5">
                   <span className="text-slate-300">{isTe ? 'రాయితీ యూరియా కోటా' : 'Subsidized Urea Quota'}:</span>
-                  <strong className="text-emerald-300 font-bold">6 బస్తాలు (₹1,599)</strong>
+                  <strong className="text-emerald-300 font-bold">{isTe ? '6 బస్తాలు (₹1,599)' : '6 Bags (₹1,599)'}</strong>
                 </div>
               </div>
               <div className="p-2.5 rounded-xl bg-black/20 text-[11px] text-emerald-200 flex items-center justify-between">
