@@ -127,8 +127,8 @@ export default function AnimatedAgriBackground({ mode = 'waves' }) {
         });
 
       } else if (mode === 'waves') {
-        // Render Terraced Agri Topography & River Contours (Locked in)
-        waveStep += 0.007;
+        // Render Terraced Agri Topography & River Contours (Locked in - calm ambient speed)
+        waveStep += 0.0022;
         const waveCount = 6;
         const mouseFactor = mouse.active ? (mouse.y / height - 0.5) * 20 : 0;
 
