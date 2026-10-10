@@ -8,7 +8,7 @@ import React, { useEffect, useRef } from 'react';
  * - 'aurora': Luminous Bio-Mesh Aurora (Emerald, Mint, Champagne Gold)
  * - 'constellation': Interconnected Cooperative PACS DPI Network
  */
-export default function AnimatedAgriBackground({ mode = 'aurora' }) {
+export default function AnimatedAgriBackground({ mode = 'waves' }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -127,41 +127,52 @@ export default function AnimatedAgriBackground({ mode = 'aurora' }) {
         });
 
       } else if (mode === 'waves') {
-        // Render Terraced Agri Topography & River Contours
-        waveStep += 0.008;
-        const waveCount = 5;
+        // Render Terraced Agri Topography & River Contours (Locked in)
+        waveStep += 0.007;
+        const waveCount = 6;
+        const mouseFactor = mouse.active ? (mouse.y / height - 0.5) * 20 : 0;
 
         for (let i = 0; i < waveCount; i++) {
           ctx.beginPath();
-          const baseY = height * 0.45 + i * (height * 0.11);
+          const baseY = height * 0.35 + i * (height * 0.12) + mouseFactor * (i * 0.15);
           ctx.moveTo(0, baseY);
 
-          for (let x = 0; x <= width; x += 15) {
-            const freq = 0.002 + i * 0.0005;
-            const amp = 30 + i * 14;
-            const y = baseY + Math.sin(x * freq + waveStep * (1 + i * 0.3) + i) * amp;
-            ctx.lineTo(x, y);
+          for (let x = 0; x <= width; x += 12) {
+            const freq1 = 0.0018 + i * 0.0004;
+            const freq2 = 0.0035 + i * 0.0003;
+            const amp1 = 28 + i * 16;
+            const amp2 = 12 + i * 6;
+            
+            // Compound harmonic wave for natural topography contours
+            const waveY = Math.sin(x * freq1 + waveStep * (1 + i * 0.25) + i * 1.2) * amp1 +
+                          Math.cos(x * freq2 - waveStep * 0.8 + i) * amp2;
+            
+            ctx.lineTo(x, baseY + waveY);
           }
 
           ctx.lineTo(width, height);
           ctx.lineTo(0, height);
           ctx.closePath();
 
-          const grad = ctx.createLinearGradient(0, baseY - 50, 0, height);
+          const grad = ctx.createLinearGradient(0, baseY - 60, 0, height);
           if (i % 2 === 0) {
-            grad.addColorStop(0, `rgba(16, 185, 129, ${0.06 + i * 0.015})`);
-            grad.addColorStop(1, `rgba(5, 150, 105, ${0.02 + i * 0.01})`);
+            grad.addColorStop(0, `rgba(16, 185, 129, ${0.07 + i * 0.012})`); // Lush Emerald
+            grad.addColorStop(0.5, `rgba(5, 150, 105, ${0.03 + i * 0.008})`);
+            grad.addColorStop(1, 'rgba(4, 120, 87, 0.01)');
           } else {
-            grad.addColorStop(0, `rgba(245, 158, 11, ${0.04 + i * 0.01})`);
-            grad.addColorStop(1, `rgba(13, 148, 136, ${0.02 + i * 0.01})`);
+            grad.addColorStop(0, `rgba(245, 158, 11, ${0.05 + i * 0.01})`); // Harvest Gold accent
+            grad.addColorStop(0.5, `rgba(13, 148, 136, ${0.03 + i * 0.008})`); // Royal Teal
+            grad.addColorStop(1, 'rgba(6, 78, 59, 0.01)');
           }
 
           ctx.fillStyle = grad;
           ctx.fill();
 
-          // Stroke line highlight
-          ctx.lineWidth = 1.2;
-          ctx.strokeStyle = i % 2 === 0 ? `rgba(52, 211, 153, ${0.15 + i * 0.05})` : `rgba(251, 191, 36, ${0.12 + i * 0.04})`;
+          // Luminous contour ridge stroke
+          ctx.lineWidth = 1.3;
+          ctx.strokeStyle = i % 2 === 0 
+            ? `rgba(52, 211, 153, ${0.18 + i * 0.04})` 
+            : `rgba(251, 191, 36, ${0.15 + i * 0.03})`;
           ctx.stroke();
         }
 

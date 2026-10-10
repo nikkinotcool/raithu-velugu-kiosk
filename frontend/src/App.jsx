@@ -15,7 +15,6 @@ import FertilizerStockModal from './components/FertilizerStockModal';
 import HelplineModal from './components/HelplineModal';
 import PortalNavbar from './components/PortalNavbar';
 import AnimatedAgriBackground from './components/AnimatedAgriBackground';
-import BgAnimationSwitcher from './components/BgAnimationSwitcher';
 import PortalFooter from './components/PortalFooter';
 import PortalHome from './pages/PortalHome';
 import PortalAbout from './pages/PortalAbout';
@@ -161,13 +160,7 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const [bgMode, setBgMode] = useState(() => {
-    try {
-      return localStorage.getItem('raithu_velugu_bg_mode') || 'aurora';
-    } catch {
-      return 'aurora';
-    }
-  });
+  const [bgMode] = useState('waves');
 
   const handleSelectBgMode = (mode) => {
     setBgMode(mode);
@@ -468,9 +461,8 @@ const apiFetch = async (endpoint, options = {}) => {
         data-lang="en"
         className="min-h-screen bg-[#f4f9f6]/80 text-slate-900 flex flex-col justify-between selection:bg-emerald-600 selection:text-white relative"
       >
-        <AnimatedAgriBackground mode={bgMode} />
-        <BgAnimationSwitcher currentMode={bgMode} onSelectMode={handleSelectBgMode} />
-        <PortalNavbar
+        <AnimatedAgriBackground mode="waves" />
+                <PortalNavbar
           currentPage={portalPage}
           onNavigate={(page) => navigateTo(page)}
           onLaunchKiosk={() => navigateTo('/chatbot')}
@@ -575,9 +567,8 @@ const apiFetch = async (endpoint, options = {}) => {
       className="flex flex-col h-screen overflow-hidden bg-[#f4f9f6]/85 text-slate-900 selection:bg-emerald-600 selection:text-white relative"
     >
       {/* Live Animated Background */}
-      <AnimatedAgriBackground mode={bgMode} />
-      <BgAnimationSwitcher currentMode={bgMode} onSelectMode={handleSelectBgMode} />
-
+      <AnimatedAgriBackground mode="waves" />
+      
       {/* Top Header */}
       <Header
         currentLanguage={language}
