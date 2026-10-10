@@ -18,7 +18,7 @@ export default function PortalNavbar({
   return (
     <nav className="sticky top-0 z-50 bg-white/98 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
       {/* Top Sovereign Ministry & Authority Strip */}
-      <div className="w-full bg-[#091e3a] text-blue-100 text-[11px] py-1.5 px-4 font-medium border-b border-blue-900/60">
+      <div className="w-full bg-gradient-to-r from-[#063323] via-[#083c2a] to-[#04281b] text-emerald-100 text-[11px] py-1.5 px-4 font-medium border-b border-emerald-800/60">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
@@ -43,7 +43,7 @@ export default function PortalNavbar({
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3 cursor-pointer select-none group shrink-0"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center text-xl shadow-md shadow-blue-900/20 border border-blue-600/50 group-hover:border-blue-500 transition-colors">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 text-amber-300 flex items-center justify-center text-xl shadow-md shadow-emerald-900/20 border border-emerald-500/50 group-hover:border-emerald-400 transition-colors">
               🌾
             </div>
             <div className="flex flex-col">
@@ -51,7 +51,7 @@ export default function PortalNavbar({
                 <span className="font-heading text-lg sm:text-xl font-black text-slate-950 tracking-tight">
                   Raithu Velugu
                 </span>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-900 text-[10px] font-bold uppercase border border-blue-200/80">
+                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-900 text-[10px] font-bold uppercase border border-emerald-200/80">
                   NATIONAL DPI
                 </span>
               </div>
@@ -67,7 +67,7 @@ export default function PortalNavbar({
               onClick={() => handleNavClick('home')}
               className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 currentPage === 'home' 
-                  ? 'bg-blue-50 text-blue-950 font-bold border border-blue-200/80 shadow-2xs' 
+                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
               }`}
             >
@@ -77,7 +77,7 @@ export default function PortalNavbar({
               onClick={() => handleNavClick('about')}
               className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 currentPage === 'about' 
-                  ? 'bg-blue-50 text-blue-950 font-bold border border-blue-200/80 shadow-2xs' 
+                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
               }`}
             >
@@ -87,7 +87,7 @@ export default function PortalNavbar({
               onClick={() => handleNavClick('schemes')}
               className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 currentPage === 'schemes' 
-                  ? 'bg-blue-50 text-blue-950 font-bold border border-blue-200/80 shadow-2xs' 
+                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
               }`}
             >
@@ -97,7 +97,7 @@ export default function PortalNavbar({
               onClick={() => handleNavClick('grievances')}
               className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 currentPage === 'grievances' 
-                  ? 'bg-blue-50 text-blue-950 font-bold border border-blue-200/80 shadow-2xs' 
+                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
               }`}
             >
@@ -107,7 +107,7 @@ export default function PortalNavbar({
               onClick={onOpenStock}
               className="px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <PackageCheck className="w-3.5 h-3.5 text-blue-700" />
+              <PackageCheck className="w-3.5 h-3.5 text-emerald-700" />
               <span>Fertilizer Stock</span>
             </button>
             <button
@@ -124,11 +124,11 @@ export default function PortalNavbar({
             {/* Primary CTA Button: Launch Kiosk / Voice Assistant */}
             <button
               onClick={onLaunchKiosk}
-              className="px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 active:scale-98 text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-900/25 transition-all cursor-pointer flex items-center gap-2 border border-blue-600/50"
+              className="px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 active:scale-98 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-700/25 transition-all cursor-pointer flex items-center gap-2 border border-emerald-500/50"
             >
               <Bot className="w-4 h-4 text-amber-300 shrink-0" />
               <span>Talk to Raithu Velugu</span>
-              <ArrowRight className="w-3.5 h-3.5 text-blue-200" />
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-100" />
             </button>
 
             {/* Mobile Hamburger Toggle */}
@@ -149,7 +149,7 @@ export default function PortalNavbar({
           <button
             onClick={() => handleNavClick('home')}
             className={`w-full text-left px-3 py-2 rounded-xl text-sm font-bold ${
-              currentPage === 'home' ? 'bg-blue-50 text-blue-950' : 'text-slate-700'
+              currentPage === 'home' ? 'bg-emerald-100 text-emerald-950' : 'text-slate-700'
             }`}
           >
             Home
@@ -157,7 +157,7 @@ export default function PortalNavbar({
           <button
             onClick={() => handleNavClick('about')}
             className={`w-full text-left px-3 py-2 rounded-xl text-sm font-bold ${
-              currentPage === 'about' ? 'bg-blue-50 text-blue-950' : 'text-slate-700'
+              currentPage === 'about' ? 'bg-emerald-100 text-emerald-950' : 'text-slate-700'
             }`}
           >
             About PACS
@@ -165,7 +165,7 @@ export default function PortalNavbar({
           <button
             onClick={() => handleNavClick('schemes')}
             className={`w-full text-left px-3 py-2 rounded-xl text-sm font-bold ${
-              currentPage === 'schemes' ? 'bg-blue-50 text-blue-950' : 'text-slate-700'
+              currentPage === 'schemes' ? 'bg-emerald-100 text-emerald-950' : 'text-slate-700'
             }`}
           >
             Schemes & Law
@@ -173,7 +173,7 @@ export default function PortalNavbar({
           <button
             onClick={() => handleNavClick('grievances')}
             className={`w-full text-left px-3 py-2 rounded-xl text-sm font-bold ${
-              currentPage === 'grievances' ? 'bg-blue-50 text-blue-950' : 'text-slate-700'
+              currentPage === 'grievances' ? 'bg-emerald-100 text-emerald-950' : 'text-slate-700'
             }`}
           >
             Grievance Redressal
@@ -185,7 +185,7 @@ export default function PortalNavbar({
             }}
             className="w-full text-left px-3 py-2 rounded-xl text-sm font-bold text-slate-700 flex items-center gap-2"
           >
-            <PackageCheck className="w-4 h-4 text-blue-700" />
+            <PackageCheck className="w-4 h-4 text-emerald-700" />
             <span>Fertilizer Stock</span>
           </button>
           <button

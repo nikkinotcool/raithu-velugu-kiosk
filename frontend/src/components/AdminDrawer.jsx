@@ -95,7 +95,7 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-950 border border-blue-200">
+            <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-950 border border-emerald-200">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
@@ -111,7 +111,7 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
             <button
               onClick={handleExportCSV}
               disabled={!grievances.length}
-              className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-950 border border-blue-200 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
+              className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border border-emerald-200 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
               title="Export official CSV audit report for ARCS inspection"
             >
               <Download className="w-3.5 h-3.5" />
@@ -142,7 +142,7 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by ticket ID, farmer name, category..."
-              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
+              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
             />
           </div>
 
@@ -171,8 +171,8 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
               onClick={() => setFilterStatus('Under ARCS Inquiry')}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 filterStatus === 'Under ARCS Inquiry'
-                  ? 'bg-blue-700 text-white'
-                  : 'bg-blue-50 text-blue-900 border border-blue-200 hover:bg-blue-100'
+                  ? 'bg-emerald-700 text-white'
+                  : 'bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100'
               }`}
             >
               Inquiry ({grievances.filter(g => g.status === 'Under ARCS Inquiry').length})
@@ -181,8 +181,8 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
               onClick={() => setFilterStatus('Resolved')}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 filterStatus === 'Resolved'
-                  ? 'bg-blue-800 text-white border border-blue-700'
-                  : 'bg-blue-50 text-blue-950 border border-blue-200 hover:bg-blue-100'
+                  ? 'bg-emerald-700 text-white border border-emerald-600'
+                  : 'bg-emerald-50 text-emerald-950 border border-emerald-200 hover:bg-emerald-100'
               }`}
             >
               Resolved ({grievances.filter(g => g.status === 'Resolved').length})
@@ -193,9 +193,9 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
         {/* Tickets List */}
         <div className="flex-1 py-3 space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-600 font-semibold px-1">
-            <span>Showing: <strong className="text-blue-950">{filteredGrievances.length}</strong> of {grievances.length} complaints</span>
-            <span className="text-blue-900 flex items-center gap-1.5 font-bold">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            <span>Showing: <strong className="text-emerald-950">{filteredGrievances.length}</strong> of {grievances.length} complaints</span>
+            <span className="text-emerald-900 flex items-center gap-1.5 font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
               Live Sync
             </span>
           </div>
@@ -206,14 +206,14 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
             </div>
           ) : (
             filteredGrievances.map((g) => (
-              <div key={g.id || g.tracking_id} className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-300 transition-all space-y-2.5 shadow-xs">
+              <div key={g.id || g.tracking_id} className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-300 transition-all space-y-2.5 shadow-xs">
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <span className="font-mono text-xs font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{g.tracking_id}</span>
                   <span className={`px-2.5 py-0.5 text-[11px] font-bold rounded-full ${
                     g.status === 'Resolved'
-                      ? 'bg-blue-50 text-blue-950 border border-blue-200'
+                      ? 'bg-emerald-50 text-emerald-950 border border-emerald-200'
                       : (g.status === 'Under ARCS Inquiry'
-                          ? 'bg-blue-100 text-blue-900 border border-blue-300'
+                          ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
                           : 'bg-amber-100 text-amber-900 border border-amber-300')
                   }`}>
                     {g.status}
@@ -230,7 +230,7 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
                 </p>
 
                 <div className="text-[11px] text-slate-600 font-medium flex justify-between pt-0.5 flex-wrap gap-1">
-                  <span>Routing: <strong className="text-blue-950">{g.routed_to}</strong></span>
+                  <span>Routing: <strong className="text-emerald-950">{g.routed_to}</strong></span>
                   <span className="text-slate-400 font-mono">{new Date(g.created_at).toLocaleDateString('en-IN')}</span>
                 </div>
 
@@ -240,14 +240,14 @@ export default function AdminDrawer({ isOpen, onClose, apiBase }) {
                   <button
                     onClick={() => handleUpdateStatus(g.tracking_id, 'Under ARCS Inquiry')}
                     disabled={updatingId === g.tracking_id || g.status === 'Under ARCS Inquiry'}
-                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-blue-50 hover:bg-blue-100 disabled:opacity-40 text-blue-900 border border-blue-200 transition-colors cursor-pointer"
+                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 hover:bg-emerald-100 disabled:opacity-40 text-emerald-900 border border-emerald-200 transition-colors cursor-pointer"
                   >
                     Send to Inquiry
                   </button>
                   <button
                     onClick={() => handleUpdateStatus(g.tracking_id, 'Resolved')}
                     disabled={updatingId === g.tracking_id || g.status === 'Resolved'}
-                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-blue-800 hover:bg-blue-900 disabled:opacity-40 text-white border border-blue-700/60 transition-colors cursor-pointer shadow-xs"
+                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-700 hover:bg-emerald-800 disabled:opacity-40 text-white border border-emerald-600/50 transition-colors cursor-pointer shadow-xs"
                   >
                     Mark Resolved
                   </button>

@@ -5,7 +5,7 @@ const SCHEMES = [
   {
     id: 'chc',
     icon: Tractor,
-    badgeColor: 'blue',
+    badgeColor: 'emerald',
     titleTe: 'PACS కస్టమ్ హైరింగ్ సెంటర్ (CHC యంత్రాల అద్దె)',
     titleEn: 'PACS Custom Hiring Centre (Farm Machinery Rental)',
     descTe: 'రైతులకు సబ్సిడీ రేట్లలో ట్రాక్టర్లు, కంబైన్డ్ హార్వెస్టర్లు, రొటవేటర్లు మరియు డ్రోన్ స్ప్రేయింగ్ అద్దె సదుపాయం.',
@@ -17,7 +17,7 @@ const SCHEMES = [
   {
     id: 'aif',
     icon: Warehouse,
-    badgeColor: 'blue',
+    badgeColor: 'emerald',
     titleTe: 'వ్యవసాయ మౌలిక నిధి (AIF 3% వడ్డీ రాయితీ)',
     titleEn: 'Agriculture Infrastructure Fund (AIF 3% Subvention)',
     descTe: 'PACS మరియు రైతు ఉత్పత్తిదారుల సంఘాలు (FPO) గోదాములు, కోల్డ్ స్టోరేజ్ మరియు ప్రాసెసింగ్ యూనిట్లను ఏర్పాటు చేయడానికి 3% వడ్డీ రాయితీ రుణాలు.',
@@ -61,7 +61,7 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 border border-blue-600/50 flex items-center justify-center font-bold text-lg shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 text-amber-300 border border-emerald-500/50 flex items-center justify-center font-bold text-lg shadow-sm">
               🌾
             </div>
             <div>
@@ -92,18 +92,18 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
             return (
               <div 
                 key={scheme.id}
-                className="p-4 rounded-2xl border border-slate-200/90 bg-white hover:border-blue-300 hover:shadow-md transition-all space-y-2.5"
+                className="p-4 rounded-2xl border border-slate-200/90 bg-white hover:border-emerald-300 hover:shadow-md transition-all space-y-2.5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-xl bg-blue-50 text-blue-950 border border-blue-200 shrink-0">
+                    <div className="p-2 rounded-xl bg-emerald-50 text-emerald-950 border border-emerald-200 shrink-0">
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
                       <h3 className="font-heading text-sm font-bold text-slate-900 leading-snug">
                         {title}
                       </h3>
-                      <span className="text-[11px] font-bold text-blue-950 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200/60 inline-block mt-0.5">
+                      <span className="text-[11px] font-bold text-emerald-950 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60 inline-block mt-0.5">
                         ✓ {subsidy}
                       </span>
                     </div>
@@ -123,7 +123,7 @@ export default function SchemesModal({ isOpen, onClose, language = 'te', onSelec
                         onSelectScheme(scheme.query);
                       }
                     }}
-                    className="px-3.5 py-1.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm border border-blue-700/60 active:scale-95"
+                    className="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm border border-emerald-600/50 active:scale-95"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>{language === 'te' ? 'ఈ పథకం గురించి AI ని అడగండి' : 'Ask AI About This Scheme'}</span>

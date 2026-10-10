@@ -7,7 +7,7 @@ export default function PortalAbout({ onLaunchKiosk }) {
       
       {/* Page Header */}
       <div className="text-center space-y-3">
-        <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-950 text-xs font-black uppercase tracking-wider border border-blue-200/70">
+        <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-950 text-xs font-black uppercase tracking-wider border border-emerald-200/70">
           Cooperative Movement & Model Bye-Laws
         </span>
         <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-950">
@@ -21,13 +21,13 @@ export default function PortalAbout({ onLaunchKiosk }) {
       {/* 3-Tier Cooperative Credit Structure */}
       <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-6">
         <h2 className="font-heading text-xl font-bold text-slate-950 flex items-center gap-2">
-          <Building2 className="w-5 h-5 text-blue-800" />
+          <Building2 className="w-5 h-5 text-emerald-800" />
           <span>3-Tier Short-Term Cooperative Credit Structure</span>
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-900 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px] font-bold">
               State Apex Level
             </span>
             <h3 className="font-bold text-sm text-slate-900">
@@ -38,7 +38,7 @@ export default function PortalAbout({ onLaunchKiosk }) {
             </p>
           </div>
           <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-            <span className="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-900 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-teal-100 text-teal-900 text-[10px] font-bold">
               District Level
             </span>
             <h3 className="font-bold text-sm text-slate-900">
@@ -48,14 +48,14 @@ export default function PortalAbout({ onLaunchKiosk }) {
               Supervises PACS networks in districts like Sangareddy and approves seasonal crop loan credit limits.
             </p>
           </div>
-          <div className="p-5 rounded-xl bg-blue-50/70 border border-blue-200/80 space-y-2">
-            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-950 text-[10px] font-bold">
+          <div className="p-5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-2">
+            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-950 text-[10px] font-bold">
               Village Grassroots Level
             </span>
-            <h3 className="font-bold text-sm text-blue-950 font-black">
+            <h3 className="font-bold text-sm text-emerald-950 font-black">
               PACS (Primary Agricultural Credit Society)
             </h3>
-            <p className="text-xs text-blue-900 font-medium">
+            <p className="text-xs text-emerald-900 font-medium">
               Directly interfaces with village farmers for crop loans, fertilizer distribution, and MSP procurement.
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function PortalAbout({ onLaunchKiosk }) {
         </div>
 
         <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold">
             <Users className="w-5 h-5" />
           </div>
           <h3 className="font-heading text-lg font-bold text-slate-950">
@@ -90,7 +90,7 @@ export default function PortalAbout({ onLaunchKiosk }) {
       </div>
 
       {/* Why Raithu Velugu Section */}
-      <div className="p-8 rounded-3xl bg-gradient-to-br from-[#0c2340] via-[#102e54] to-[#184275] text-white space-y-6 border border-blue-800/60 shadow-xl">
+      <div className="p-8 rounded-3xl bg-gradient-to-br from-[#073826] via-[#094731] to-[#0d593d] text-white space-y-6 border border-emerald-700/50 shadow-xl">
         <h3 className="font-heading text-2xl font-black">
           How Raithu Velugu Solves Grassroots Information Asymmetry
         </h3>
@@ -101,7 +101,7 @@ export default function PortalAbout({ onLaunchKiosk }) {
         <div>
           <button
             onClick={onLaunchKiosk}
-            className="px-6 py-3 rounded-xl bg-white text-blue-950 font-bold text-xs sm:text-sm hover:bg-blue-50 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+            className="px-6 py-3 rounded-xl bg-white text-emerald-950 font-bold text-xs sm:text-sm hover:bg-emerald-50 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
           >
             <Bot className="w-4 h-4 text-amber-500" />
             <span>Launch Kiosk Prototype</span>

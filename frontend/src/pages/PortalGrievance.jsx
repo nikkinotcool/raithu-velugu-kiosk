@@ -72,7 +72,7 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
       
       {/* Header */}
       <div className="text-center space-y-3">
-        <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-950 text-xs font-black uppercase tracking-wider border border-blue-200/70">
+        <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-950 text-xs font-black uppercase tracking-wider border border-emerald-200/70">
           Statutory Dispute Redressal & Transparency
         </span>
         <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-950">
@@ -86,7 +86,7 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
       {/* Live Tracking Card */}
       <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-6">
         <h2 className="font-heading text-lg font-bold text-slate-950 flex items-center gap-2">
-          <Search className="w-5 h-5 text-blue-800" />
+          <Search className="w-5 h-5 text-emerald-800" />
           <span>Track Your Grievance Status Live</span>
         </h2>
 
@@ -98,13 +98,13 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               placeholder="e.g. RV-GRV-20260922-PM5541"
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-300 text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-300 text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
             />
           </div>
           <button
             type="submit"
             disabled={loading || !trackingId.trim()}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-sm transition-all cursor-pointer shadow-md border border-blue-600/50 shrink-0"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-50 text-white font-bold text-sm transition-all cursor-pointer shadow-md border border-emerald-500/50 shrink-0"
           >
             {loading ? 'Searching...' : 'Track Ticket'}
           </button>
@@ -117,21 +117,21 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
             <button
               type="button"
               onClick={() => setTrackingId('RV-GRV-20260922-PM5541')}
-              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-900 border border-slate-200 cursor-pointer transition-colors"
+              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-900 border border-slate-200 cursor-pointer transition-colors"
             >
               RV-GRV-20260922-PM5541 (PMFBY Inquiry)
             </button>
             <button
               type="button"
               onClick={() => setTrackingId('RV-GRV-20260921-UR8812')}
-              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-900 border border-slate-200 cursor-pointer transition-colors"
+              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-900 border border-slate-200 cursor-pointer transition-colors"
             >
               RV-GRV-20260921-UR8812 (Urea Quota - Resolved)
             </button>
             <button
               type="button"
               onClick={() => setTrackingId('RV-GRV-20260923-LN1094')}
-              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-900 border border-slate-200 cursor-pointer transition-colors"
+              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-900 border border-slate-200 cursor-pointer transition-colors"
             >
               RV-GRV-20260923-LN1094 (4% Loan Issue)
             </button>
@@ -158,9 +158,9 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
                   type="button"
                   onClick={handleSpeakStatus}
                   disabled={isSpeaking}
-                  className="px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
+                  className="px-3 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
                 >
-                  <Volume2 className={`w-3.5 h-3.5 ${isSpeaking ? 'animate-bounce text-blue-700' : 'text-blue-800'}`} />
+                  <Volume2 className={`w-3.5 h-3.5 ${isSpeaking ? 'animate-bounce text-emerald-700' : 'text-emerald-800'}`} />
                   <span>{isSpeaking ? 'Speaking...' : '🔊 Listen'}</span>
                 </button>
                 <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300">
@@ -176,8 +176,8 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
               </div>
               <div>
                 <span className="text-slate-500 font-medium block">Forwarded Authority:</span>
-                <strong className="text-blue-950 text-sm flex items-center gap-1 mt-0.5">
-                  <Building2 className="w-4 h-4 text-blue-800 shrink-0" />
+                <strong className="text-emerald-950 text-sm flex items-center gap-1 mt-0.5">
+                  <Building2 className="w-4 h-4 text-emerald-800 shrink-0" />
                   {ticket.routed_to}
                 </strong>
               </div>
@@ -191,13 +191,13 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
               <div className="flex items-center gap-3 text-slate-500">
                 <span>Registered: {new Date(ticket.created_at).toLocaleDateString()}</span>
                 <span>•</span>
-                <span className="text-blue-900 font-bold">Statutory SLA: 7-15 Days</span>
+                <span className="text-emerald-900 font-bold">Statutory SLA: 7-15 Days</span>
               </div>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => printGrievanceReceipt(ticket)}
-                  className="px-4 py-2 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm border border-blue-700/60"
+                  className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm border border-emerald-600/50"
                 >
                   <Printer className="w-3.5 h-3.5 text-amber-400" />
                   <span>Print Receipt</span>
@@ -219,7 +219,7 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
       {/* Escalation Pathways */}
       <div className="p-6 sm:p-8 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
         <h3 className="font-heading text-lg font-bold text-slate-950 flex items-center gap-2">
-          <Scale className="w-5 h-5 text-blue-800" />
+          <Scale className="w-5 h-5 text-emerald-800" />
           <span>Statutory Escalation Framework</span>
         </h3>
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
@@ -229,7 +229,7 @@ export default function PortalGrievance({ onLaunchKiosk, apiBase }) {
         <div className="pt-2">
           <button
             onClick={onLaunchKiosk}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 cursor-pointer border border-blue-600/50 transition-colors"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 cursor-pointer border border-emerald-500/50 transition-colors"
           >
             <Bot className="w-4 h-4 text-amber-400" />
             <span>Lodge a Complaint via Voice Kiosk</span>

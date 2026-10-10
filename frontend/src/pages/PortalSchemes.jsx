@@ -57,7 +57,7 @@ export default function PortalSchemes({ onLaunchKiosk }) {
       
       {/* Header */}
       <div className="text-center space-y-3">
-        <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-950 text-xs font-black uppercase tracking-wider border border-blue-200/70">
+        <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-950 text-xs font-black uppercase tracking-wider border border-emerald-200/70">
           Cooperative Schemes & Statutory Entitlements
         </span>
         <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-950">
@@ -77,7 +77,7 @@ export default function PortalSchemes({ onLaunchKiosk }) {
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
               <div>
-                <span className="text-[11px] font-black uppercase tracking-wider text-blue-800 block">
+                <span className="text-[11px] font-black uppercase tracking-wider text-emerald-800 block">
                   {scheme.category}
                 </span>
                 <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-950 mt-0.5">
@@ -100,7 +100,7 @@ export default function PortalSchemes({ onLaunchKiosk }) {
               <ul className="space-y-1.5 text-xs text-slate-600">
                 {scheme.rules.map((rule, rIdx) => (
                   <li key={rIdx} className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                     <span>{rule}</span>
                   </li>
                 ))}
@@ -111,7 +111,7 @@ export default function PortalSchemes({ onLaunchKiosk }) {
       </div>
 
       {/* CTA Bottom Banner */}
-      <div className="p-8 rounded-3xl bg-gradient-to-br from-[#0c2340] via-[#102e54] to-[#184275] text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-blue-800/60 shadow-xl">
+      <div className="p-8 rounded-3xl bg-gradient-to-br from-[#073826] via-[#094731] to-[#0d593d] text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-emerald-700/50 shadow-xl">
         <div className="space-y-2 text-center sm:text-left">
           <h3 className="font-heading text-xl font-bold">
             Have a Question on Any Scheme? Ask the AI Assistant
@@ -122,7 +122,7 @@ export default function PortalSchemes({ onLaunchKiosk }) {
         </div>
         <button
           onClick={onLaunchKiosk}
-          className="px-6 py-3 rounded-xl bg-white text-blue-950 font-bold text-xs sm:text-sm shadow-sm hover:bg-blue-50 transition-colors flex items-center gap-2 cursor-pointer shrink-0"
+          className="px-6 py-3 rounded-xl bg-white text-emerald-950 font-bold text-xs sm:text-sm shadow-sm hover:bg-emerald-50 transition-colors flex items-center gap-2 cursor-pointer shrink-0"
         >
           <Bot className="w-4 h-4 text-amber-500" />
           <span>Launch Kiosk AI</span>

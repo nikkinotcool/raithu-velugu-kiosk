@@ -297,7 +297,7 @@ export default function ChatInput({
     <form onSubmit={handleSubmit} className="w-full relative">
       {/* Live Voice Assistant Active Floating Banner */}
       {isRecording && (
-        <div className="mb-2 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-[#0c2340] via-[#102e54] to-[#184275] text-white shadow-xl border border-blue-800/60 flex items-center justify-between gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="mb-2 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-[#073826] via-[#094731] to-[#0d593d] text-white shadow-xl border border-emerald-700/50 flex items-center justify-between gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <div className="flex items-center gap-2.5 min-w-0">
             {/* Pulsing Mic Indicator */}
             <div className="relative flex items-center justify-center shrink-0">
@@ -337,7 +337,7 @@ export default function ChatInput({
               type="button"
               onClick={handleSendVoiceMessage}
               disabled={!inputText.trim()}
-              className="px-3 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-600 disabled:opacity-40 text-white font-bold text-xs flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-95 border border-blue-600"
+              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold text-xs flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-95 border border-emerald-500"
             >
               <Check className="w-3.5 h-3.5" />
               <span>{language === 'te' ? 'పూర్తయింది' : (language === 'hi' ? 'भेजें' : 'Done')}</span>
@@ -348,7 +348,7 @@ export default function ChatInput({
 
       {/* AI Whisper Transcription In-Progress Banner */}
       {isProcessingSTT && (
-        <div className="mb-2 p-2.5 rounded-2xl bg-gradient-to-r from-[#0c2340] to-[#12315a] text-white shadow-lg border border-blue-800/60 flex items-center gap-2.5">
+        <div className="mb-2 p-2.5 rounded-2xl bg-gradient-to-r from-[#073826] to-[#094731] text-white shadow-lg border border-emerald-700/50 flex items-center gap-2.5">
           <Loader2 className="w-4 h-4 animate-spin text-amber-400 shrink-0" />
           <span className="text-xs font-semibold text-slate-200">
             {language === 'te' ? 'AI మీ వాయిస్‌ని స్పష్టంగా టెక్స్ట్‌గా మారుస్తోంది...' : 'AI is transcribing your speech...'}
@@ -360,7 +360,7 @@ export default function ChatInput({
       <div className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-2xl bg-white border transition-all ${
         isRecording 
           ? 'border-red-600 ring-2 ring-red-500/20 shadow-md' 
-          : 'border-slate-200/90 shadow-md shadow-slate-200/50 focus-within:border-blue-700 focus-within:ring-2 focus-within:ring-blue-500/15'
+          : 'border-slate-200/90 shadow-md shadow-slate-200/50 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/15'
       }`}>
         {/* Mic Button */}
         <button
@@ -370,7 +370,7 @@ export default function ChatInput({
           className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 touch-manipulation ${
             isRecording
               ? 'bg-red-600 text-white shadow-md shadow-red-500/30'
-              : 'text-slate-600 hover:text-blue-900 hover:bg-blue-50/80 bg-slate-50 border border-slate-200/70'
+              : 'text-slate-600 hover:text-emerald-800 hover:bg-emerald-50/80 bg-slate-50 border border-slate-200/70'
           }`}
           title={isRecording ? 'Stop Recording' : 'Voice Input (మాట్లాడండి)'}
           aria-label={isRecording ? 'Stop Recording' : 'Voice Input'}
@@ -378,7 +378,7 @@ export default function ChatInput({
           {isRecording ? (
             <MicOff className="w-4 h-4 animate-pulse" />
           ) : (
-            <Mic className="w-4 h-4 text-blue-900" />
+            <Mic className="w-4 h-4 text-emerald-800" />
           )}
         </button>
 
@@ -396,7 +396,7 @@ export default function ChatInput({
         <button
           type="submit"
           disabled={!inputText.trim() || disabled}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-30 disabled:hover:bg-blue-800 text-white font-semibold transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 shadow-md border border-blue-600/50"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-30 disabled:hover:bg-emerald-700 text-white font-semibold transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 shadow-md border border-emerald-500/40"
         >
           <Send className="w-4 h-4 text-amber-300" />
         </button>

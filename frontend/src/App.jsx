@@ -14,6 +14,8 @@ import SchemesModal from './components/SchemesModal';
 import FertilizerStockModal from './components/FertilizerStockModal';
 import HelplineModal from './components/HelplineModal';
 import PortalNavbar from './components/PortalNavbar';
+import AnimatedAgriBackground from './components/AnimatedAgriBackground';
+import BgAnimationSwitcher from './components/BgAnimationSwitcher';
 import PortalFooter from './components/PortalFooter';
 import PortalHome from './pages/PortalHome';
 import PortalAbout from './pages/PortalAbout';
@@ -158,6 +160,23 @@ export default function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  const [bgMode, setBgMode] = useState(() => {
+    try {
+      return localStorage.getItem('raithu_velugu_bg_mode') || 'aurora';
+    } catch {
+      return 'aurora';
+    }
+  });
+
+  const handleSelectBgMode = (mode) => {
+    setBgMode(mode);
+    try {
+      localStorage.setItem('raithu_velugu_bg_mode', mode);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const [activeSection, setActiveSection] = useState('chat'); // 'chat' | 'grievances' | 'account'
   const [sessionId, setSessionId] = useState(() => `kiosk-${Date.now()}`);
@@ -447,8 +466,10 @@ const apiFetch = async (endpoint, options = {}) => {
     return (
       <div 
         data-lang="en"
-        className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-slate-900 selection:text-white"
+        className="min-h-screen bg-[#f4f9f6]/80 text-slate-900 flex flex-col justify-between selection:bg-emerald-600 selection:text-white relative"
       >
+        <AnimatedAgriBackground mode={bgMode} />
+        <BgAnimationSwitcher currentMode={bgMode} onSelectMode={handleSelectBgMode} />
         <PortalNavbar
           currentPage={portalPage}
           onNavigate={(page) => navigateTo(page)}
@@ -551,8 +572,12 @@ const apiFetch = async (endpoint, options = {}) => {
   return (
     <div 
       data-lang={language}
-      className="flex flex-col h-screen overflow-hidden bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white"
+      className="flex flex-col h-screen overflow-hidden bg-[#f4f9f6]/85 text-slate-900 selection:bg-emerald-600 selection:text-white relative"
     >
+      {/* Live Animated Background */}
+      <AnimatedAgriBackground mode={bgMode} />
+      <BgAnimationSwitcher currentMode={bgMode} onSelectMode={handleSelectBgMode} />
+
       {/* Top Header */}
       <Header
         currentLanguage={language}
@@ -589,11 +614,11 @@ const apiFetch = async (endpoint, options = {}) => {
 
               {loading && (
                 <div className="flex items-center gap-2.5 my-2">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center shrink-0 text-xs shadow-md border border-blue-600/50">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 text-amber-300 flex items-center justify-center shrink-0 text-xs shadow-md border border-emerald-500/50">
                     🌾
                   </div>
                   <div className="p-3 rounded-2xl rounded-tl-xs bg-white border border-slate-200/80 shadow-xs flex items-center gap-2 text-xs text-slate-600 font-medium">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-900 shrink-0" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-900 shrink-0" />
                     <span>
                       {language === 'en' 
                         ? 'Consulting Cooperative Law Knowledge Base & Groq AI...' 
@@ -732,7 +757,7 @@ const apiFetch = async (endpoint, options = {}) => {
             </div>
             <button
               onClick={() => resetIdleTimer()}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white font-bold text-xs shadow-md border border-blue-600/50 transition-all cursor-pointer active:scale-95"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs shadow-md border border-emerald-500/50 transition-all cursor-pointer active:scale-95"
             >
               {language === 'te' ? 'నేను ఇక్కడే ఉన్నాను (కొనసాగించండి)' : "I'm still here (Continue)"}
             </button>

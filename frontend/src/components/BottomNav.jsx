@@ -39,17 +39,17 @@ export default function BottomNav({ activeSection, onSectionChange, language }) 
           onClick={() => onSectionChange('chat')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all cursor-pointer select-none ${
             activeSection === 'chat'
-              ? 'text-blue-950'
+              ? 'text-emerald-950'
               : 'text-slate-500 hover:text-slate-800'
           }`}
         >
           <div className={`p-1.5 rounded-xl transition-all ${
-            activeSection === 'chat' ? 'bg-blue-100/90 text-blue-950 border border-blue-200/70' : 'bg-transparent'
+            activeSection === 'chat' ? 'bg-emerald-100/90 text-emerald-950 border border-emerald-300/70' : 'bg-transparent'
           }`}>
             <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <span className={`text-[11px] sm:text-xs tracking-tight mt-0.5 ${
-            activeSection === 'chat' ? 'font-bold text-blue-950' : 'font-medium'
+            activeSection === 'chat' ? 'font-bold text-emerald-950' : 'font-medium'
           }`}>
             {t.chat}
           </span>
@@ -60,17 +60,17 @@ export default function BottomNav({ activeSection, onSectionChange, language }) 
           onClick={() => onSectionChange('grievances')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all cursor-pointer select-none ${
             activeSection === 'grievances'
-              ? 'text-blue-950'
+              ? 'text-emerald-950'
               : 'text-slate-500 hover:text-slate-800'
           }`}
         >
           <div className={`p-1.5 rounded-xl transition-all ${
-            activeSection === 'grievances' ? 'bg-blue-100/90 text-blue-950 border border-blue-200/70' : 'bg-transparent'
+            activeSection === 'grievances' ? 'bg-emerald-100/90 text-emerald-950 border border-emerald-300/70' : 'bg-transparent'
           }`}>
             <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <span className={`text-[11px] sm:text-xs tracking-tight mt-0.5 ${
-            activeSection === 'grievances' ? 'font-bold text-blue-950' : 'font-medium'
+            activeSection === 'grievances' ? 'font-bold text-emerald-950' : 'font-medium'
           }`}>
             {t.grievances}
           </span>
@@ -81,17 +81,17 @@ export default function BottomNav({ activeSection, onSectionChange, language }) 
           onClick={() => onSectionChange('account')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all cursor-pointer select-none ${
             activeSection === 'account'
-              ? 'text-blue-950'
+              ? 'text-emerald-950'
               : 'text-slate-500 hover:text-slate-800'
           }`}
         >
           <div className={`p-1.5 rounded-xl transition-all ${
-            activeSection === 'account' ? 'bg-blue-100/90 text-blue-950 border border-blue-200/70' : 'bg-transparent'
+            activeSection === 'account' ? 'bg-emerald-100/90 text-emerald-950 border border-emerald-300/70' : 'bg-transparent'
           }`}>
             <UserCheck className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <span className={`text-[11px] sm:text-xs tracking-tight mt-0.5 ${
-            activeSection === 'account' ? 'font-bold text-blue-950' : 'font-medium'
+            activeSection === 'account' ? 'font-bold text-emerald-950' : 'font-medium'
           }`}>
             {t.account}
           </span>

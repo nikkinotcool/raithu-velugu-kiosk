@@ -462,13 +462,13 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
   return (
     <div 
       data-lang={language}
-      className="min-h-screen bg-slate-50 flex flex-col justify-between text-slate-900 selection:bg-blue-600 selection:text-white"
+      className="min-h-screen bg-slate-50 flex flex-col justify-between text-slate-900 selection:bg-emerald-600 selection:text-white"
     >
       {/* Sleek Minimal Header */}
       <header className="px-4 py-3 sm:px-8 border-b border-slate-200/70 bg-white shadow-xs">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-amber-300 flex items-center justify-center font-bold text-sm shadow-md border border-blue-600/50">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 text-amber-300 flex items-center justify-center font-bold text-sm shadow-md border border-emerald-500/50">
               🌾
             </div>
             <div>
@@ -487,7 +487,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
               <button
                 type="button"
                 onClick={onBackToPortal}
-                className="px-3 py-1.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white border border-blue-700/60 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
+                className="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white border border-emerald-600/50 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
               >
                 <span>← {language === 'te' ? 'పోర్టల్ హోమ్' : (language === 'hi' ? 'पोर्टल होम' : 'Back to Portal')}</span>
               </button>
@@ -533,7 +533,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              <LogIn className="w-3.5 h-3.5 text-blue-800" />
+              <LogIn className="w-3.5 h-3.5 text-emerald-800" />
               <span>{t.tabSignIn}</span>
             </button>
             <button
@@ -545,7 +545,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              <UserPlus className="w-3.5 h-3.5 text-blue-800" />
+              <UserPlus className="w-3.5 h-3.5 text-emerald-800" />
               <span>{t.tabRegister}</span>
             </button>
           </div>
@@ -559,7 +559,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
               <button
                 type="button"
                 onClick={handleWalkInGuest}
-                className="self-start text-[11px] font-bold text-blue-900 underline hover:text-blue-950 mt-0.5"
+                className="self-start text-[11px] font-bold text-emerald-800 underline hover:text-emerald-950 mt-0.5"
               >
                 👉 {t.guestWalkIn}
               </button>
@@ -567,8 +567,8 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
           )}
 
           {successMsg && (
-            <div className="p-3 rounded-xl bg-blue-50 text-blue-950 text-xs font-medium flex items-center gap-2 mb-4 border border-blue-200">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-blue-700" />
+            <div className="p-3 rounded-xl bg-emerald-50 text-emerald-950 text-xs font-medium flex items-center gap-2 mb-4 border border-emerald-200">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-700" />
               <span>{successMsg}</span>
             </div>
           )}
@@ -583,7 +583,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   onClick={() => { setActiveTab('farmer'); setError(''); }}
                   className={`flex-1 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     activeTab === 'farmer'
-                      ? 'border-blue-700 bg-blue-50/70 text-blue-950 font-bold shadow-xs'
+                      ? 'border-emerald-600 bg-emerald-50/80 text-emerald-950 font-bold shadow-xs'
                       : 'border-slate-200 bg-white text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -595,7 +595,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   onClick={() => { setActiveTab('officer'); setError(''); }}
                   className={`flex-1 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     activeTab === 'officer'
-                      ? 'border-blue-700 bg-blue-50/70 text-blue-950 font-bold shadow-xs'
+                      ? 'border-emerald-600 bg-emerald-50/80 text-emerald-950 font-bold shadow-xs'
                       : 'border-slate-200 bg-white text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -618,7 +618,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder={t.phonePlaceholder}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
+                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
@@ -635,7 +635,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                         value={farmerPassword}
                         onChange={(e) => setFarmerPassword(e.target.value)}
                         placeholder={t.passPlaceholder}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
+                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
@@ -643,7 +643,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   <button
                     type="submit"
                     disabled={loading || !phoneNumber.trim()}
-                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-600/50 active:scale-98 mt-2"
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-emerald-500/40 active:scale-98 mt-2"
                   >
                     {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                     <span>{loading ? t.btnVerifying : t.btnSignIn}</span>
@@ -661,7 +661,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                     <button
                       type="button"
                       onClick={fillDemoFarmer}
-                      className="text-blue-900 hover:text-blue-950 font-semibold cursor-pointer underline"
+                      className="text-emerald-800 hover:text-emerald-950 font-semibold cursor-pointer underline"
                     >
                       {t.fillDemo}
                     </button>
@@ -686,7 +686,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder={t.officerIdPlaceholder}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                     />
                   </div>
 
@@ -702,7 +702,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                         value={officerPassword}
                         onChange={(e) => setOfficerPassword(e.target.value)}
                         placeholder={t.officerPassPlaceholder}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
+                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
@@ -748,7 +748,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
                   placeholder={t.regNamePlaceholder}
-                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white"
                 />
               </div>
 
@@ -765,7 +765,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                     value={regPhone}
                     onChange={(e) => setRegPhone(e.target.value.replace(/\D/g, ''))}
                     placeholder="9876543210"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white"
                   />
                 </div>
               </div>
@@ -782,7 +782,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white"
                   />
                 </div>
               </div>
@@ -795,14 +795,14 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   type="text"
                   value={regDistrict}
                   onChange={(e) => setRegDistrict(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-blue-700 focus:bg-white"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-emerald-600 focus:bg-white"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading || !regName.trim() || !regPhone.trim() || !regPassword.trim()}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-blue-600/50 active:scale-98 mt-3"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-emerald-500/40 active:scale-98 mt-3"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 <span>{loading ? t.btnCreating : t.btnRegister}</span>
@@ -819,7 +819,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                 <button
                   type="button"
                   onClick={() => setAuthMode('signin')}
-                  className="text-blue-900 hover:underline font-semibold cursor-pointer"
+                  className="text-emerald-800 hover:underline font-semibold cursor-pointer"
                 >
                   {t.alreadyRegistered}
                 </button>

@@ -117,7 +117,7 @@ export default function ChatMessage({
     <div className={`flex w-full gap-2.5 sm:gap-3 my-2.5 sm:my-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
       {/* Assistant Avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 flex items-center justify-center text-amber-300 shrink-0 font-bold text-xs shadow-md border border-blue-600/50">
+        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 flex items-center justify-center text-amber-300 shrink-0 font-bold text-xs shadow-md border border-emerald-600/50">
           🌾
         </div>
       )}
@@ -127,15 +127,15 @@ export default function ChatMessage({
         data-lang={lang}
         className={`max-w-[90%] sm:max-w-[80%] rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-sm ${
           isUser 
-            ? 'bg-gradient-to-r from-blue-700 to-indigo-800 text-white rounded-tr-xs font-medium shadow-md leading-relaxed border border-blue-600/50' 
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-tr-xs font-medium shadow-md leading-relaxed border border-emerald-500/40' 
             : 'bg-white text-slate-800 rounded-tl-xs border border-slate-200/90 shadow-2xs'
         }`}
       >
         {/* Header for Assistant Messages */}
         {!isUser && (
           <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-100">
-            <span className="text-[11px] font-bold text-blue-950 flex items-center gap-1.5 font-sans">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+            <span className="text-[11px] font-bold text-emerald-950 flex items-center gap-1.5 font-sans">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
               {t.advisor}
             </span>
             <button
@@ -145,7 +145,7 @@ export default function ChatMessage({
               className={`min-h-[34px] sm:min-h-[36px] px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer select-none touch-manipulation active:scale-95 shadow-xs font-sans ${
                 isPlayingTTS 
                   ? 'bg-rose-100 text-rose-800 border border-rose-300' 
-                  : 'bg-blue-50 hover:bg-blue-100 text-blue-950 border border-blue-200/80 active:bg-blue-200'
+                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border border-emerald-200/80 active:bg-emerald-200'
               }`}
               title="Voice Readout"
               aria-label={isPlayingTTS ? t.stop : t.listen}
@@ -162,7 +162,7 @@ export default function ChatMessage({
                 </>
               ) : (
                 <>
-                  <Volume2 className="w-3.5 h-3.5 text-blue-800 shrink-0" />
+                  <Volume2 className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
                   <span>{t.listen}</span>
                 </>
               )}
@@ -197,7 +197,7 @@ export default function ChatMessage({
                 className="text-slate-500 hover:text-slate-800 cursor-pointer p-0.5"
                 title="Copy ID"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-blue-700" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-700" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
             </div>
 
@@ -206,7 +206,7 @@ export default function ChatMessage({
               <button
                 type="button"
                 onClick={() => printGrievanceReceipt(message.grievance_ticket, currentUser)}
-                className="flex-1 py-1.5 px-2.5 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border border-blue-700/60"
+                className="flex-1 py-1.5 px-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border border-emerald-600/50"
                 title="Print or Save Receipt as PDF"
               >
                 <Printer className="w-3.5 h-3.5 text-amber-400" />
@@ -237,15 +237,15 @@ export default function ChatMessage({
         {message.sources && message.sources.length > 0 && (
           <div className="mt-3 pt-2.5 border-t border-slate-100 font-sans">
             <div className="flex items-center gap-1 mb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              <BookOpen className="w-3 h-3 text-blue-800" />
+              <BookOpen className="w-3 h-3 text-emerald-800" />
               <span>{t.legalRef}</span>
             </div>
             <div className="space-y-1.5">
               {message.sources.map((src, i) => (
                 <div key={i} className="p-2 rounded-lg bg-slate-50 border border-slate-100 text-[11px] leading-snug">
-                  <div className="flex items-center justify-between font-bold text-blue-950">
+                  <div className="flex items-center justify-between font-bold text-emerald-950">
                     <span>{src.act_or_scheme}</span>
-                    <span className="text-[10px] text-blue-800 font-semibold">{src.section}</span>
+                    <span className="text-[10px] text-emerald-800 font-semibold">{src.section}</span>
                   </div>
                   <p className="text-slate-600 mt-0.5">{src.clause_text}</p>
                 </div>
@@ -277,7 +277,7 @@ export default function ChatMessage({
                   className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer text-left flex items-center gap-1.5 ${
                     isGrievance
                       ? 'bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 shadow-xs font-bold'
-                      : 'bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-950 border border-slate-200/60 hover:border-blue-200'
+                      : 'bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-950 border border-slate-200/60 hover:border-emerald-200'
                   }`}
                 >
                   {isGrievance ? <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0" /> : <span>👉</span>}

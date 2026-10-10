@@ -236,7 +236,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 rounded-2xl bg-blue-50 text-blue-950 border border-blue-200">
+          <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-950 border border-emerald-200">
             <PackageCheck className="w-6 h-6" />
           </div>
           <div>
@@ -251,8 +251,8 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
 
         {/* Live Status Highlights Bar */}
         <div className="grid grid-cols-2 gap-2.5 mb-4">
-          <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-200">
-            <div className="text-[11px] font-semibold text-blue-950 uppercase tracking-wider">{t.totalStock}</div>
+          <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+            <div className="text-[11px] font-semibold text-emerald-950 uppercase tracking-wider">{t.totalStock}</div>
             <div className="text-2xl font-black text-slate-950 mt-0.5">
               {stockData?.total_bags_available || 1130} <span className="text-xs font-semibold text-slate-600">{t.bags}</span>
             </div>
@@ -274,7 +274,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
             <button
               onClick={() => setFilter('all')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                filter === 'all' ? 'bg-blue-800 text-white shadow-xs border border-blue-700' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                filter === 'all' ? 'bg-emerald-700 text-white shadow-xs border border-emerald-600' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {t.filterAll}
@@ -282,7 +282,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
             <button
               onClick={() => setFilter('fertilizer')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                filter === 'fertilizer' ? 'bg-blue-800 text-white shadow-xs border border-blue-700' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                filter === 'fertilizer' ? 'bg-emerald-700 text-white shadow-xs border border-emerald-600' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {t.filterFertilizer}
@@ -290,7 +290,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
             <button
               onClick={() => setFilter('seeds')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                filter === 'seeds' ? 'bg-blue-800 text-white shadow-xs border border-blue-700' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                filter === 'seeds' ? 'bg-emerald-700 text-white shadow-xs border border-emerald-600' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {t.filterSeeds}
@@ -300,9 +300,9 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
           <button
             onClick={handleSpeak}
             disabled={isSpeaking}
-            className="px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-950 border border-blue-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-95"
+            className="px-3 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border border-emerald-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-95"
           >
-            <Volume2 className={`w-3.5 h-3.5 ${isSpeaking ? 'animate-bounce text-blue-700' : 'text-blue-800'}`} />
+            <Volume2 className={`w-3.5 h-3.5 ${isSpeaking ? 'animate-bounce text-emerald-700' : 'text-emerald-800'}`} />
             <span>{isSpeaking ? t.speaking : t.listen}</span>
           </button>
         </div>
@@ -317,7 +317,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
             return (
               <div
                 key={item.id}
-                className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-blue-300 transition-all shadow-xs"
+                className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-emerald-300 transition-all shadow-xs"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -329,7 +329,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
                   <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold shrink-0 border ${
                     isLimited
                       ? 'bg-amber-100 text-amber-800 border-amber-300'
-                      : 'bg-blue-100 text-blue-950 border-blue-300'
+                      : 'bg-emerald-100 text-emerald-950 border-emerald-300'
                   }`}>
                     {item.stock_bags} {t.bags} ({isLimited ? t.limited : t.inStock})
                   </span>
@@ -338,7 +338,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
                 <div className="mt-2.5 grid grid-cols-3 gap-2 pt-2 border-t border-slate-200/70 text-center">
                   <div className="p-1.5 rounded-xl bg-white border border-slate-200">
                     <span className="text-[10px] font-semibold text-slate-500 block">{t.govtPrice}</span>
-                    <span className="text-sm font-black text-blue-950">₹{item.govt_rate.toFixed(2)}</span>
+                    <span className="text-sm font-black text-emerald-950">₹{item.govt_rate.toFixed(2)}</span>
                   </div>
                   <div className="p-1.5 rounded-xl bg-white border border-slate-200">
                     <span className="text-[10px] font-semibold text-slate-500 block">{t.marketPrice}</span>
@@ -351,7 +351,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
                 </div>
 
                 <div className="mt-2 text-[11px] text-slate-600 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-blue-800 shrink-0" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
                   <span><strong>{t.quota}:</strong> {quotaRule}</span>
                 </div>
               </div>
@@ -360,7 +360,7 @@ export default function FertilizerStockModal({ isOpen, onClose, language = 'te',
         </div>
 
         {/* Member Personalized Entitlement Box */}
-        <div className="mt-4 p-3 rounded-2xl bg-gradient-to-r from-[#0c2340] via-[#102e54] to-[#184275] text-white shadow-md border border-blue-800/60">
+        <div className="mt-4 p-3 rounded-2xl bg-gradient-to-r from-[#073826] via-[#094731] to-[#0d593d] text-white shadow-md border border-emerald-700/50">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs font-bold flex items-center gap-1 text-amber-400">
               <Sparkles className="w-3.5 h-3.5" />
