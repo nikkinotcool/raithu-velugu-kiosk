@@ -1,10 +1,10 @@
 /**
  * Universal Resilient Speech Synthesis Utility for Raithu Velugu Kiosk
  * - Dual-Engine Architecture:
- *   1. Primary: Server-side Studio Neural Voice (Azure Neural te-IN-MohanNeural / Sarvam Bulbul / ElevenLabs)
+ *   1. Primary: Sarvam AI Bulbul:v4-flash (100% authentic native Indian human voice)
  *      with letter-by-letter acronym expansion for PACS, PMFBY, and KCC.
- *   2. Secondary: Instant Client Fallback via browser SpeechSynthesis with best-available voice scoring.
- *   - Guaranteed zero silence: Audio is guaranteed to play immediately on tap.
+ *   2. Secondary: Microsoft Azure Studio Neural TTS (te-IN-MohanNeural / hi-IN-MadhurNeural).
+ *   3. Client Fallback: Browser Web Speech API only as last resort.
  */
 
 import { fetchWithCloudFallback, getApiBase } from './apiClient';
@@ -133,7 +133,7 @@ export function getBestVoice(lang = 'en') {
 }
 
 /**
- * Client SpeechSynthesis Fallback: Speaks immediately so user never experiences silence.
+ * Client SpeechSynthesis Fallback: Only used as an absolute last resort if server is unreachable.
  */
 export function speakWithBrowserFallback({ text, language, onStart, onEnd, onError }) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
@@ -199,7 +199,6 @@ export function speakWithBrowserFallback({ text, language, onStart, onEnd, onErr
     onError(e);
   };
 
-  // Small delay ensures previous speech cancel is flushed
   setTimeout(() => {
     try {
       window.speechSynthesis.resume();
@@ -212,9 +211,8 @@ export function speakWithBrowserFallback({ text, language, onStart, onEnd, onErr
 }
 
 /**
- * Universal High-Definition Speech Synthesis
- * - Tries server-side studio neural audio first.
- * - If server takes >3.5s or fails, immediately falls back to client speech so user NEVER gets silence.
+ * High-Definition Speech Synthesis (Sarvam AI Bulbul:v4-flash)
+ * Generates natural human voice via server backend.
  */
 export async function speakMessage({
   text,
@@ -231,10 +229,10 @@ export async function speakMessage({
     return;
   }
 
-  // 1. Fast attempt to synthesize Studio Neural Audio on Backend
+  // 1. Primary: Server Neural Audio (Sarvam AI Bulbul:v4-flash)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3800); // 3.8s fast timeout
+    const timeoutId = setTimeout(() => controller.abort(), 16000); // 16s timeout to give neural generation plenty of headroom
 
     const res = await fetchWithCloudFallback('/tts', {
       method: 'POST',
@@ -250,6 +248,7 @@ export async function speakMessage({
     if (res.ok) {
       const audioBlob = await res.blob();
       if (audioBlob && audioBlob.size > 500) {
+        console.log(`[Speech] Successfully playing Sarvam AI neural audio (${audioBlob.size} bytes)`);
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
         activeAudio = audio;
@@ -264,7 +263,8 @@ export async function speakMessage({
           onEnd();
         };
 
-        audio.onerror = () => {
+        audio.onerror = (e) => {
+          console.warn('[Speech] Audio playback error:', e);
           stopSpeech();
           speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
         };
@@ -274,10 +274,10 @@ export async function speakMessage({
       }
     }
   } catch (err) {
-    console.warn('[Speech] Server neural audio unavailable or timed out; activating instant fallback:', err.message);
+    console.warn('[Speech] Server neural audio request failed:', err.message);
   }
 
-  // 2. Guaranteed Instant Fallback: Speaks immediately so the user hears voice without delay
+  // 2. Fallback only if server was unreachable
   speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
 }
 

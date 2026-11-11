@@ -20,7 +20,7 @@ AZURE_NEURAL_VOICES = {
     "mr": "mr-IN-ManoharNeural",             # Natural Marathi male voice
 }
 
-# Sarvam AI Voice Codes & Native Regional Speakers
+# Sarvam AI Voice Codes & Native Conversational Speakers (Bulbul:v4-flash)
 SARVAM_LANG_MAP = {
     "te": "te-IN",
     "hi": "hi-IN",
@@ -31,12 +31,12 @@ SARVAM_LANG_MAP = {
 }
 
 SARVAM_SPEAKERS = {
-    "te": "kavitha",   # Authentic native Telugu voice
-    "hi": "shubh",     # Clear natural Hindi voice
-    "en": "shubh",     # Natural Indian English voice
-    "ta": "vijay",     # Natural Tamil voice
-    "kn": "chetan",    # Natural Kannada voice
-    "mr": "rupali",    # Natural Marathi voice
+    "te": "kavitha_te_conversation",   # Authentic native conversational Telugu voice
+    "hi": "aditya_hi_conversational",   # Natural conversational Hindi voice
+    "en": "simran_en_conversation",     # Fluent conversational Indian English
+    "ta": "vijay_ta_narration",         # Authentic Tamil voice
+    "kn": "chaitra_kn_conversation",    # Authentic Kannada voice
+    "mr": "ishita_mr_conversational",   # Authentic Marathi voice
 }
 
 # Acronyms that must be pronounced letter-by-letter for natural cooperative comprehension
@@ -90,7 +90,7 @@ def sanitize_text_for_speech(text: str) -> str:
 
 async def generate_sarvam_tts(clean_text: str, language: str) -> Optional[bytes]:
     """
-    Synthesizes speech using Sarvam AI (Bulbul:v3) - the gold standard Indian AI speech model.
+    Synthesizes speech using Sarvam AI (Bulbul:v4-flash) - ultra-fast native Indian speech model.
     Produces 100% human-grade, regional speech with natural pacing and authentic dialect accents.
     """
     if not settings.SARVAM_API_KEY:
@@ -98,7 +98,7 @@ async def generate_sarvam_tts(clean_text: str, language: str) -> Optional[bytes]
     try:
         url = "https://api.sarvam.ai/text-to-speech"
         target_lang = SARVAM_LANG_MAP.get(language, "te-IN")
-        speaker = SARVAM_SPEAKERS.get(language, "kavitha")
+        speaker = SARVAM_SPEAKERS.get(language, "kavitha_te_conversation")
         headers = {
             "api-subscription-key": settings.SARVAM_API_KEY,
             "Content-Type": "application/json"
@@ -112,7 +112,7 @@ async def generate_sarvam_tts(clean_text: str, language: str) -> Optional[bytes]
             "loudness": 1.5,
             "speech_sample_rate": 22050,
             "enable_preprocessing": True,
-            "model": "bulbul:v3"
+            "model": "bulbul:v4-flash"
         }
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(url, headers=headers, json=payload)
