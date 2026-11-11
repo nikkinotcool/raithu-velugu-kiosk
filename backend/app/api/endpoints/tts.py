@@ -20,7 +20,7 @@ AZURE_NEURAL_VOICES = {
     "mr": "mr-IN-ManoharNeural",             # Natural Marathi male voice
 }
 
-# Sarvam AI Voice Codes (Language + Speaker)
+# Sarvam AI Voice Codes & Native Regional Speakers
 SARVAM_LANG_MAP = {
     "te": "te-IN",
     "hi": "hi-IN",
@@ -28,6 +28,15 @@ SARVAM_LANG_MAP = {
     "kn": "kn-IN",
     "ta": "ta-IN",
     "mr": "mr-IN",
+}
+
+SARVAM_SPEAKERS = {
+    "te": "kavitha",   # Authentic native Telugu voice
+    "hi": "shubh",     # Clear natural Hindi voice
+    "en": "shubh",     # Natural Indian English voice
+    "ta": "vijay",     # Natural Tamil voice
+    "kn": "chetan",    # Natural Kannada voice
+    "mr": "rupali",    # Natural Marathi voice
 }
 
 # Acronyms that must be pronounced letter-by-letter for natural cooperative comprehension
@@ -81,13 +90,15 @@ def sanitize_text_for_speech(text: str) -> str:
 
 async def generate_sarvam_tts(clean_text: str, language: str) -> Optional[bytes]:
     """
-    Synthesizes speech using Sarvam AI (Bulbul:v1) - the gold standard Indian AI speech model.
+    Synthesizes speech using Sarvam AI (Bulbul:v3) - the gold standard Indian AI speech model.
+    Produces 100% human-grade, regional speech with natural pacing and authentic dialect accents.
     """
     if not settings.SARVAM_API_KEY:
         return None
     try:
         url = "https://api.sarvam.ai/text-to-speech"
         target_lang = SARVAM_LANG_MAP.get(language, "te-IN")
+        speaker = SARVAM_SPEAKERS.get(language, "kavitha")
         headers = {
             "api-subscription-key": settings.SARVAM_API_KEY,
             "Content-Type": "application/json"
@@ -95,13 +106,13 @@ async def generate_sarvam_tts(clean_text: str, language: str) -> Optional[bytes]
         payload = {
             "inputs": [clean_text[:500]],
             "target_language_code": target_lang,
-            "speaker": "meera",
+            "speaker": speaker,
             "pitch": 0,
             "pace": 1.0,
             "loudness": 1.5,
             "speech_sample_rate": 22050,
             "enable_preprocessing": True,
-            "model": "bulbul:v1"
+            "model": "bulbul:v3"
         }
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(url, headers=headers, json=payload)
@@ -110,6 +121,8 @@ async def generate_sarvam_tts(clean_text: str, language: str) -> Optional[bytes]
                 audios = data.get("audios", [])
                 if audios:
                     return base64.b64decode(audios[0])
+            else:
+                print(f"Sarvam AI API error: {resp.status_code} - {resp.text}")
     except Exception as e:
         print(f"Sarvam AI TTS error: {e}")
     return None
@@ -202,11 +215,13 @@ async def generate_speech_post(req: TTSRequest):
     if not audio or len(audio) == 0:
         raise HTTPException(status_code=500, detail="Failed to synthesize neural audio.")
 
+    media_type = "audio/wav" if audio[:4] == b"RIFF" else "audio/mpeg"
+
     return Response(
         content=audio,
-        media_type="audio/mpeg",
+        media_type=media_type,
         headers={
-            "Content-Type": "audio/mpeg",
+            "Content-Type": media_type,
             "Content-Length": str(len(audio)),
             "Cache-Control": "public, max-age=86400",
             "Accept-Ranges": "bytes"

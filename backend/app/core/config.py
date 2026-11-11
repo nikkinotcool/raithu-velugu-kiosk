@@ -1,5 +1,13 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+
+# Load .env whether running from root, backend, or on Render
+_base_dir = Path(__file__).resolve().parent.parent.parent
+load_dotenv(_base_dir / ".env")
+load_dotenv(".env")
+load_dotenv("backend/.env")
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Raithu Velugu - Multilingual Cooperative AI Kiosk"

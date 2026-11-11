@@ -44,15 +44,43 @@ async def transcribe_audio(
     if not audio_bytes or len(audio_bytes) < 100:
         raise HTTPException(status_code=400, detail="Audio file is empty or corrupted.")
 
+    target_lang = LANG_MAP.get(language, "te")
+    filename = file.filename or "audio.webm"
+    content_type = file.content_type or "audio/webm"
+
+    # Tier 1: Sarvam AI Saaras:v3 (Native Indic Regional Speech Recognition)
+    if settings.SARVAM_API_KEY:
+        try:
+            sarvam_lang = f"{target_lang}-IN" if target_lang in ["te", "hi", "kn", "ta", "mr", "en"] else "te-IN"
+            sarvam_headers = {"api-subscription-key": settings.SARVAM_API_KEY}
+            sarvam_files = {"file": (filename, audio_bytes, content_type)}
+            sarvam_data = {"model": "saaras:v3", "language_code": sarvam_lang}
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                sarvam_resp = await client.post(
+                    "https://api.sarvam.ai/speech-to-text",
+                    headers=sarvam_headers,
+                    files=sarvam_files,
+                    data=sarvam_data
+                )
+                if sarvam_resp.status_code == 200:
+                    sarvam_result = sarvam_resp.json()
+                    sarvam_text = sarvam_result.get("transcript", "").strip()
+                    if sarvam_text:
+                        return {
+                            "text": sarvam_text,
+                            "language": target_lang,
+                            "status": "success",
+                            "engine": "sarvam-saaras-v3"
+                        }
+        except Exception as sarvam_err:
+            print(f"Sarvam STT failed, falling back to Groq Whisper: {sarvam_err}")
+
+    # Tier 2: Groq Whisper Large V3 with Domain Indic Conditioning
     api_key = settings.LLM_API_KEY
     if not api_key:
         raise HTTPException(status_code=500, detail="LLM_API_KEY is not configured for Speech-to-Text.")
 
-    target_lang = LANG_MAP.get(language, "te")
     native_prompt = LANGUAGE_PROMPTS.get(target_lang, LANGUAGE_PROMPTS["en"])
-    filename = file.filename or "audio.webm"
-    content_type = file.content_type or "audio/webm"
-
     headers = {"Authorization": f"Bearer {api_key}"}
     files = {"file": (filename, audio_bytes, content_type)}
 
