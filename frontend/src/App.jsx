@@ -7,7 +7,6 @@ import ChatInput from './components/ChatInput';
 import GrievanceTrackerModal from './components/GrievanceTrackerModal';
 import GrievancesSection from './components/GrievancesSection';
 import AccountSection from './components/AccountSection';
-import AdminDrawer from './components/AdminDrawer';
 import SignInPage from './components/SignInPage';
 import LodgeGrievanceModal from './components/LodgeGrievanceModal';
 import SchemesModal from './components/SchemesModal';
@@ -190,67 +189,11 @@ export default function App() {
   // Modals state
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [activeTrackingId, setActiveTrackingId] = useState('');
-  const [adminOpen, setAdminOpen] = useState(false);
   const [lodgeModalOpen, setLodgeModalOpen] = useState(false);
   const [schemesModalOpen, setSchemesModalOpen] = useState(false);
   const [stockModalOpen, setStockModalOpen] = useState(false);
   const [helplineModalOpen, setHelplineModalOpen] = useState(false);
   const [voiceTrigger, setVoiceTrigger] = useState(0);
-
-  // Kiosk Inactivity Privacy Auto-Reset Timer
-  const [idleWarning, setIdleWarning] = useState(false);
-  const [idleCountdown, setIdleCountdown] = useState(20);
-  const idleTimerRef = useRef(null);
-  const countdownIntervalRef = useRef(null);
-
-  const resetIdleTimer = () => {
-    if (!currentUser) return;
-    setIdleWarning(false);
-    setIdleCountdown(20);
-    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
-
-    // 2.5 minutes of total inactivity -> trigger 20-second privacy countdown
-    idleTimerRef.current = setTimeout(() => {
-      setIdleWarning(true);
-      countdownIntervalRef.current = setInterval(() => {
-        setIdleCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(countdownIntervalRef.current);
-            handleLogout();
-            setIdleWarning(false);
-            return 20;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }, 150000); // 150 seconds
-  };
-
-  useEffect(() => {
-    if (!currentUser) {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
-      setIdleWarning(false);
-      return;
-    }
-
-    const events = ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll'];
-    const handleUserActivity = () => {
-      if (!idleWarning) {
-        resetIdleTimer();
-      }
-    };
-
-    events.forEach(e => window.addEventListener(e, handleUserActivity, { passive: true }));
-    resetIdleTimer();
-
-    return () => {
-      events.forEach(e => window.removeEventListener(e, handleUserActivity));
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
-    };
-  }, [currentUser, idleWarning]);
 
   const messagesEndRef = useRef(null);
   const isFirstMountRef = useRef(true);
@@ -677,13 +620,6 @@ const apiFetch = async (endpoint, options = {}) => {
         language={language}
       />
 
-      {/* PACS Admin Drawer */}
-      <AdminDrawer
-        isOpen={adminOpen}
-        onClose={() => setAdminOpen(false)}
-        apiBase={API_BASE}
-      />
-
       {/* File Complaint / Raise Grievance Dedicated Voice & Text Modal */}
       <LodgeGrievanceModal
         isOpen={lodgeModalOpen}
@@ -721,36 +657,6 @@ const apiFetch = async (endpoint, options = {}) => {
         language={language}
         apiBase={API_BASE}
       />
-
-      {/* Kiosk Inactivity Privacy Warning Modal */}
-      {idleWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full text-center shadow-2xl border border-slate-200 space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-800 mx-auto flex items-center justify-center text-2xl font-bold">
-              ⏳
-            </div>
-            <div>
-              <h3 className="font-heading text-lg font-bold text-slate-900">
-                {language === 'te' ? 'మీరు ఇంకా కియోస్క్ వద్ద ఉన్నారా?' : 'Are you still there?'}
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                {language === 'te'
-                  ? 'మీ సమాచార భద్రత కోసం కియోస్క్ హోమ్ స్క్రీన్‌కు చేరుకుంటుంది.'
-                  : 'For privacy on public kiosks, the session will reset automatically.'}
-              </p>
-            </div>
-            <div className="text-3xl font-extrabold font-mono text-amber-700">
-              {idleCountdown}s
-            </div>
-            <button
-              onClick={() => resetIdleTimer()}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs shadow-md border border-emerald-500/50 transition-all cursor-pointer active:scale-95"
-            >
-              {language === 'te' ? 'నేను ఇక్కడే ఉన్నాను (కొనసాగించండి)' : "I'm still here (Continue)"}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Globe, MoreHorizontal, RefreshCw, LogOut, Maximize, Minimize, 
-  BookOpen, PackageCheck, PhoneCall, LayoutDashboard, ChevronLeft, X 
+  BookOpen, PackageCheck, PhoneCall, ChevronLeft 
 } from 'lucide-react';
 
 const LANGUAGES = [
@@ -194,17 +194,6 @@ export default function Header({
                     </>
                   )}
                 </button>
-
-                {/* Admin Audit Portal */}
-                {onOpenAdmin && (
-                  <button
-                    onClick={() => { onOpenAdmin(); setMenuOpen(false); }}
-                    className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors cursor-pointer"
-                  >
-                    <LayoutDashboard className="w-4 h-4 text-slate-500" />
-                    <span>Admin Audit Portal</span>
-                  </button>
-                )}
 
                 {/* Logout / Sign Out */}
                 {currentUser && onLogout && (
