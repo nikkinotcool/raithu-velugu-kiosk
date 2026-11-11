@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Volume2, VolumeX, Copy, Check, ChevronRight, ShieldAlert, BookOpen, Printer } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import { speakMessage, stopSpeech } from '../utils/speech';
 import { printGrievanceReceipt } from '../utils/receiptGenerator';
 
@@ -114,11 +117,37 @@ export default function ChatMessage({
           : 'bg-white text-slate-900 rounded-[22px] rounded-bl-[4px] px-5 py-4 shadow-sm border border-slate-100/90'
       }`}>
 
-        {/* Message text with comfortable larger iOS reading size */}
-        <div className={`text-[15px] sm:text-[16px] leading-[1.6] whitespace-pre-line ${
-          isUser ? 'font-normal text-white' : 'font-normal text-slate-800'
+        {/* Message text with comfortable larger iOS reading size & Markdown support */}
+        <div className={`text-[15px] sm:text-[16px] leading-[1.6] ${
+          isUser ? 'font-normal text-white whitespace-pre-wrap' : 'font-normal text-slate-800'
         }`}>
-          {message.content}
+          {isUser ? (
+            message.content
+          ) : (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkBreaks]}
+              components={{
+                h1: ({ node, ...props }) => <h1 className="text-lg font-bold text-slate-900 mt-2 mb-1" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-base font-bold text-slate-900 mt-2 mb-1" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-[15px] sm:text-[16px] font-bold text-emerald-950 mt-2.5 mb-1" {...props} />,
+                h4: ({ node, ...props }) => <h4 className="text-[14px] sm:text-[15px] font-bold text-emerald-950 mt-2 mb-1" {...props} />,
+                p: ({ node, ...props }) => <p className="mb-2 last:mb-0 leading-relaxed text-slate-800" {...props} />,
+                strong: ({ node, ...props }) => <strong className="font-bold text-slate-950" {...props} />,
+                em: ({ node, ...props }) => <em className="italic text-slate-700" {...props} />,
+                ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2 space-y-1.5" {...props} />,
+                ol: ({ node, ...props }) => <ol className="list-decimal pl-5 my-2 space-y-2 text-slate-800" {...props} />,
+                li: ({ node, ...props }) => <li className="leading-relaxed pl-1" {...props} />,
+                code: ({ node, inline, ...props }) =>
+                  inline ? (
+                    <code className="bg-slate-100 text-emerald-800 px-1.5 py-0.5 rounded text-xs font-mono" {...props} />
+                  ) : (
+                    <code className="block bg-slate-900 text-slate-100 p-2.5 rounded-xl text-xs font-mono my-2 overflow-x-auto" {...props} />
+                  )
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
+          )}
         </div>
 
         {/* Bottom Audio Player Bar for Assistant Messages */}
