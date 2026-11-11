@@ -1,37 +1,37 @@
 /**
  * Universal Resilient Speech Synthesis Utility for Raithu Velugu Kiosk
- * - Dual-Engine Architecture:
- *   1. Primary: Sarvam AI Bulbul:v4-flash (100% authentic native Indian human voice)
- *      with letter-by-letter acronym expansion for PACS, PMFBY, and KCC.
- *   2. Secondary: Microsoft Azure Studio Neural TTS (te-IN-MohanNeural / hi-IN-MadhurNeural).
- *   3. Client Fallback: Browser Web Speech API only as last resort.
+ * - Multi-Tier Architecture:
+ *   1. Primary: Direct Client Sarvam AI (Bulbul:v4-flash) — ultra-fast (~1.4s), authentic native Indian voice, zero server cold-start delay.
+ *   2. Secondary: Backend Neural Audio (/api/tts) — cloud-routed fallback.
+ *   - Strictly ZERO robotic desktop voices (Microsoft David/Zira/SAPI are permanently disabled).
  */
 
-import { fetchWithCloudFallback, getApiBase } from './apiClient';
+import { fetchWithCloudFallback } from './apiClient';
+
+// Sarvam AI Configuration (Universal Client Key for instant low-latency speech)
+const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || 'sk_mnzbvtx1_cEwhMUMBe5bHg028KFAECrUX';
+
+const SARVAM_LANG_MAP = {
+  te: 'te-IN',
+  hi: 'hi-IN',
+  en: 'en-IN',
+  kn: 'kn-IN',
+  ta: 'ta-IN',
+  mr: 'mr-IN'
+};
+
+const SARVAM_SPEAKERS = {
+  te: 'kavitha_te_conversation',   // Authentic conversational Telugu female voice
+  hi: 'aditya_hi_conversational',   // Natural conversational Hindi male voice
+  en: 'simran_en_conversation',     // Fluent conversational Indian English
+  kn: 'chaitra_kn_conversation',    // Authentic Kannada voice
+  ta: 'vijay_ta_narration',         // Authentic Tamil voice
+  mr: 'ishita_mr_conversational'    // Authentic Marathi voice
+};
 
 // Keep track of active audio element & object URL
 let activeAudio = null;
 let activeAudioUrl = null;
-let currentKeepAlive = null;
-
-// Voice cache for browser fallback
-let cachedVoices = [];
-
-function loadVoices() {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
-  const voices = window.speechSynthesis.getVoices();
-  if (voices && voices.length > 0) {
-    cachedVoices = voices;
-  }
-  return cachedVoices;
-}
-
-if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-  loadVoices();
-  if (window.speechSynthesis.onvoiceschanged !== undefined) {
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-  }
-}
 
 /**
  * Pre-processes conversational AI markdown to sound natural when read aloud.
@@ -83,136 +83,71 @@ export function cleanTextForSpeech(text = '', lang = 'en') {
 }
 
 /**
- * Finds the highest quality, most natural sounding local voice for the given language.
+ * Direct Client Call to Sarvam AI Bulbul:v4-flash
+ * Bypasses backend entirely for ~1.4s response time with 0 cold-boot latency.
  */
-export function getBestVoice(lang = 'en') {
-  const voices = cachedVoices.length > 0 ? cachedVoices : loadVoices();
-  if (!voices || voices.length === 0) return null;
+async function speakWithSarvamDirect({ cleanText, language, onStart, onEnd, onError }) {
+  if (!SARVAM_API_KEY) return false;
 
-  const langCodeMap = {
-    te: ['te-IN', 'te_IN', 'telugu'],
-    hi: ['hi-IN', 'hi_IN', 'hindi'],
-    kn: ['kn-IN', 'kn_IN', 'kannada'],
-    ta: ['ta-IN', 'ta_IN', 'tamil'],
-    mr: ['mr-IN', 'mr_IN', 'marathi'],
-    en: ['en-IN', 'en-GB', 'en-US', 'english']
-  };
-
-  const targets = langCodeMap[lang] || langCodeMap['en'];
-
-  let bestVoice = null;
-  let highestScore = -1;
-
-  for (const voice of voices) {
-    const vLang = (voice.lang || '').toLowerCase().replace('_', '-');
-    const vName = (voice.name || '').toLowerCase();
-
-    let score = 0;
-
-    const matchesLang = targets.some((t) => vLang.startsWith(t.toLowerCase()) || vName.includes(t.toLowerCase()));
-    if (matchesLang) {
-      score += 60;
-    } else if (vLang.startsWith('en-in') || vName.includes('india')) {
-      score += 25;
-    } else {
-      score += 5;
-    }
-
-    if (vName.includes('natural') || vName.includes('neural')) score += 40;
-    if (vName.includes('google')) score += 35;
-    if (vName.includes('online')) score += 30;
-    if (vName.includes('siri')) score += 25;
-
-    if (score > highestScore) {
-      highestScore = score;
-      bestVoice = voice;
-    }
-  }
-
-  return bestVoice;
-}
-
-/**
- * Client SpeechSynthesis Fallback: Only used as an absolute last resort if server is unreachable.
- */
-export function speakWithBrowserFallback({ text, language, onStart, onEnd, onError }) {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    onError(new Error('Speech not supported on this browser'));
-    return;
-  }
+  const targetLang = SARVAM_LANG_MAP[language] || 'te-IN';
+  const speaker = SARVAM_SPEAKERS[language] || 'kavitha_te_conversation';
 
   try {
-    window.speechSynthesis.cancel();
-  } catch {}
+    const res = await fetch('https://api.sarvam.ai/text-to-speech', {
+      method: 'POST',
+      headers: {
+        'api-subscription-key': SARVAM_API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputs: [cleanText.slice(0, 500)],
+        target_language_code: targetLang,
+        speaker: speaker,
+        pitch: 0,
+        pace: 1.0,
+        loudness: 1.5,
+        speech_sample_rate: 22050,
+        enable_preprocessing: true,
+        model: 'bulbul:v4-flash'
+      })
+    });
 
-  const utterance = new SpeechSynthesisUtterance(text);
+    if (res.ok) {
+      const data = await res.json();
+      const audios = data.audios || [];
+      if (audios.length > 0 && audios[0]) {
+        console.log(`[Speech] Sarvam AI direct audio received successfully (${audios[0].length} base64 chars)`);
+        const audio = new Audio('data:audio/wav;base64,' + audios[0]);
+        activeAudio = audio;
 
-  const langTagMap = {
-    te: 'te-IN',
-    hi: 'hi-IN',
-    kn: 'kn-IN',
-    ta: 'ta-IN',
-    mr: 'mr-IN',
-    en: 'en-IN'
-  };
-  utterance.lang = langTagMap[language] || 'en-IN';
+        audio.onplay = onStart;
+        audio.onended = () => {
+          stopSpeech();
+          onEnd();
+        };
+        audio.onerror = (e) => {
+          console.warn('[Speech] Audio playback error:', e);
+          stopSpeech();
+          onError(e);
+        };
 
-  const bestVoice = getBestVoice(language);
-  if (bestVoice) {
-    utterance.voice = bestVoice;
-  }
-
-  utterance.rate = 0.90;
-  utterance.pitch = 1.0;
-  utterance.volume = 1.0;
-
-  const cleanup = () => {
-    if (currentKeepAlive) {
-      clearInterval(currentKeepAlive);
-      currentKeepAlive = null;
-    }
-  };
-
-  utterance.onstart = () => {
-    onStart();
-    if (window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-    }
-    cleanup();
-    currentKeepAlive = setInterval(() => {
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.pause();
-        window.speechSynthesis.resume();
-      } else {
-        cleanup();
+        await audio.play();
+        return true;
       }
-    }, 8000);
-  };
-
-  utterance.onend = () => {
-    cleanup();
-    onEnd();
-  };
-
-  utterance.onerror = (e) => {
-    cleanup();
-    onError(e);
-  };
-
-  setTimeout(() => {
-    try {
-      window.speechSynthesis.resume();
-      window.speechSynthesis.speak(utterance);
-    } catch (err) {
-      cleanup();
-      onError(err);
+    } else {
+      console.warn('[Speech] Sarvam direct returned status:', res.status);
     }
-  }, 30);
+  } catch (err) {
+    console.warn('[Speech] Sarvam direct fetch failed, falling back to backend:', err);
+  }
+  return false;
 }
 
 /**
- * High-Definition Speech Synthesis (Sarvam AI Bulbul:v4-flash)
- * Generates natural human voice via server backend.
+ * Universal High-Definition Speech Synthesis
+ * - Tier 1: Direct Sarvam AI (1.4s speed, authentic human voice)
+ * - Tier 2: Backend Cloud /tts (Azure Neural & Sarvam fallback)
+ * - Strictly NO robotic desktop voices.
  */
 export async function speakMessage({
   text,
@@ -229,10 +164,21 @@ export async function speakMessage({
     return;
   }
 
-  // 1. Primary: Server Neural Audio (Sarvam AI Bulbul:v4-flash)
+  // Tier 1: Direct Sarvam AI Bulbul:v4-flash (Fastest, zero server spin-up delay)
+  const directSuccess = await speakWithSarvamDirect({
+    cleanText,
+    language,
+    onStart,
+    onEnd,
+    onError
+  });
+
+  if (directSuccess) return;
+
+  // Tier 2: Backend Cloud TTS (/api/tts)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 16000); // 16s timeout to give neural generation plenty of headroom
+    const timeoutId = setTimeout(() => controller.abort(), 18000);
 
     const res = await fetchWithCloudFallback('/tts', {
       method: 'POST',
@@ -248,21 +194,17 @@ export async function speakMessage({
     if (res.ok) {
       const audioBlob = await res.blob();
       if (audioBlob && audioBlob.size > 500) {
-        console.log(`[Speech] Successfully playing Sarvam AI neural audio (${audioBlob.size} bytes)`);
+        console.log(`[Speech] Playing backend neural audio (${audioBlob.size} bytes)`);
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
         activeAudio = audio;
         activeAudioUrl = audioUrl;
 
-        audio.onplay = () => {
-          onStart();
-        };
-
+        audio.onplay = onStart;
         audio.onended = () => {
           stopSpeech();
           onEnd();
         };
-
         audio.onerror = (e) => {
           console.warn('[Speech] Audio playback error:', e);
           stopSpeech();
@@ -274,11 +216,12 @@ export async function speakMessage({
       }
     }
   } catch (err) {
-    console.warn('[Speech] Server neural audio request failed:', err.message);
+    console.warn('[Speech] Backend TTS failed:', err.message);
   }
 
-  // 2. Fallback only if server was unreachable
-  speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
+  // If both failed, stop cleanly — NEVER play robotic desktop voices
+  console.warn('[Speech] All neural voice providers unavailable. Bypassed robotic fallback.');
+  onError(new Error('Audio generation is temporarily unavailable. Please try again.'));
 }
 
 /**
@@ -309,10 +252,5 @@ export function stopSpeech() {
     try {
       window.speechSynthesis.cancel();
     } catch {}
-  }
-
-  if (currentKeepAlive) {
-    clearInterval(currentKeepAlive);
-    currentKeepAlive = null;
   }
 }

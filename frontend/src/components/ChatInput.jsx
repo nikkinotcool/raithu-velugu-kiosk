@@ -189,7 +189,7 @@ export default function ChatInput({
 
     let finalSpeech = capturedTextRef.current.trim();
 
-    // Groq Whisper Large V3 with conditioned Telugu prompt
+    // High-Fidelity STT (Backend Sarvam Saaras:v3 / Whisper Large V3 with direct fallback)
     if (audioBlob && audioBlob.size > 300) {
       setIsProcessingSTT(true);
       try {
@@ -209,10 +209,35 @@ export default function ChatInput({
           }
         }
       } catch (sttErr) {
-        console.warn('STT request failed:', sttErr);
-      } finally {
-        setIsProcessingSTT(false);
+        console.warn('Backend STT failed, attempting direct Sarvam Saaras:v3:', sttErr);
       }
+
+      // Direct Sarvam STT Fallback
+      if (!finalSpeech) {
+        try {
+          const sarvamLang = language === 'te' ? 'te-IN' : (language === 'hi' ? 'hi-IN' : 'en-IN');
+          const sarvamForm = new FormData();
+          sarvamForm.append('file', audioBlob, 'audio.webm');
+          sarvamForm.append('model', 'saaras:v3');
+          sarvamForm.append('language_code', sarvamLang);
+
+          const sRes = await fetch('https://api.sarvam.ai/speech-to-text', {
+            method: 'POST',
+            headers: { 'api-subscription-key': 'sk_mnzbvtx1_cEwhMUMBe5bHg028KFAECrUX' },
+            body: sarvamForm
+          });
+          if (sRes.ok) {
+            const sData = await sRes.json();
+            if (sData.transcript && sData.transcript.trim()) {
+              finalSpeech = sData.transcript.trim();
+            }
+          }
+        } catch (directErr) {
+          console.warn('Direct Sarvam STT error:', directErr);
+        }
+      }
+
+      setIsProcessingSTT(false);
     }
 
     if (finalSpeech) {
