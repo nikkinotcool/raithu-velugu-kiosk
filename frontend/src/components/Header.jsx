@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Globe, LayoutDashboard, RefreshCw, LogOut, Maximize, Minimize, BookOpen, PackageCheck, PhoneCall } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Globe, MoreHorizontal, RefreshCw, LogOut, Maximize, Minimize, 
+  BookOpen, PackageCheck, PhoneCall, LayoutDashboard, ChevronLeft, X 
+} from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'te', name: 'తెలుగు' },
@@ -24,14 +27,31 @@ export default function Header({
   onBackToPortal
 }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   useEffect(() => {
-    const handleFsChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
+    const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
     document.addEventListener('fullscreenchange', handleFsChange);
     return () => document.removeEventListener('fullscreenchange', handleFsChange);
   }, []);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [menuOpen]);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -39,87 +59,56 @@ export default function Header({
     } else {
       document.exitFullscreen?.().catch(() => {});
     }
+    setMenuOpen(false);
+  };
+
+  const getLangName = (code) => {
+    const found = LANGUAGES.find((l) => l.code === code);
+    return found ? found.name : 'English';
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-100">
-      {/* Slim info bar */}
-      <div className="w-full bg-[#052e1a] text-emerald-200/80 text-[10px] py-1 px-4 flex items-center justify-between overflow-x-hidden">
-        <span className="font-medium truncate">
-          {currentLanguage === 'te'
-            ? '🌤️ కంది, సంగారెడ్డి • 29°C • ఖరీఫ్ నాట్లకు యూరియా వేయుటకు అనుకూల సమయం'
-            : currentLanguage === 'hi'
-            ? '🌤️ कांडी, संगारेड्डी • 29°C • खरीफ में पहली यूरिया की खुराक का सही समय'
-            : '🌤️ Kandi, Sangareddy • 29°C • Ideal weather for Kharif paddy top-dressing'}
-        </span>
-        <span className="hidden sm:block font-mono text-amber-400 ml-4 shrink-0">1800-180-1551</span>
-      </div>
+    <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-100/90 shadow-2xs">
+      <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
 
-      {/* Main header row */}
-      <div className="max-w-2xl mx-auto px-3 sm:px-4 h-14 flex items-center justify-between gap-2">
+        {/* Left: Back to Portal button + Title */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          {onBackToPortal && (
+            <button
+              onClick={onBackToPortal}
+              className="flex items-center gap-0.5 text-emerald-800 hover:text-emerald-950 font-semibold text-sm transition-all cursor-pointer active:scale-95 shrink-0 pr-1.5"
+              aria-label="Back to Portal"
+            >
+              <ChevronLeft className="w-5 h-5 -ml-1 text-emerald-700" />
+              <span className="hidden sm:inline">Portal</span>
+            </button>
+          )}
 
-        {/* Brand */}
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
+          <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center text-base font-bold shrink-0 shadow-2xs">
             🌾
           </div>
+
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="font-heading font-bold text-sm text-slate-900 tracking-tight">
-                {currentLanguage === 'en' ? 'Raithu Velugu' : currentLanguage === 'hi' ? 'रैतु वेलुगु' : 'రైతు వెలుగు'}
-              </span>
-              <span className="hidden sm:inline text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
-                PACS
-              </span>
-            </div>
-            <p className="text-[10px] text-slate-400 font-medium truncate">
-              {currentUser?.pacs_name || 'Kandi PACS'} · {currentUser?.district || 'Sangareddy'}
+            <h1 className="font-heading font-bold text-base sm:text-lg text-slate-900 tracking-tight leading-tight truncate">
+              {currentLanguage === 'en' ? 'Raithu Velugu' : currentLanguage === 'hi' ? 'रैतु वेलुगु' : 'రైతు వెలుగు'}
+            </h1>
+            <p className="text-[11px] text-slate-400 font-medium truncate flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>{currentUser?.pacs_name || 'Kandi PACS'}</span>
             </p>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="flex items-center gap-1 shrink-0">
+        {/* Right: Only 2 clean iOS controls (Language selector + More Menu) */}
+        <div className="flex items-center gap-2 shrink-0">
 
-          {onOpenStock && (
-            <button
-              onClick={onOpenStock}
-              className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-100 text-xs font-semibold transition-all cursor-pointer"
-              title="Fertilizer Stock"
-            >
-              <PackageCheck className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">
-                {currentLanguage === 'te' ? 'ఎరువులు' : currentLanguage === 'hi' ? 'खाद' : 'Stock'}
-              </span>
-            </button>
-          )}
-
-          {onOpenHelplines && (
-            <button
-              onClick={onOpenHelplines}
-              className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-100 text-xs font-semibold transition-all cursor-pointer"
-              title="Helplines"
-            >
-              <PhoneCall className="w-3.5 h-3.5" />
-            </button>
-          )}
-
-          {onBackToPortal && (
-            <button
-              onClick={onBackToPortal}
-              className="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 shadow-sm"
-            >
-              <span>← {currentLanguage === 'te' ? 'పోర్టల్' : currentLanguage === 'hi' ? 'पोर्टल' : 'Portal'}</span>
-            </button>
-          )}
-
-          {/* Language selector */}
+          {/* iOS Style Language Pill */}
           <div className="relative">
-            <Globe className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
+            <Globe className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
             <select
               value={currentLanguage}
               onChange={(e) => onLanguageChange(e.target.value)}
-              className="pl-6 pr-2 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border-0 cursor-pointer transition-all appearance-none"
+              className="pl-7 pr-3 py-1.5 text-xs sm:text-sm font-semibold rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border-0 cursor-pointer transition-all appearance-none active:scale-95"
             >
               {LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>{lang.name}</option>
@@ -127,59 +116,112 @@ export default function Header({
             </select>
           </div>
 
-          {/* Fullscreen */}
-          <button
-            onClick={toggleFullscreen}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
-            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Kiosk'}
-          >
-            {isFullscreen
-              ? <Minimize className="w-4 h-4" />
-              : <Maximize className="w-4 h-4" />
-            }
-          </button>
-
-          {/* Reset chat */}
-          {activeSection === 'chat' && (
+          {/* iOS More Actions Menu Button (...) */}
+          <div className="relative" ref={menuRef}>
             <button
-              onClick={onResetChat}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
-              title="New Conversation"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer active:scale-90 ${
+                menuOpen ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+              title="More Actions"
+              aria-label="More Actions"
             >
-              <RefreshCw className="w-4 h-4" />
+              <MoreHorizontal className="w-5 h-5" />
             </button>
-          )}
 
-          {/* Schemes */}
-          {onOpenSchemes && (
-            <button
-              onClick={onOpenSchemes}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 transition-all cursor-pointer"
-              title="PACS Schemes"
-            >
-              <BookOpen className="w-4 h-4" />
-            </button>
-          )}
+            {/* iOS Style Dropdown Menu Card */}
+            {menuOpen && (
+              <div className="absolute right-0 top-11 w-56 bg-white/98 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-100 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
 
-          {/* Admin */}
-          <button
-            onClick={onOpenAdmin}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
-            title="Admin Portal"
-          >
-            <LayoutDashboard className="w-4 h-4" />
-          </button>
+                {/* Reset Chat */}
+                {activeSection === 'chat' && onResetChat && (
+                  <button
+                    onClick={() => { onResetChat(); setMenuOpen(false); }}
+                    className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <RefreshCw className="w-4 h-4 text-emerald-600" />
+                    <span>{currentLanguage === 'te' ? 'కొత్త సంభాషణ' : 'New Conversation'}</span>
+                  </button>
+                )}
 
-          {/* Logout */}
-          {currentUser && (
-            <button
-              onClick={onLogout}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
-              title="Sign Out"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          )}
+                {/* Fertilizer Stock */}
+                {onOpenStock && (
+                  <button
+                    onClick={() => { onOpenStock(); setMenuOpen(false); }}
+                    className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <PackageCheck className="w-4 h-4 text-emerald-600" />
+                    <span>{currentLanguage === 'te' ? 'ఎరువుల స్టాక్ బోర్డు' : 'Fertilizer Stock'}</span>
+                  </button>
+                )}
+
+                {/* Emergency Helplines */}
+                {onOpenHelplines && (
+                  <button
+                    onClick={() => { onOpenHelplines(); setMenuOpen(false); }}
+                    className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <PhoneCall className="w-4 h-4 text-amber-600" />
+                    <span>{currentLanguage === 'te' ? 'హెల్ప్‌లైన్లు (Toll-Free)' : 'Helplines'}</span>
+                  </button>
+                )}
+
+                {/* PACS Schemes */}
+                {onOpenSchemes && (
+                  <button
+                    onClick={() => { onOpenSchemes(); setMenuOpen(false); }}
+                    className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <BookOpen className="w-4 h-4 text-emerald-600" />
+                    <span>{currentLanguage === 'te' ? 'సహకార పథకాలు' : 'Cooperative Schemes'}</span>
+                  </button>
+                )}
+
+                {/* Fullscreen Kiosk Mode */}
+                <button
+                  onClick={toggleFullscreen}
+                  className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors cursor-pointer"
+                >
+                  {isFullscreen ? (
+                    <>
+                      <Minimize className="w-4 h-4 text-slate-500" />
+                      <span>Exit Fullscreen</span>
+                    </>
+                  ) : (
+                    <>
+                      <Maximize className="w-4 h-4 text-slate-500" />
+                      <span>Fullscreen Kiosk</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Admin Audit Portal */}
+                {onOpenAdmin && (
+                  <button
+                    onClick={() => { onOpenAdmin(); setMenuOpen(false); }}
+                    className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <LayoutDashboard className="w-4 h-4 text-slate-500" />
+                    <span>Admin Audit Portal</span>
+                  </button>
+                )}
+
+                {/* Logout / Sign Out */}
+                {currentUser && onLogout && (
+                  <div className="pt-1 mt-1 border-t border-slate-100">
+                    <button
+                      onClick={() => { onLogout(); setMenuOpen(false); }}
+                      className="w-full px-3 py-2.5 rounded-xl text-left text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4 text-rose-500" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </header>

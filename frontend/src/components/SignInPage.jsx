@@ -522,12 +522,12 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
             </p>
           </div>
 
-          {/* Mode Segmented Switcher (Sign In vs Register) */}
-          <div className="flex bg-slate-100 p-1 rounded-xl mb-5 text-xs font-bold">
+          {/* Mode Segmented Switcher (Sign In vs Register) — iOS Segmented Control */}
+          <div className="flex bg-slate-100 p-1 rounded-full mb-5 text-xs sm:text-sm font-semibold">
             <button
               type="button"
               onClick={() => { setAuthMode('signin'); setError(''); }}
-              className={`flex-1 py-2 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-2 rounded-full transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 authMode === 'signin'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-500 hover:text-slate-800'
@@ -539,7 +539,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
             <button
               type="button"
               onClick={() => { setAuthMode('register'); setError(''); }}
-              className={`flex-1 py-2 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-2 rounded-full transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 authMode === 'register'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-500 hover:text-slate-800'
@@ -576,15 +576,15 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
           {/* SIGN IN VIEW */}
           {authMode === 'signin' ? (
             <div>
-              {/* Role Toggle Pill: Farmer vs Officer */}
-              <div className="flex gap-2 mb-4">
+              {/* Role Toggle Pill: Farmer vs Officer — iOS Style */}
+              <div className="flex gap-2 mb-4 bg-slate-100 p-1 rounded-full">
                 <button
                   type="button"
                   onClick={() => { setActiveTab('farmer'); setError(''); }}
-                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     activeTab === 'farmer'
-                      ? 'border-emerald-600 bg-emerald-50/80 text-emerald-950 font-bold shadow-xs'
-                      : 'border-slate-200 bg-white text-slate-500 hover:text-slate-800'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
                   <User className="w-3.5 h-3.5" />
@@ -593,10 +593,10 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                 <button
                   type="button"
                   onClick={() => { setActiveTab('officer'); setError(''); }}
-                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     activeTab === 'officer'
-                      ? 'border-emerald-600 bg-emerald-50/80 text-emerald-950 font-bold shadow-xs'
-                      : 'border-slate-200 bg-white text-slate-500 hover:text-slate-800'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
                   <Shield className="w-3.5 h-3.5" />
@@ -605,37 +605,37 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
               </div>
 
               {activeTab === 'farmer' ? (
-                <form onSubmit={handleFarmerLogin} className="space-y-3.5">
+                <form onSubmit={handleFarmerLogin} className="space-y-4">
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
                       {t.phoneLabel}
                     </label>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                      <Phone className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
                       <input
                         type="text"
                         required
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder={t.phonePlaceholder}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                        className="w-full pl-10 pr-3.5 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-base font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
                       {t.passLabel}
                     </label>
                     <div className="relative">
-                      <Key className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                      <Key className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
                       <input
                         type="password"
                         required
                         value={farmerPassword}
                         onChange={(e) => setFarmerPassword(e.target.value)}
                         placeholder={t.passPlaceholder}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                        className="w-full pl-10 pr-3.5 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-base font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
@@ -643,7 +643,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   <button
                     type="submit"
                     disabled={loading || !phoneNumber.trim()}
-                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-emerald-500/40 active:scale-98 mt-2"
+                    className="w-full py-3 px-4 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 disabled:opacity-50 text-white font-semibold text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm mt-3"
                   >
                     {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                     <span>{loading ? t.btnVerifying : t.btnSignIn}</span>
@@ -677,7 +677,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
               ) : (
                 <form onSubmit={handleOfficerLogin} className="space-y-3.5">
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
                       {t.officerIdLabel}
                     </label>
                     <input
@@ -686,23 +686,23 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder={t.officerIdPlaceholder}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                      className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-base font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
                       {t.officerPassLabel}
                     </label>
                     <div className="relative">
-                      <Key className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                      <Key className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
                       <input
                         type="password"
                         required
                         value={officerPassword}
                         onChange={(e) => setOfficerPassword(e.target.value)}
                         placeholder={t.officerPassPlaceholder}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                        className="w-full pl-10 pr-3.5 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-base font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
@@ -710,7 +710,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
                   <button
                     type="submit"
                     disabled={loading || !username.trim() || !officerPassword.trim()}
-                    className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 mt-2"
+                    className="w-full py-3 px-4 rounded-full bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-semibold text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95 mt-3"
                   >
                     {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                     <span>{loading ? t.btnVerifying : t.btnOfficerLogin}</span>
@@ -802,7 +802,7 @@ export default function SignInPage({ language, onLanguageChange, onLoginSuccess,
               <button
                 type="submit"
                 disabled={loading || !regName.trim() || !regPhone.trim() || !regPassword.trim()}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-50 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-emerald-500/40 active:scale-98 mt-3"
+                className="w-full py-3 px-4 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 disabled:opacity-50 text-white font-semibold text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm mt-3"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 <span>{loading ? t.btnCreating : t.btnRegister}</span>

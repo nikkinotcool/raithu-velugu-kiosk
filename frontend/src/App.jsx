@@ -621,15 +621,11 @@ const apiFetch = async (endpoint, options = {}) => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Bottom Fixed-Feel Sticky Chat Controls */}
-            <div className="sticky bottom-0 z-20 space-y-2 pt-1 pb-1 bg-slate-50/95 backdrop-blur-xs">
+            {/* Bottom Fixed Sticky Chat Controls — iOS Minimalist */}
+            <div className="sticky bottom-0 z-20 space-y-2 pt-2 pb-1 bg-[#f4f9f6]/95 backdrop-blur-md">
               <QuickPrompts 
                 language={language} 
                 onSelectPrompt={handleSendMessage} 
-                onStartVoice={() => setVoiceTrigger(Date.now())}
-                onOpenSchemes={() => setSchemesModalOpen(true)}
-                onOpenStock={() => setStockModalOpen(true)}
-                onOpenHelplines={() => setHelplineModalOpen(true)}
               />
               <ChatInput
                 onSendMessage={handleSendMessage}
