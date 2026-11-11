@@ -266,7 +266,7 @@ export async function speakMessage({
         audio.onerror = (e) => {
           console.warn('[Speech] Audio playback error:', e);
           stopSpeech();
-          speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
+          onError(e);
         };
 
         await audio.play();
@@ -287,9 +287,13 @@ export async function speakMessage({
 export function stopSpeech() {
   if (activeAudio) {
     try {
+      activeAudio.onplay = null;
+      activeAudio.onended = null;
+      activeAudio.onerror = null;
       activeAudio.pause();
       activeAudio.currentTime = 0;
-      activeAudio.src = '';
+      activeAudio.removeAttribute('src');
+      activeAudio.load();
     } catch {}
     activeAudio = null;
   }
