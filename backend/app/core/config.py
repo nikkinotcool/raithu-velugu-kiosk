@@ -42,10 +42,12 @@ class Settings(BaseSettings):
 
     @property
     def normalized_database_url(self) -> str:
-        # If user provides Supabase postgres:// URI, normalize to postgresql:// for SQLAlchemy
+        # If user provides Supabase postgres:// URI, normalize to postgresql+psycopg2:// for SQLAlchemy
         url = self.DATABASE_URL
         if url.startswith("postgres://"):
-            url = url.replace("postgres://", "postgresql://", 1)
+            url = url.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif url.startswith("postgresql://") and not url.startswith("postgresql+"):
+            url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
         return url
 
     class Config:

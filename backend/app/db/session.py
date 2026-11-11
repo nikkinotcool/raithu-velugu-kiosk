@@ -14,7 +14,11 @@ if not db_url.startswith("sqlite"):
         "pool_timeout": 10,
     })
 
-engine = create_engine(db_url, **engine_kwargs)
+try:
+    engine = create_engine(db_url, **engine_kwargs)
+except Exception as e:
+    print(f"Warning: Primary database connection failed ({e}). Falling back to local SQLite.")
+    engine = create_engine("sqlite:///./raithu_velugu.db", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
