@@ -26,13 +26,13 @@ export default function QuickPrompts({ language, onSelectPrompt }) {
   const prompts = QUICK_ACTIONS_BY_LANG[language] || QUICK_ACTIONS_BY_LANG['en'];
 
   return (
-    <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
+    <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 px-0.5">
       {prompts.map((p, i) => (
         <button
           key={i}
           type="button"
           onClick={() => onSelectPrompt(p.query)}
-          className="shrink-0 px-4 py-2 rounded-full bg-white/95 hover:bg-slate-100 text-slate-800 border border-slate-200/90 text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-2xs active:scale-95 whitespace-nowrap"
+          className="shrink-0 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md hover:bg-white text-slate-800 border border-slate-200/80 text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
         >
           {p.label}
         </button>

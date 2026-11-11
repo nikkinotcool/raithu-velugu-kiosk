@@ -316,11 +316,11 @@ export default function ChatInput({
         </div>
       )}
 
-      {/* iOS Style Capsule Input Bar */}
-      <div className={`flex items-center gap-2 px-3 py-2 rounded-full bg-white border transition-all ${
+      {/* iOS Style Floating Capsule Input Bar */}
+      <div className={`flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/95 backdrop-blur-xl border transition-all ${
         isRecording
-          ? 'border-red-500 ring-2 ring-red-500/20 shadow-md'
-          : 'border-slate-200/90 shadow-sm focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/15'
+          ? 'border-red-500 ring-2 ring-red-500/20 shadow-lg'
+          : 'border-slate-200 shadow-md focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/15'
       }`}>
 
         {/* Mic Dictation Button */}

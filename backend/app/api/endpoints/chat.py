@@ -127,12 +127,13 @@ async def handle_chat(req: ChatRequest, db: Session = Depends(get_db)):
 
     else:
         # Information / Legal / Scheme Query: Retrieve RAG context & citations
-        context_chunks, sources = rag_pipeline.search(query_in_english, top_k=3)
+        context_chunks, sources = rag_pipeline.search(query_in_english, top_k=2)
         system_instruction = (
             f"{lang_rule}\n"
-            "Explain clearly for an Indian rural cooperative member or farmer. "
-            "Highlight key rules, interest rates, deadlines, or rights in bold. "
-            "Cite the specific Section / Bye-law clause from the context."
+            "CRITICAL MINIMALIST RULES:\n"
+            "1. Give a SHORT, CONCISE, and SIMPLE answer (strictly 3 to 4 short bullet points maximum).\n"
+            "2. Do NOT write long paragraphs, tables, or walls of text. Keep it easy to read on mobile.\n"
+            "3. Use warm, simple rural terms. Bold key numbers (e.g. 4% వడ్డీ, 72 గంటలు)."
         )
         suggested_actions = [
             "🌾 What documents are required?" if user_lang == "en" else "🌾 ఏ పత్రాలు అవసరం?",

@@ -564,8 +564,8 @@ const apiFetch = async (endpoint, options = {}) => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Bottom Fixed Sticky Chat Controls — iOS Minimalist */}
-            <div className="sticky bottom-0 z-20 space-y-2 pt-2 pb-1 bg-[#f4f9f6]/95 backdrop-blur-md">
+            {/* Floating Chat Controls — Pure iOS Floating Glass, Zero Enclosing Box */}
+            <div className="sticky bottom-0 z-20 space-y-2.5 pt-2 pb-2 bg-transparent pointer-events-auto">
               <QuickPrompts 
                 language={language} 
                 onSelectPrompt={handleSendMessage} 

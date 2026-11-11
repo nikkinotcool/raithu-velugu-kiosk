@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  FileText, Search, PlusCircle, CheckCircle2, Clock, AlertTriangle, 
-  ShieldAlert, ArrowRight, Building2, User, Phone, Send, RefreshCw,
-  Printer, Download, Mic, MicOff
+  FileText, Search, PlusCircle, CheckCircle2, AlertTriangle, 
+  ChevronRight, Printer, RefreshCw, X 
 } from 'lucide-react';
-import { printGrievanceReceipt, downloadReceiptFile } from '../utils/receiptGenerator';
+import { printGrievanceReceipt } from '../utils/receiptGenerator';
 import { fetchWithCloudFallback } from '../utils/apiClient';
 
 const CATEGORIES = [
-  { id: 'pmfby', nameTe: 'PMFBY పంట నష్టం క్లెయిమ్ ఆలస్యం / తిరస్కరణ', nameEn: 'PMFBY Crop Loss Claim Delay / Rejection', dept: 'DAIGC Insurance Committee' },
-  { id: 'loan', nameTe: 'PACS 4% క్రాప్ లోన్ లేదా సబ్సిడీ సమస్య', nameEn: 'PACS 4% Crop Loan or Subsidy Issue', dept: 'DCCB Inspection Wing' },
-  { id: 'fertilizer', nameTe: 'ఎరువులు & విత్తనాల కోటా లభ్యత సమస్య', nameEn: 'Fertilizer & Certified Seed Quota Issue', dept: 'Agricultural Extension Officer' },
-  { id: 'bylaws', nameTe: 'సొసైటీ బైలాస్ లేదా రికార్డుల నిరాకరణ', nameEn: 'PACS Bylaws / Audit Record Denial', dept: 'District ARCS Registry' },
+  { id: 'pmfby', nameTe: 'PMFBY పంట నష్టం క్లెయిమ్ ఆలస్యం / తిరస్కరణ', nameEn: 'PMFBY Crop Loss Claim Delay / Rejection' },
+  { id: 'loan', nameTe: 'PACS 4% క్రాప్ లోన్ లేదా సబ్సిడీ సమస్య', nameEn: 'PACS 4% Crop Loan or Subsidy Issue' },
+  { id: 'fertilizer', nameTe: 'ఎరువులు & విత్తనాల కోటా లభ్యత సమస్య', nameEn: 'Fertilizer & Certified Seed Quota Issue' },
+  { id: 'bylaws', nameTe: 'సొసైటీ బైలాస్ లేదా రికార్డుల నిరాకరణ', nameEn: 'PACS Bylaws / Audit Record Denial' },
 ];
 
 export default function GrievancesSection({ currentUser, language, apiBase }) {
@@ -19,8 +18,7 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
   const [grievances, setGrievances] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchId, setSearchId] = useState('');
-  const [searchResult, setSearchResult] = useState(null);
-  const [searchError, setSearchError] = useState('');
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
   // New Grievance State
   const [category, setCategory] = useState(CATEGORIES[0].nameTe);
@@ -29,120 +27,16 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
   const [newTicketCreated, setNewTicketCreated] = useState(null);
   const [formError, setFormError] = useState('');
 
-  // Speech-to-Text State
-  const [isRecording, setIsRecording] = useState(false);
-  const [speechSupported, setSpeechSupported] = useState(false);
-  const recognitionRef = useRef(null);
-  const isRecordingRef = useRef(false);
-  const baseDescRef = useRef('');
-
-  useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      setSpeechSupported(true);
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-
-      const langMap = {
-        te: 'te-IN',
-        hi: 'hi-IN',
-        kn: 'kn-IN',
-        ta: 'ta-IN',
-        mr: 'mr-IN',
-        en: 'en-IN'
-      };
-      recognition.lang = langMap[language] || 'en-IN';
-
-      recognition.onresult = (event) => {
-        let finalStr = '';
-        let interimStr = '';
-        for (let i = 0; i < event.results.length; ++i) {
-          const res = event.results[i];
-          if (res.isFinal) finalStr += res[0].transcript + ' ';
-          else interimStr += res[0].transcript;
-        }
-        const text = ((baseDescRef.current ? baseDescRef.current + ' ' : '') + finalStr + interimStr).trim();
-        setDescription(text);
-      };
-
-      recognition.onerror = (event) => {
-        if (event.error === 'no-speech') return;
-        if (event.error === 'not-allowed') {
-          isRecordingRef.current = false;
-          setIsRecording(false);
-        }
-      };
-
-      recognition.onend = () => {
-        if (isRecordingRef.current) {
-          try {
-            recognition.start();
-          } catch (e) {}
-        } else {
-          setIsRecording(false);
-        }
-      };
-
-      recognitionRef.current = recognition;
-    }
-  }, [language]);
-
-  const toggleRecording = async () => {
-    if (!speechSupported) {
-      alert('Microphone speech-to-text is not supported on this browser.');
-      return;
-    }
-
-    if (isRecording) {
-      isRecordingRef.current = false;
-      setIsRecording(false);
-      try {
-        recognitionRef.current?.stop();
-      } catch (e) {}
-    } else {
-      try {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-          s.getTracks().forEach((t) => t.stop());
-        }
-      } catch (err) {}
-
-      try {
-        if (recognitionRef.current) {
-          baseDescRef.current = description.trim();
-          isRecordingRef.current = true;
-          setIsRecording(true);
-
-          const langMap = {
-            te: 'te-IN',
-            hi: 'hi-IN',
-            kn: 'kn-IN',
-            ta: 'ta-IN',
-            mr: 'mr-IN',
-            en: 'en-IN'
-          };
-          recognitionRef.current.lang = langMap[language] || 'en-IN';
-          recognitionRef.current.start();
-        }
-      } catch (err) {
-        console.warn('Speech recognition error:', err);
-        isRecordingRef.current = false;
-        setIsRecording(false);
-      }
-    }
-  };
-
   const fetchGrievances = async () => {
     setLoading(true);
     try {
-      const res = await fetchWithCloudFallback('/grievances?limit=15', {}, apiBase);
+      const res = await fetchWithCloudFallback('/grievances?limit=10', {}, apiBase);
       if (res.ok) {
         const data = await res.json();
         setGrievances(data);
       }
     } catch (e) {
-      console.error(e);
+      console.warn('Failed to fetch grievances:', e);
     } finally {
       setLoading(false);
     }
@@ -152,380 +46,301 @@ export default function GrievancesSection({ currentUser, language, apiBase }) {
     fetchGrievances();
   }, []);
 
-  const handleTrackSearch = async (e) => {
-    e?.preventDefault();
-    if (!searchId.trim()) return;
-
-    setLoading(true);
-    setSearchError('');
-    setSearchResult(null);
-    try {
-      const res = await fetchWithCloudFallback(`/grievances/track/${encodeURIComponent(searchId.trim())}`, {}, apiBase);
-      if (!res.ok) {
-        throw new Error(language === 'te' ? 'ఈ ట్రాకింగ్ సంఖ్యతో ఎలాంటి ఫిర్యాదు నమోదు కాలేదు.' : 'No grievance found with this Tracking ID.');
-      }
-      const data = await res.json();
-      setSearchResult(data);
-    } catch (err) {
-      setSearchError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLodgeGrievance = async (e) => {
-    e?.preventDefault();
+    e.preventDefault();
     if (!description.trim()) {
-      setFormError(language === 'te' ? 'దయచేసి మీ సమస్య వివరాలను నమోదు చేయండి.' : 'Please describe your grievance.');
+      setFormError(language === 'te' ? 'దయచేసి వివరాలను నమోదు చేయండి.' : 'Please enter grievance details.');
       return;
     }
-
     setSubmitting(true);
     setFormError('');
-    try {
-      const payload = {
-        category,
-        description: description.trim(),
-        complainant_name: currentUser?.full_name || 'రైతు (Farmer)',
-        complainant_phone: currentUser?.phone_number || '',
-        pacs_name: currentUser?.pacs_name || 'Kandi Primary Agricultural Credit Society',
-        district: currentUser?.district || 'Sangareddy',
-        state: currentUser?.state || 'Telangana'
-      };
 
+    try {
       const res = await fetchWithCloudFallback('/grievances', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          complainant_name: currentUser?.full_name || 'Member Farmer',
+          phone_number: currentUser?.phone_number || '9876543210',
+          pacs_name: currentUser?.pacs_name || 'Kandi Primary Agricultural Credit Society',
+          village: currentUser?.village || 'Kandi',
+          district: currentUser?.district || 'Sangareddy',
+          state: currentUser?.state || 'Telangana',
+          category: category,
+          description: description
+        })
       }, apiBase);
 
-      if (!res.ok) throw new Error('Submission failed');
-      const data = await res.json();
-      setNewTicketCreated(data);
-      setDescription('');
-      fetchGrievances();
+      if (res.ok) {
+        const data = await res.json();
+        setNewTicketCreated(data);
+        setDescription('');
+        fetchGrievances();
+      } else {
+        throw new Error('Server returned an error');
+      }
     } catch (err) {
-      setFormError(err.message || 'Submission error');
+      setFormError(language === 'te' ? 'ఫిర్యాదు నమోదు కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.' : 'Failed to submit grievance.');
     } finally {
       setSubmitting(false);
     }
   };
 
-  return (
-    <div className="space-y-3.5 max-w-xl mx-auto w-full animate-fadeIn pb-6">
-      {/* Sleek Subheader Card */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="font-heading text-lg sm:text-xl font-bold text-slate-900">
-            {language === 'te' ? 'ఫిర్యాదుల పరిష్కార పోర్టల్' : 'Grievance Redressal Portal'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5 font-medium">
-            {language === 'te' 
-              ? 'PACS అవకతవకలు, పంట నష్టం బీమా క్లెయిమ్‌లపై అధికారిక వినతులు' 
-              : 'Statutory dispute management for PACS & PMFBY Crop Insurance'}
-          </p>
-        </div>
+  const filteredGrievances = searchId.trim()
+    ? grievances.filter((g) => 
+        (g.tracking_id || '').toLowerCase().includes(searchId.toLowerCase()) ||
+        (g.category || '').toLowerCase().includes(searchId.toLowerCase())
+      )
+    : grievances;
 
-        {/* Minimal Tab Switcher */}
-        <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-bold border border-slate-200/60 self-start sm:self-auto">
+  return (
+    <div className="space-y-4 max-w-2xl mx-auto w-full pb-8">
+
+      {/* iOS Segmented Header Switcher */}
+      <div className="flex items-center justify-between gap-3 pt-1">
+        <div className="flex bg-slate-200/70 p-1 rounded-full text-xs sm:text-sm font-semibold">
           <button
             onClick={() => { setTab('list'); setNewTicketCreated(null); }}
-            className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
               tab === 'list'
-                ? 'bg-white text-emerald-950 font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white text-slate-900 shadow-sm font-bold'
+                : 'text-slate-500 hover:text-slate-800'
             }`}
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>{language === 'te' ? 'ఫిర్యాదుల జాబితా & ట్రాక్' : 'My Tickets & Track'}</span>
+            <span>{language === 'te' ? 'ఫిర్యాదులు' : 'My Grievances'}</span>
+            <span className="text-xs px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600">
+              {grievances.length}
+            </span>
           </button>
           <button
             onClick={() => { setTab('new'); setNewTicketCreated(null); }}
-            className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
               tab === 'new'
-                ? 'bg-white text-emerald-950 font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white text-slate-900 shadow-sm font-bold'
+                : 'text-slate-500 hover:text-slate-800'
             }`}
           >
             <PlusCircle className="w-3.5 h-3.5" />
-            <span>{language === 'te' ? 'కొత్త ఫిర్యాదు' : 'File Grievance'}</span>
+            <span>{language === 'te' ? 'కొత్త ఫిర్యాదు' : 'New Grievance'}</span>
           </button>
         </div>
+
+        <button
+          onClick={fetchGrievances}
+          className="p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-white/80 transition-all cursor-pointer"
+          title="Refresh"
+        >
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+        </button>
       </div>
 
-      {/* VIEW 1: TICKETS LIST & TRACK SEARCH */}
+      {/* VIEW 1: CLEAN APPLE-STYLE LIST OF GRIEVANCES */}
       {tab === 'list' && (
-        <div className="space-y-4">
-          {/* Quick Track Input Bar */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs">
-            <form onSubmit={handleTrackSearch} className="flex gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={searchId}
-                  onChange={(e) => setSearchId(e.target.value)}
-                  placeholder={language === 'te' ? 'ట్రాకింగ్ నంబర్ (ఉదా: RV-GRV-20260919-BC19)' : 'Enter tracking ID (e.g. RV-GRV-20260919-BC19)'}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white"
-                />
-              </div>
+        <div className="space-y-3">
+
+          {/* Minimal iOS Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              placeholder={language === 'te' ? 'ట్రాకింగ్ ID లేదా అంశాన్ని వెతకండి...' : 'Search tracking ID or category...'}
+              className="w-full pl-10 pr-4 py-2.5 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 shadow-2xs"
+            />
+            {searchId && (
               <button
-                type="submit"
-                disabled={loading || !searchId.trim()}
-                className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white font-bold text-xs transition-all cursor-pointer shadow-sm border border-emerald-600/50"
+                onClick={() => setSearchId('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
               >
-                {loading ? '...' : (language === 'te' ? 'ట్రాక్' : 'Track')}
+                <X className="w-3.5 h-3.5" />
               </button>
-            </form>
-
-            {searchError && (
-              <div className="mt-3 p-3 rounded-xl bg-red-50 text-red-700 text-xs font-medium border border-red-100 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>{searchError}</span>
-              </div>
-            )}
-
-            {searchResult && (
-              <div className="mt-3 p-4 rounded-xl bg-emerald-50/50 border border-emerald-200 space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-emerald-950">{searchResult.tracking_id}</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-200/60">
-                    {searchResult.status}
-                  </span>
-                </div>
-                <h4 className="font-bold text-xs sm:text-sm text-slate-900">{searchResult.category}</h4>
-                <p className="text-xs text-slate-700">{searchResult.description}</p>
-                <div className="pt-2 border-t border-emerald-200/50 text-[11px] text-slate-500 flex justify-between">
-                  <span>🏛️ {searchResult.pacs_name}</span>
-                  <span>📍 {searchResult.routed_to}</span>
-                </div>
-                {/* Print/Download Receipt buttons */}
-                <div className="flex gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => printGrievanceReceipt(searchResult, currentUser)}
-                    className="flex-1 py-1.5 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm border border-emerald-600/50"
-                  >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>{language === 'te' ? 'రసీదు ప్రింట్ / PDF' : 'Print Receipt (PDF)'}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => downloadReceiptFile(searchResult, currentUser)}
-                    className="py-1.5 px-3 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-950 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>{language === 'te' ? 'డౌన్‌లోడ్' : 'Download'}</span>
-                  </button>
-                </div>
-              </div>
             )}
           </div>
 
-          {/* List of Recent Grievances */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                {language === 'te' ? 'నమోదైన ఫిర్యాదులు' : 'Registered Grievance History'} ({grievances.length})
-              </span>
-              <button
-                onClick={fetchGrievances}
-                className="text-xs text-slate-400 hover:text-slate-700 flex items-center gap-1 cursor-pointer"
-              >
-                <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
-                <span>Refresh</span>
-              </button>
+          {/* Grievance Cards List — Clean & Uncluttered */}
+          {filteredGrievances.length === 0 ? (
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 text-center text-slate-400 text-sm border border-slate-200/60 shadow-xs">
+              {loading ? 'Loading grievances...' : (language === 'te' ? 'ఫిర్యాదులు ఏవీ లేవు.' : 'No grievances found.')}
             </div>
-
-            {grievances.length === 0 ? (
-              <div className="text-center py-8 text-slate-400 text-xs">
-                {language === 'te' ? 'ఇంకా ఎలాంటి ఫిర్యాదులు నమోదు కాలేదు.' : 'No grievances on record.'}
-              </div>
-            ) : (
-              <div className="divide-y divide-slate-100">
-                {grievances.map((g) => (
-                  <div key={g.id || g.tracking_id} className="py-3.5 space-y-2 first:pt-0 last:pb-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[11px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
-                          {g.tracking_id}
-                        </span>
-                        <span className="text-xs font-bold text-slate-900">
-                          {g.category}
-                        </span>
-                      </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        g.status?.includes('Resolved') 
-                          ? 'bg-emerald-100 text-emerald-950 border border-emerald-200/60'
-                          : 'bg-amber-100 text-amber-800'
+          ) : (
+            <div className="space-y-2.5">
+              {filteredGrievances.map((g) => {
+                const isResolved = g.status?.toLowerCase().includes('resolved');
+                return (
+                  <div
+                    key={g.id || g.tracking_id}
+                    onClick={() => setSelectedTicket(g)}
+                    className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200/70 shadow-xs hover:border-slate-300 transition-all cursor-pointer active:scale-99 space-y-1.5"
+                  >
+                    {/* Top Row: Category + Status Pill */}
+                    <div className="flex items-start justify-between gap-3">
+                      <h4 className="font-semibold text-sm sm:text-[15px] text-slate-900 leading-snug">
+                        {g.category}
+                      </h4>
+                      <span className={`shrink-0 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                        isResolved
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
+                          : 'bg-amber-50 text-amber-800 border border-amber-200/60'
                       }`}>
-                        {g.status}
+                        {g.status || 'Under Review'}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 line-clamp-2">
+
+                    {/* Middle: Description summary */}
+                    <p className="text-xs sm:text-[13px] text-slate-500 line-clamp-1">
                       {g.description}
                     </p>
-                    <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-50">
-                      <span>👤 {g.complainant_name || 'Member'} • {g.pacs_name}</span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => printGrievanceReceipt(g, currentUser)}
-                          className="text-emerald-900 hover:text-emerald-950 font-bold flex items-center gap-1 cursor-pointer bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded text-[10px] transition-colors"
-                          title="Print or Save PDF Receipt"
-                        >
-                          <Printer className="w-3 h-3" />
-                          <span>{language === 'te' ? 'రసీదు' : 'Receipt PDF'}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => downloadReceiptFile(g, currentUser)}
-                          className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer"
-                          title="Download Receipt HTML"
-                        >
-                          <Download className="w-3 h-3" />
-                        </button>
+
+                    {/* Bottom: Tracking ID & View Chevron */}
+                    <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 text-xs text-slate-400 font-mono">
+                      <span>ID: {g.tracking_id}</span>
+                      <div className="flex items-center gap-1 text-emerald-700 font-semibold font-sans text-xs">
+                        <span>{language === 'te' ? 'వివరాలు' : 'Details'}</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
                       </div>
                     </div>
                   </div>
-                ))}
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TICKET DETAIL MODAL */}
+      {selectedTicket && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <span className="font-mono text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">
+                {selectedTicket.tracking_id}
+              </span>
+              <button
+                onClick={() => setSelectedTicket(null)}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="font-bold text-base text-slate-900">{selectedTicket.category}</h3>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                  {selectedTicket.status}
+                </span>
               </div>
-            )}
+              <p className="text-sm text-slate-600 mt-2 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                {selectedTicket.description}
+              </p>
+            </div>
+
+            <div className="text-xs text-slate-500 space-y-1 pt-1">
+              <p>🏛️ <strong>PACS:</strong> {selectedTicket.pacs_name || currentUser?.pacs_name}</p>
+              <p>📍 <strong>Authority:</strong> {selectedTicket.routed_to || 'Assistant Registrar of Cooperative Societies (ARCS)'}</p>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => printGrievanceReceipt(selectedTicket, currentUser)}
+                className="flex-1 py-2.5 px-4 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+              >
+                <Printer className="w-4 h-4" />
+                <span>{language === 'te' ? 'రసీదు ప్రింట్ / సేవ్' : 'Print Receipt Slip'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedTicket(null)}
+                className="py-2.5 px-5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* VIEW 2: LODGE NEW GRIEVANCE */}
+      {/* VIEW 2: CLEAN MINIMAL NEW GRIEVANCE FORM */}
       {tab === 'new' && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-7 shadow-xs">
+        <div className="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-sm space-y-4">
           {newTicketCreated ? (
-            <div className="text-center py-6 space-y-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 text-amber-300 flex items-center justify-center mx-auto border border-emerald-500/50">
+            <div className="text-center py-6 space-y-4">
+              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="font-heading text-lg font-bold text-slate-900">
-                {language === 'te' ? 'ఫిర్యాదు విజయవంతంగా నమోదైంది!' : 'Grievance Submitted!'}
-              </h3>
-              <p className="text-xs text-slate-500 font-mono">
-                Tracking ID: <strong>{newTicketCreated.tracking_id}</strong>
-              </p>
-
-              {/* Receipt Action Buttons */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center max-w-sm mx-auto">
-                <button
-                  type="button"
-                  onClick={() => printGrievanceReceipt(newTicketCreated, currentUser)}
-                  className="flex-1 py-2 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-sm border border-emerald-600/50"
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                  <span>{language === 'te' ? 'రసీదు ప్రింట్ / PDF' : 'Print / Save Receipt'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => downloadReceiptFile(newTicketCreated, currentUser)}
-                  className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1 cursor-pointer"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>{language === 'te' ? 'డౌన్‌లోడ్' : 'Download'}</span>
-                </button>
+              <div>
+                <h3 className="font-heading text-lg font-bold text-slate-900">
+                  {language === 'te' ? 'ఫిర్యాదు విజయవంతంగా నమోదైంది!' : 'Grievance Submitted!'}
+                </h3>
+                <p className="text-xs font-mono text-slate-500 mt-1">
+                  ID: <strong className="text-slate-800">{newTicketCreated.tracking_id}</strong>
+                </p>
               </div>
 
               <div className="flex gap-2 justify-center pt-2">
                 <button
+                  type="button"
+                  onClick={() => printGrievanceReceipt(newTicketCreated, currentUser)}
+                  className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>{language === 'te' ? 'రసీదు పొందండి' : 'Print Receipt'}</span>
+                </button>
+                <button
                   onClick={() => {
-                    setSearchId(newTicketCreated.tracking_id);
                     setTab('list');
                     setNewTicketCreated(null);
                   }}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold cursor-pointer"
+                  className="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-semibold active:scale-95 cursor-pointer"
                 >
-                  {language === 'te' ? 'ట్రాక్ చేయండి' : 'Track Ticket'}
-                </button>
-                <button
-                  onClick={() => setNewTicketCreated(null)}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold cursor-pointer"
-                >
-                  {language === 'te' ? '+ మరొకటి నమోదు' : 'File Another'}
+                  {language === 'te' ? 'జాబితా చూడండి' : 'View Tickets'}
                 </button>
               </div>
             </div>
           ) : (
             <form onSubmit={handleLodgeGrievance} className="space-y-4">
-              {formError && (
-                <div className="p-3 rounded-xl bg-red-50 text-red-700 text-xs font-medium border border-red-100">
-                  {formError}
-                </div>
-              )}
-
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  {language === 'te' ? 'సమస్య విభాగం' : 'Issue Category'} *
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {language === 'te' ? 'ఫిర్యాదు విభాగం' : 'Category'}
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:border-emerald-600"
                 >
-                  {CATEGORIES.map((c) => (
-                    <option key={c.id} value={language === 'te' ? c.nameTe : c.nameEn}>
-                      {language === 'te' ? c.nameTe : c.nameEn}
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat.id} value={cat.nameTe}>
+                      {language === 'te' ? cat.nameTe : cat.nameEn}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
-                    {language === 'te' ? 'సమస్య సమగ్ర వివరాలు' : 'Description of Incident'} *
-                  </label>
-                  {speechSupported && (
-                    <button
-                      type="button"
-                      onClick={toggleRecording}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                        isRecording
-                          ? 'bg-red-600 text-white animate-pulse'
-                          : 'bg-emerald-50 text-emerald-950 hover:bg-emerald-100 border border-emerald-200'
-                      }`}
-                    >
-                      {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5 text-emerald-800" />}
-                      <span>{isRecording ? (language === 'te' ? 'వింటున్నాము...' : 'Listening...') : (language === 'te' ? '🎙️ మాట్లాడండి' : '🎙️ Voice Mic')}</span>
-                    </button>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <textarea
-                    rows={4}
-                    required
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder={isRecording
-                      ? (language === 'te' ? '🎙️ మాట్లాడండి... మీ మాటలు ఇక్కడ రికార్డ్ అవుతాయి...' : '🎙️ Speak clearly... your words will appear here...')
-                      : (language === 'te' 
-                          ? 'ఉదా: మండలంలో భారీ వర్షాల వల్ల వరి పంట దెబ్బతింది. క్లెయిమ్ నమోదు చేయడానికి వివరాలు...'
-                          : 'Describe what happened, dates, and PACS personnel involved...')}
-                    className={`w-full p-3 rounded-xl bg-slate-50 border text-xs sm:text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white transition-all ${
-                      isRecording ? 'border-red-400 ring-2 ring-red-400/20 bg-red-50/20' : 'border-slate-200 focus:border-emerald-600'
-                    }`}
-                  />
-                  {isRecording && (
-                    <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 text-[10px] font-bold text-red-600 bg-white/90 px-2 py-0.5 rounded-full border border-red-200">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping" />
-                      <span>Audio Recording Active</span>
-                    </div>
-                  )}
-                </div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {language === 'te' ? 'మీ సమస్య వివరాలు' : 'Description of Issue'}
+                </label>
+                <textarea
+                  rows={4}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder={language === 'te' ? 'మీ సమస్యను స్పష్టంగా ఇక్కడ రాయండి...' : 'Explain the issue in detail...'}
+                  className="w-full px-3.5 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white resize-none"
+                />
               </div>
+
+              {formError && (
+                <p className="text-xs text-red-600 font-medium">{formError}</p>
+              )}
 
               <button
                 type="submit"
                 disabled={submitting || !description.trim()}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md border border-emerald-500/50 active:scale-98"
+                className="w-full py-3 px-4 rounded-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95"
               >
-                <Send className="w-3.5 h-3.5" />
-                <span>{submitting ? '...' : (language === 'te' ? 'ఫిర్యాదు సమర్పించండి & రసీదు పొందండి' : 'Submit Grievance & Get Receipt')}</span>
+                <span>{submitting ? '...' : (language === 'te' ? 'ఫిర్యాదు సమర్పించండి' : 'Submit Grievance')}</span>
               </button>
             </form>
           )}

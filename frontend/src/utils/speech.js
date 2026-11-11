@@ -285,16 +285,38 @@ export async function speakMessage({
 
     audio.onerror = (err) => {
       stopSpeech();
-      // Fallback to browser synthesis if audio element fails
-      speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
+      playNaturalGoogleAudio({ text: cleanText, language, onStart, onEnd, onError });
     };
 
     await audio.play();
     return;
   } catch (err) {
-    console.warn('Neural TTS server stream failed, falling back to local voice engine:', err);
-    // 2. Seamlessly fallback to browser Web Speech API
-    speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
+    console.warn('Backend TTS stream failed, playing Google natural voice directly:', err);
+    playNaturalGoogleAudio({ text: cleanText, language, onStart, onEnd, onError });
+  }
+}
+
+/**
+ * Natural human voice direct player via Google regional voice engine
+ */
+async function playNaturalGoogleAudio({ text, language, onStart, onEnd, onError }) {
+  try {
+    const langCode = language || 'te';
+    const sample = text.slice(0, 200);
+    const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${langCode}&client=tw-ob&q=${encodeURIComponent(sample)}`;
+    const audio = new Audio(googleUrl);
+    activeAudio = audio;
+    audio.onplay = onStart;
+    audio.onended = () => {
+      stopSpeech();
+      onEnd();
+    };
+    audio.onerror = () => {
+      speakWithBrowserFallback({ text, language, onStart, onEnd, onError });
+    };
+    await audio.play();
+  } catch (e) {
+    speakWithBrowserFallback({ text, language, onStart, onEnd, onError });
   }
 }
 
