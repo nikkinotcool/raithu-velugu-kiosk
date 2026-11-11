@@ -1,24 +1,36 @@
 import re
+import io
+import base64
 import httpx
-from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import StreamingResponse
+import edge_tts
+from fastapi import APIRouter, HTTPException, Query, Response
 from pydantic import BaseModel
 from typing import Optional
+from app.core.config import settings
 
 router = APIRouter()
 
-GOOGLE_TTS_URL = "https://translate.google.com/translate_tts"
-
-LANG_MAP = {
-    "te": "te",
-    "hi": "hi",
-    "en": "en",
-    "kn": "kn",
-    "ta": "ta",
-    "mr": "mr",
+# Microsoft Azure Neural Studio Voices for Indian Regional Languages
+AZURE_NEURAL_VOICES = {
+    "te": "te-IN-MohanNeural",               # Dignified, warm, natural Telugu male voice
+    "hi": "hi-IN-MadhurNeural",              # Clear, natural Hindi male voice
+    "en": "en-IN-NeerjaExpressiveNeural",    # Fluent, natural Indian English female voice
+    "kn": "kn-IN-GaganNeural",               # Natural Kannada male voice
+    "ta": "ta-IN-ValluvarNeural",            # Natural Tamil male voice
+    "mr": "mr-IN-ManoharNeural",             # Natural Marathi male voice
 }
 
-# Abbreviations that must be spelled letter-by-letter
+# Sarvam AI Voice Codes (Language + Speaker)
+SARVAM_LANG_MAP = {
+    "te": "te-IN",
+    "hi": "hi-IN",
+    "en": "en-IN",
+    "kn": "kn-IN",
+    "ta": "ta-IN",
+    "mr": "mr-IN",
+}
+
+# Acronyms that must be pronounced letter-by-letter for natural cooperative comprehension
 SPELL_OUT_ABBREVIATIONS = [
     "PACS", "PMFBY", "DCCB", "ARCS", "NCD", "KCC", "DAP",
     "MSP", "RRB", "NABARD", "SHG", "FPO", "MIS", "OTP",
@@ -32,7 +44,7 @@ class TTSRequest(BaseModel):
 
 
 def expand_abbreviations_for_speech(text: str) -> str:
-    """Spells acronyms like PACS to 'P. A. C. S.' so voice reads each letter cleanly."""
+    """Spells acronyms like PACS to 'P. A. C. S.' so neural models read letter-by-letter."""
     for abbr in SPELL_OUT_ABBREVIATIONS:
         spaced = " ".join(f"{ch}." for ch in abbr)
         text = re.sub(r'\b' + re.escape(abbr) + r'\b', spaced, text)
@@ -40,21 +52,21 @@ def expand_abbreviations_for_speech(text: str) -> str:
 
 
 def sanitize_text_for_speech(text: str) -> str:
-    """Strip markdown formatting, emojis, tables, and citations for fluent human speech."""
+    """Cleans markdown, emojis, links, tables, and special characters for natural speech."""
     if not text:
         return ""
     text = re.sub(r"https?://\S+", "", text)
     text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
     text = re.sub(r"\[\s*(ref:?)?\s*\d+\s*\]", "", text, flags=re.IGNORECASE)
 
-    # Strip emojis cleanly
+    # Remove decorative unicode emojis
     emoji_regex = re.compile(
         "[\U00010000-\U0010ffff\u2600-\u26ff\u2700-\u27bf\ufe0f]+",
         flags=re.UNICODE
     )
     text = emoji_regex.sub(" ", text)
 
-    # Strip markdown headers, table bars, formatting
+    # Clean markdown headers, bold asterisks, list markers
     text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
     text = re.sub(r"\|", ", ", text)
     text = re.sub(r"[-:]{3,}", " ", text)
@@ -64,86 +76,148 @@ def sanitize_text_for_speech(text: str) -> str:
 
     text = expand_abbreviations_for_speech(text)
     text = re.sub(r"\s+", " ", text).strip()
-    return text[:1000]
+    return text[:1200]
 
 
-def chunk_text(text: str, max_chars: int = 180) -> list[str]:
-    """Splits text into sentence/word chunks that fit within Google TTS request limits."""
-    words = text.split()
-    chunks = []
-    curr = []
-    curr_len = 0
-    for w in words:
-        if curr_len + len(w) + 1 > max_chars:
-            if curr:
-                chunks.append(" ".join(curr))
-            curr = [w]
-            curr_len = len(w)
-        else:
-            curr.append(w)
-            curr_len += len(w) + 1
-    if curr:
-        chunks.append(" ".join(curr))
-    return chunks
-
-
-async def stream_google_natural_audio(clean_text: str, target_lang: str):
+async def generate_sarvam_tts(clean_text: str, language: str) -> Optional[bytes]:
     """
-    Streams natural, human-sounding audio directly from Google's high-fidelity
-    neural regional voice engine (Google Assistant / Translate TTS).
-    Self-concatenates MP3 frames without audio artifacts or WebSocket 403 drops.
+    Synthesizes speech using Sarvam AI (Bulbul:v1) - the gold standard Indian AI speech model.
     """
-    chunks = chunk_text(clean_text)
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        "Referer": "https://translate.google.com/"
-    }
+    if not settings.SARVAM_API_KEY:
+        return None
+    try:
+        url = "https://api.sarvam.ai/text-to-speech"
+        target_lang = SARVAM_LANG_MAP.get(language, "te-IN")
+        headers = {
+            "api-subscription-key": settings.SARVAM_API_KEY,
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "inputs": [clean_text[:500]],
+            "target_language_code": target_lang,
+            "speaker": "meera",
+            "pitch": 0,
+            "pace": 1.0,
+            "loudness": 1.5,
+            "speech_sample_rate": 22050,
+            "enable_preprocessing": True,
+            "model": "bulbul:v1"
+        }
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(url, headers=headers, json=payload)
+            if resp.status_code == 200:
+                data = resp.json()
+                audios = data.get("audios", [])
+                if audios:
+                    return base64.b64decode(audios[0])
+    except Exception as e:
+        print(f"Sarvam AI TTS error: {e}")
+    return None
 
-    async with httpx.AsyncClient(timeout=12.0) as client:
-        for chunk in chunks:
-            if not chunk.strip():
-                continue
-            params = {
-                "ie": "UTF-8",
-                "tl": target_lang,
-                "client": "tw-ob",
-                "q": chunk
-            }
-            try:
-                resp = await client.get(GOOGLE_TTS_URL, params=params, headers=headers)
-                if resp.status_code == 200 and len(resp.content) > 0:
-                    yield resp.content
-            except Exception as e:
-                print(f"TTS chunk error: {e}")
-                continue
+
+async def generate_azure_edge_neural(clean_text: str, language: str) -> Optional[bytes]:
+    """
+    Synthesizes speech using Microsoft Azure Studio Neural Voices (te-IN-MohanNeural / hi-IN-MadhurNeural).
+    """
+    try:
+        voice = AZURE_NEURAL_VOICES.get(language, AZURE_NEURAL_VOICES["te"])
+        communicate = edge_tts.Communicate(clean_text, voice)
+        audio_buffer = bytearray()
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                audio_buffer.extend(chunk["data"])
+        if len(audio_buffer) > 500:
+            return bytes(audio_buffer)
+    except Exception as e:
+        print(f"Azure Edge Neural TTS error: {e}")
+    return None
+
+
+async def generate_google_neural_proxy(clean_text: str, language: str) -> Optional[bytes]:
+    """
+    Fallback: Server-side proxy for Google regional neural voice chunks.
+    Ensures the browser never experiences CORS hotlinking failures.
+    """
+    try:
+        target_lang = language if language in ["te", "hi", "kn", "ta", "mr", "en"] else "te"
+        words = clean_text.split()
+        chunks = []
+        curr = []
+        curr_len = 0
+        for w in words:
+            if curr_len + len(w) + 1 > 180:
+                if curr:
+                    chunks.append(" ".join(curr))
+                curr = [w]
+                curr_len = len(w)
+            else:
+                curr.append(w)
+                curr_len += len(w) + 1
+        if curr:
+            chunks.append(" ".join(curr))
+
+        audio_chunks = bytearray()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Referer": "https://translate.google.com/"
+        }
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            for c in chunks[:5]:
+                url = "https://translate.google.com/translate_tts"
+                params = {"ie": "UTF-8", "tl": target_lang, "client": "tw-ob", "q": c}
+                r = await client.get(url, params=params, headers=headers)
+                if r.status_code == 200 and len(r.content) > 0:
+                    audio_chunks.extend(r.content)
+
+        if len(audio_chunks) > 500:
+            return bytes(audio_chunks)
+    except Exception as e:
+        print(f"Google Proxy TTS error: {e}")
+    return None
 
 
 @router.post("/tts")
 async def generate_speech_post(req: TTSRequest):
+    """
+    High-Fidelity Neural Speech Generation.
+    Tier 1: Sarvam AI (Bulbul:v1) if SARVAM_API_KEY configured.
+    Tier 2: Microsoft Azure Studio Neural Voices (te-IN-MohanNeural / hi-IN-MadhurNeural).
+    Tier 3: Google Regional Neural Proxy (server-streamed to eliminate CORS issues).
+    """
     clean = sanitize_text_for_speech(req.text)
     if not clean:
         raise HTTPException(status_code=400, detail="Text cannot be empty.")
 
-    target_lang = LANG_MAP.get(req.language, "te")
-    return StreamingResponse(
-        stream_google_natural_audio(clean, target_lang),
+    # Tier 1: Sarvam AI (if key is set)
+    audio = await generate_sarvam_tts(clean, req.language)
+
+    # Tier 2: Microsoft Azure Neural Voices (Default free studio neural)
+    if not audio:
+        audio = await generate_azure_edge_neural(clean, req.language)
+
+    # Tier 3: Google Regional Neural Proxy
+    if not audio:
+        audio = await generate_google_neural_proxy(clean, req.language)
+
+    if not audio or len(audio) == 0:
+        raise HTTPException(status_code=500, detail="Failed to synthesize neural audio.")
+
+    return Response(
+        content=audio,
         media_type="audio/mpeg",
-        headers={"Content-Disposition": "inline; filename=speech.mp3"}
+        headers={
+            "Content-Type": "audio/mpeg",
+            "Content-Length": str(len(audio)),
+            "Cache-Control": "public, max-age=86400",
+            "Accept-Ranges": "bytes"
+        }
     )
 
 
 @router.get("/tts")
 async def generate_speech_get(
     text: str = Query(..., description="Text to synthesize"),
-    language: str = Query("te", description="Language code (te, hi, en, kn, ta, mr)")
+    language: Optional[str] = Query("te", description="Language code")
 ):
-    clean = sanitize_text_for_speech(text)
-    if not clean:
-        raise HTTPException(status_code=400, detail="Text cannot be empty.")
-
-    target_lang = LANG_MAP.get(language, "te")
-    return StreamingResponse(
-        stream_google_natural_audio(clean, target_lang),
-        media_type="audio/mpeg",
-        headers={"Content-Disposition": "inline; filename=speech.mp3"}
-    )
+    req = TTSRequest(text=text, language=language)
+    return await generate_speech_post(req)

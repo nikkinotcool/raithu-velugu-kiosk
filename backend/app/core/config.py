@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     BHASHINI_USER_ID: str = os.getenv("BHASHINI_USER_ID", "")
     BHASHINI_API_KEY: str = os.getenv("BHASHINI_API_KEY", "")
     BHASHINI_PIPELINE_ID: str = os.getenv("BHASHINI_PIPELINE_ID", "")
+
+    # Dedicated Indian & Multilingual Neural Voice Providers (Optional plug-and-play keys)
+    SARVAM_API_KEY: str = os.getenv("SARVAM_API_KEY", "")
+    ELEVENLABS_API_KEY: str = os.getenv("ELEVENLABS_API_KEY", "")
     
     # CORS
     ALLOWED_ORIGINS: list[str] = [
