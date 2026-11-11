@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, Mic, MicOff, Check, X, Loader2 } from 'lucide-react';
 import { fetchWithCloudFallback } from '../utils/apiClient';
 
-export default function ChatInput({ 
-  onSendMessage, 
-  disabled, 
+export default function ChatInput({
+  onSendMessage,
+  disabled,
   language,
   triggerVoice,
   onVoiceStateChange
@@ -85,7 +85,6 @@ export default function ChatInput({
 
       recognitionRef.current = recognition;
     } else {
-      // Browser doesn't have webkitSpeechRecognition, but has MediaRecorder
       if (typeof window !== 'undefined' && window.MediaRecorder) {
         setRecognitionSupported(true);
       }
@@ -93,19 +92,14 @@ export default function ChatInput({
 
     return () => {
       if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch (e) {}
+        try { recognitionRef.current.stop(); } catch (e) {}
       }
       if (mediaStreamRef.current) {
-        try {
-          mediaStreamRef.current.getTracks().forEach((t) => t.stop());
-        } catch (e) {}
+        try { mediaStreamRef.current.getTracks().forEach((t) => t.stop()); } catch (e) {}
       }
     };
   }, [language]);
 
-  // Listen to external voice trigger from home screen
   useEffect(() => {
     if (triggerVoice && !isRecordingRef.current) {
       startRecording();
@@ -116,12 +110,12 @@ export default function ChatInput({
     let stream = null;
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        stream = await navigator.mediaDevices.getUserMedia({ 
+        stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             echoCancellation: true,
             noiseSuppression: true,
             autoGainControl: true
-          } 
+          }
         });
         mediaStreamRef.current = stream;
       }
@@ -142,7 +136,7 @@ export default function ChatInput({
     setIsRecording(true);
     if (onVoiceStateChange) onVoiceStateChange(true);
 
-    // 1. Start MediaRecorder for Whisper AI transcription fallback
+    // Start MediaRecorder for Whisper AI transcription
     audioChunksRef.current = [];
     if (stream && typeof window !== 'undefined' && window.MediaRecorder) {
       try {
@@ -165,7 +159,7 @@ export default function ChatInput({
       }
     }
 
-    // 2. Start Web SpeechRecognition for instant live visual feedback
+    // Start Web SpeechRecognition for live visual feedback
     if (recognitionRef.current) {
       try {
         recognitionRef.current.lang = langMap[language] || 'en-IN';
@@ -176,19 +170,15 @@ export default function ChatInput({
     }
   };
 
-  const stopRecording = async () => {
+  const stopRecording = async (shouldSendDirectly = false) => {
     isRecordingRef.current = false;
     setIsRecording(false);
     if (onVoiceStateChange) onVoiceStateChange(false);
 
-    // Stop SpeechRecognition
     if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {}
+      try { recognitionRef.current.stop(); } catch (e) {}
     }
 
-    // Stop MediaRecorder and grab audio blob
     let audioBlob = null;
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       try {
@@ -205,18 +195,14 @@ export default function ChatInput({
       }
     }
 
-    // Stop audio stream tracks
     if (mediaStreamRef.current) {
-      try {
-        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      } catch (e) {}
+      try { mediaStreamRef.current.getTracks().forEach((track) => track.stop()); } catch (e) {}
       mediaStreamRef.current = null;
     }
 
     let finalSpeech = capturedTextRef.current.trim();
 
-    // Groq Whisper Large V3 with native Indic vocabulary prompts produces vastly superior Telugu & Hindi native script.
-    // If audio was captured, transcribe with Groq Whisper.
+    // Groq Whisper Large V3 — highest accuracy for Telugu & Indic languages
     if (audioBlob && audioBlob.size > 300) {
       setIsProcessingSTT(true);
       try {
@@ -236,7 +222,7 @@ export default function ChatInput({
           }
         }
       } catch (sttErr) {
-        console.warn('Whisper STT request failed, falling back to Web Speech transcript:', sttErr);
+        console.warn('Whisper STT request failed, using Web Speech transcript:', sttErr);
       } finally {
         setIsProcessingSTT(false);
       }
@@ -270,66 +256,58 @@ export default function ChatInput({
 
   const handleCancelVoice = () => {
     stopRecording(false);
-    // restore base text if user wants to discard
     setInputText(baseTextRef.current);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!inputText.trim() || disabled) return;
+    if (disabled || isProcessingSTT) return;
     if (isRecording) {
-      stopRecording();
+      await stopRecording(true);
+      return;
     }
+    if (!inputText.trim()) return;
     onSendMessage(inputText.trim());
     setInputText('');
   };
 
   const placeholders = {
-    te: 'మీ ప్రశ్నను ఇక్కడ అడగండి లేదా మాట్లాడండి...',
-    hi: 'अपना प्रश्न यहाँ पूछें या बोलकर बताएं...',
-    en: 'Type your question or tap mic to speak...',
-    kn: 'ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಕೇಳಿ లేదా ಮಾತನಾಡಿ...',
-    ta: 'உங்கள் கேள்வியை இங்கே கேளுங்கள் அல்லது பேசுங்கள்...',
-    mr: 'तुमचा प्रश्न येथे विचारा किंवा बोला...'
+    te: 'మీ ప్రశ్నను అడగండి...',
+    hi: 'अपना प्रश्न पूछें...',
+    en: 'Ask your question...',
+    kn: 'ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಕೇಳಿ...',
+    ta: 'உங்கள் கேள்வி கேளுங்கள்...',
+    mr: 'तुमचा प्रश्न विचारा...'
   };
 
   return (
     <form onSubmit={handleSubmit} className="w-full relative">
-      {/* Live Voice Assistant Active Floating Banner */}
+
+      {/* Recording Banner */}
       {isRecording && (
-        <div className="mb-2 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-[#073826] via-[#094731] to-[#0d593d] text-white shadow-xl border border-emerald-700/50 flex items-center justify-between gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="mb-2 px-3 py-2.5 rounded-2xl bg-slate-900 text-white flex items-center justify-between gap-2">
           <div className="flex items-center gap-2.5 min-w-0">
-            {/* Pulsing Mic Indicator */}
-            <div className="relative flex items-center justify-center shrink-0">
-              <span className="w-7 h-7 rounded-full bg-red-600/30 animate-ping absolute" />
-              <div className="w-7 h-7 rounded-full bg-red-600 flex items-center justify-center text-white shadow-xs">
-                <Mic className="w-3.5 h-3.5 animate-pulse" />
+            {/* Mic pulse */}
+            <div className="relative shrink-0">
+              <span className="absolute inset-0 rounded-full bg-red-500/30 animate-ping" />
+              <div className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
+                <Mic className="w-3 h-3 text-white" />
               </div>
             </div>
-
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-amber-400">
-                  {language === 'te' ? 'వింటున్నాము... మాట్లాడండి' : (language === 'hi' ? 'सुन रहे हैं... बोलिए' : 'Listening... Speak now')}
-                </span>
-                <span className="flex items-center gap-0.5">
-                  <span className="w-1 h-2 bg-amber-400 rounded-full animate-pulse" />
-                  <span className="w-1 h-3.5 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-200 font-medium truncate mt-0.5">
-                {liveTranscript || (language === 'te' ? 'మీ ప్రశ్నను చెప్పండి...' : 'Speak your question...')}
+              <p className="text-xs font-semibold text-amber-400">
+                {language === 'te' ? 'వింటున్నాము...' : language === 'hi' ? 'सुन रहे हैं...' : 'Listening...'}
+              </p>
+              <p className="text-[11px] text-slate-300 truncate mt-0.5">
+                {liveTranscript || (language === 'te' ? 'మాట్లాడండి...' : 'Speak now...')}
               </p>
             </div>
           </div>
-
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
               onClick={handleCancelVoice}
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer"
-              title="Cancel Voice Input"
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -337,68 +315,71 @@ export default function ChatInput({
               type="button"
               onClick={handleSendVoiceMessage}
               disabled={!inputText.trim()}
-              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold text-xs flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-95 border border-emerald-500"
+              className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-white font-bold text-xs flex items-center gap-1 transition-all"
             >
-              <Check className="w-3.5 h-3.5" />
-              <span>{language === 'te' ? 'పూర్తయింది' : (language === 'hi' ? 'भेजें' : 'Done')}</span>
+              <Check className="w-3 h-3" />
+              <span>{language === 'te' ? 'పంపు' : language === 'hi' ? 'भेजें' : 'Send'}</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* AI Whisper Transcription In-Progress Banner */}
+      {/* Processing Banner */}
       {isProcessingSTT && (
-        <div className="mb-2 p-2.5 rounded-2xl bg-gradient-to-r from-[#073826] to-[#094731] text-white shadow-lg border border-emerald-700/50 flex items-center gap-2.5">
-          <Loader2 className="w-4 h-4 animate-spin text-amber-400 shrink-0" />
-          <span className="text-xs font-semibold text-slate-200">
-            {language === 'te' ? 'AI మీ వాయిస్‌ని స్పష్టంగా టెక్స్ట్‌గా మారుస్తోంది...' : 'AI is transcribing your speech...'}
+        <div className="mb-2 px-3 py-2 rounded-2xl bg-slate-900 text-white flex items-center gap-2">
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-400 shrink-0" />
+          <span className="text-xs text-slate-300">
+            {language === 'te' ? 'AI వాయిస్ ప్రాసెస్ చేస్తోంది...' : 'Processing your voice...'}
           </span>
         </div>
       )}
 
-      {/* Input Bar */}
-      <div className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-2xl bg-white border transition-all ${
-        isRecording 
-          ? 'border-red-600 ring-2 ring-red-500/20 shadow-md' 
-          : 'border-slate-200/90 shadow-md shadow-slate-200/50 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/15'
+      {/* Input Bar — iOS style pill */}
+      <div className={`flex items-center gap-2 px-2 py-1.5 rounded-2xl bg-white border transition-all ${
+        isRecording
+          ? 'border-red-400 ring-2 ring-red-400/20'
+          : 'border-slate-200 shadow-sm focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/15'
       }`}>
-        {/* Mic Button */}
+
+        {/* Mic button */}
         <button
           type="button"
           onClick={toggleRecording}
           disabled={disabled}
-          className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 touch-manipulation ${
+          className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all shrink-0 cursor-pointer active:scale-90 touch-manipulation ${
             isRecording
-              ? 'bg-red-600 text-white shadow-md shadow-red-500/30'
-              : 'text-slate-600 hover:text-emerald-800 hover:bg-emerald-50/80 bg-slate-50 border border-slate-200/70'
+              ? 'bg-red-500 text-white shadow-md shadow-red-500/30'
+              : 'bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-700'
           }`}
-          title={isRecording ? 'Stop Recording' : 'Voice Input (మాట్లాడండి)'}
           aria-label={isRecording ? 'Stop Recording' : 'Voice Input'}
         >
-          {isRecording ? (
-            <MicOff className="w-4 h-4 animate-pulse" />
-          ) : (
-            <Mic className="w-4 h-4 text-emerald-800" />
-          )}
+          {isRecording
+            ? <MicOff className="w-4 h-4 animate-pulse" />
+            : <Mic className="w-4 h-4" />
+          }
         </button>
 
-        {/* Text Input */}
+        {/* Text input */}
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder={isRecording ? (language === 'te' ? '🎙️ వింటున్నాము... మాట్లాడండి...' : '🎙️ Listening... Speak now...') : (placeholders[language] || placeholders['en'])}
+          placeholder={
+            isRecording
+              ? (language === 'te' ? '🎙️ వింటున్నాము...' : '🎙️ Listening...')
+              : (placeholders[language] || placeholders['en'])
+          }
           disabled={disabled}
-          className="flex-1 bg-transparent px-2 py-1.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50 font-medium"
+          className="flex-1 bg-transparent py-1.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50"
         />
 
-        {/* Send Button */}
+        {/* Send button */}
         <button
           type="submit"
           disabled={!inputText.trim() || disabled}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-30 disabled:hover:bg-emerald-700 text-white font-semibold transition-all flex items-center justify-center cursor-pointer shrink-0 active:scale-95 shadow-md border border-emerald-500/40"
+          className="w-9 h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-30 text-white flex items-center justify-center transition-all shrink-0 cursor-pointer active:scale-90 shadow-sm"
         >
-          <Send className="w-4 h-4 text-amber-300" />
+          <Send className="w-4 h-4" />
         </button>
       </div>
     </form>

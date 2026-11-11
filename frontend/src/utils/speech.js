@@ -82,13 +82,12 @@ export function cleanTextForSpeech(text = '', lang = 'en') {
   clean = clean.replace(/^\s*[-*+]\s+/gm, '. ');
   clean = clean.replace(/^\s*\d+\.\s+/gm, '. ');
 
-  // 9. Cooperative Acronyms pronunciations in English
-  if (lang === 'en') {
-    clean = clean.replace(/\bPACS\b/g, 'Packs');
-    clean = clean.replace(/\bPMFBY\b/g, 'P. M. F. B. Y.');
-    clean = clean.replace(/\bMSP\b/g, 'M. S. P.');
-    clean = clean.replace(/\bNCD\b/g, 'N. C. D.');
-    clean = clean.replace(/\bKCC\b/g, 'K. C. C.');
+  // 9. Abbreviation spelling — handled server-side via SSML say-as tags.
+  // For browser fallback, spell them with dot-spacing so TTS reads letter-by-letter.
+  const abbrs = ['PACS', 'PMFBY', 'KCC', 'DAP', 'ARCS', 'DCCB', 'NCD', 'MSP', 'RRB', 'NABARD', 'SHG', 'FPO', 'DPI', 'PRI'];
+  for (const abbr of abbrs) {
+    const spaced = abbr.split('').join('. ') + '.';
+    clean = clean.replace(new RegExp(`\\b${abbr}\\b`, 'g'), spaced);
   }
 
   // 10. Collapse multiple spaces and excessive punctuation
@@ -248,7 +247,7 @@ export async function speakMessage({
   // 1. Attempt High-Fidelity Server Neural Voice (Microsoft Azure Neural via Edge-TTS)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout for reliable neural audio
 
     const res = await fetchWithCloudFallback('/tts', {
       method: 'POST',

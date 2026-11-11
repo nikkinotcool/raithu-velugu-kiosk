@@ -5,74 +5,74 @@ import { printGrievanceReceipt, downloadReceiptFile } from '../utils/receiptGene
 
 const UI_LABELS = {
   te: {
-    advisor: 'సహకార AI సలహాదారు',
+    advisor: 'రైతు వెలుగు',
     listen: 'వినండి',
-    stop: 'ఆపండి',
-    ticketGen: 'అధికారిక ఫిర్యాదు నమోదైంది',
-    trackBtn: 'ట్రాక్ చేయండి',
-    legalRef: 'చట్టపరమైన సూచనలు (Legal References):',
-    printReceipt: 'రసీదు ప్రింట్ / PDF',
+    stop: 'ఆపు',
+    ticketGen: 'ఫిర్యాదు నమోదైంది',
+    trackBtn: 'స్థితి చూడండి',
+    legalRef: 'చట్టపరమైన సూచనలు',
+    printReceipt: 'రసీదు PDF',
     downloadSlip: 'డౌన్‌లోడ్'
   },
   hi: {
-    advisor: 'सहकारी एआई सलाहकार',
+    advisor: 'रैतु वेलुगु',
     listen: 'सुनें',
     stop: 'रोकें',
-    ticketGen: 'आधिकारिक शिकायत दर्ज की गई',
-    trackBtn: 'ट्रैक करें',
-    legalRef: 'कानूनी संदर्भ (Legal References):',
-    printReceipt: 'रसीद प्रिंट / PDF',
+    ticketGen: 'शिकायत दर्ज हुई',
+    trackBtn: 'स्थिति देखें',
+    legalRef: 'कानूनी संदर्भ',
+    printReceipt: 'रसीद PDF',
     downloadSlip: 'डाउनलोड'
   },
   en: {
-    advisor: 'Cooperative AI Advisor',
+    advisor: 'Raithu Velugu',
     listen: 'Listen',
     stop: 'Stop',
-    ticketGen: 'Official Grievance Registered',
+    ticketGen: 'Grievance Registered',
     trackBtn: 'Track Status',
-    legalRef: 'Legal References & Bylaw Clauses:',
-    printReceipt: 'Print Receipt (PDF)',
-    downloadSlip: 'Download Slip'
+    legalRef: 'Legal References',
+    printReceipt: 'Print Receipt',
+    downloadSlip: 'Download'
   },
   kn: {
-    advisor: 'ಸಹಕಾರಿ AI ಸಲಹೆಗಾರ',
+    advisor: 'ರೈತು ವೆಲುಗು',
     listen: 'ಕೇಳಿ',
     stop: 'ನಿಲ್ಲಿಸಿ',
-    ticketGen: 'ಅಧಿಕೃತ ದೂರು ದಾಖಲಾಗಿದೆ',
-    trackBtn: 'ಸ್ಥಿತಿ ಪರಿಶೀಲಿಸಿ',
-    legalRef: 'ಕಾನೂನು ಉಲ್ಲೇಖಗಳು:',
-    printReceipt: 'ರಸೀದಿ ಮುದ್ರಣ / PDF',
+    ticketGen: 'ದೂರು ದಾಖಲಾಗಿದೆ',
+    trackBtn: 'ಸ್ಥಿತಿ ತಪಾಸಿಸಿ',
+    legalRef: 'ಕಾನೂನು ಉಲ್ಲೇಖ',
+    printReceipt: 'ರಸೀದಿ PDF',
     downloadSlip: 'ಡೌನ್‌ಲೋಡ್'
   },
   ta: {
-    advisor: 'கூட்டுறவு AI ஆலோசகர்',
+    advisor: 'ரைது வேலுகு',
     listen: 'கேளுங்கள்',
     stop: 'நிறுத்து',
-    ticketGen: 'அதிகாரப்பூர்வ புகார் பதிவு',
-    trackBtn: 'நிலை அறிக்கை',
-    legalRef: 'சட்ட குறிப்புகள்:',
-    printReceipt: 'ரசீது அச்சிடு / PDF',
+    ticketGen: 'புகார் பதிவு',
+    trackBtn: 'நிலை காண்க',
+    legalRef: 'சட்ட குறிப்புகள்',
+    printReceipt: 'ரசீது PDF',
     downloadSlip: 'பதிவிறக்கு'
   },
   mr: {
-    advisor: 'सहकारी AI सल्लागार',
+    advisor: 'रैतू वेलुगू',
     listen: 'ऐका',
     stop: 'थांबवा',
-    ticketGen: 'अधिकृत तक्रार नोंदवली',
-    trackBtn: 'स्थिती ट्रॅक करा',
-    legalRef: 'कायदेशीर संदर्भ:',
-    printReceipt: 'पावती प्रिंट / PDF',
+    ticketGen: 'तक्रार नोंदवली',
+    trackBtn: 'स्थिती पहा',
+    legalRef: 'कायदेशीर संदर्भ',
+    printReceipt: 'पावती PDF',
     downloadSlip: 'डाउनलोड'
   }
 };
 
-export default function ChatMessage({ 
-  message, 
-  currentLanguage, 
+export default function ChatMessage({
+  message,
+  currentLanguage,
   currentUser,
-  onTrackTicket, 
+  onTrackTicket,
   onSelectSuggestion,
-  onOpenLodgeGrievance 
+  onOpenLodgeGrievance
 }) {
   const [isPlayingTTS, setIsPlayingTTS] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -80,19 +80,15 @@ export default function ChatMessage({
   const lang = currentLanguage || message.language || 'en';
   const t = UI_LABELS[lang] || UI_LABELS['en'];
 
-  // Clean up speech synthesis when component unmounts
   useEffect(() => {
     return () => {
-      if (isPlayingTTS) {
-        stopSpeech();
-      }
+      if (isPlayingTTS) stopSpeech();
     };
   }, [isPlayingTTS]);
 
   const handleTTS = (e) => {
     e?.preventDefault();
     e?.stopPropagation();
-
     if (isPlayingTTS) {
       stopSpeech();
       setIsPlayingTTS(false);
@@ -114,55 +110,52 @@ export default function ChatMessage({
   };
 
   return (
-    <div className={`flex w-full gap-2.5 sm:gap-3 my-2.5 sm:my-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex w-full gap-2 my-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+
       {/* Assistant Avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 flex items-center justify-center text-amber-300 shrink-0 font-bold text-xs shadow-md border border-emerald-600/50">
-          🌾
+        <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center shrink-0 mt-1">
+          <span className="text-xs">🌾</span>
         </div>
       )}
 
-      {/* Message Bubble Card */}
-      <div 
-        data-lang={lang}
-        className={`max-w-[90%] sm:max-w-[80%] rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-sm ${
-          isUser 
-            ? 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-tr-xs font-medium shadow-md leading-relaxed border border-emerald-500/40' 
-            : 'bg-white text-slate-800 rounded-tl-xs border border-slate-200/90 shadow-2xs'
-        }`}
-      >
-        {/* Header for Assistant Messages */}
+      {/* Message Bubble */}
+      <div className={`max-w-[85%] sm:max-w-[78%] ${
+        isUser
+          ? 'bg-emerald-600 text-white rounded-2xl rounded-tr-sm px-4 py-2.5'
+          : 'bg-white text-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-slate-100'
+      }`}>
+
+        {/* Assistant header row */}
         {!isUser && (
-          <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-100">
-            <span className="text-[11px] font-bold text-emerald-950 flex items-center gap-1.5 font-sans">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <span className="text-[11px] font-semibold text-emerald-700 tracking-wide uppercase">
               {t.advisor}
             </span>
+            {/* TTS button — pill style */}
             <button
               type="button"
               onClick={handleTTS}
-              onTouchEnd={(e) => { e.stopPropagation(); }}
-              className={`min-h-[34px] sm:min-h-[36px] px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer select-none touch-manipulation active:scale-95 shadow-xs font-sans ${
-                isPlayingTTS 
-                  ? 'bg-rose-100 text-rose-800 border border-rose-300' 
-                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border border-emerald-200/80 active:bg-emerald-200'
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer active:scale-95 touch-manipulation ${
+                isPlayingTTS
+                  ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                  : 'bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100'
               }`}
-              title="Voice Readout"
               aria-label={isPlayingTTS ? t.stop : t.listen}
             >
               {isPlayingTTS ? (
                 <>
-                  <VolumeX className="w-3.5 h-3.5 text-rose-700 shrink-0" />
+                  <VolumeX className="w-3 h-3 shrink-0" />
                   <span>{t.stop}</span>
-                  <span className="flex items-center gap-0.5 ml-1">
-                    <span className="w-1 h-2.5 bg-rose-600 rounded-full animate-pulse" />
-                    <span className="w-1 h-4 bg-rose-600 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1 h-2 bg-rose-600 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                  <span className="flex gap-0.5 ml-0.5">
+                    <span className="w-0.5 h-2.5 bg-rose-500 rounded-full animate-pulse" />
+                    <span className="w-0.5 h-3.5 bg-rose-500 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                    <span className="w-0.5 h-2 bg-rose-500 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
                   </span>
                 </>
               ) : (
                 <>
-                  <Volume2 className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+                  <Volume2 className="w-3 h-3 shrink-0" />
                   <span>{t.listen}</span>
                 </>
               )}
@@ -170,98 +163,96 @@ export default function ChatMessage({
           </div>
         )}
 
-        {/* Text Content */}
-        <div className="leading-relaxed whitespace-pre-line font-normal space-y-1.5">
+        {/* Message text */}
+        <div className={`text-sm leading-relaxed whitespace-pre-line ${isUser ? 'font-medium' : 'text-slate-700 font-normal'}`}>
           {message.content}
         </div>
 
-        {/* Official Grievance Ticket Badge */}
+        {/* Official Grievance Ticket */}
         {message.grievance_ticket && (
-          <div className="mt-3 p-3.5 rounded-xl bg-amber-50/90 border border-amber-200 text-slate-900 font-sans space-y-2.5 shadow-xs">
+          <div className="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <ShieldAlert className="w-4 h-4 text-amber-700" />
-                <span className="text-xs font-bold text-amber-950">{t.ticketGen}</span>
+                <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+                <span className="text-xs font-bold text-amber-900">{t.ticketGen}</span>
               </div>
-              <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-200/90 text-amber-950">
+              <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[10px] font-bold">
                 {message.grievance_ticket.status}
               </span>
             </div>
 
-            <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-amber-200 text-xs">
-              <span className="text-slate-600 font-mono text-[11px] font-bold">
-                ID: {message.grievance_ticket.tracking_id}
+            {/* Tracking ID row */}
+            <div className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-amber-100">
+              <span className="font-mono text-xs font-bold text-slate-700">
+                {message.grievance_ticket.tracking_id}
               </span>
-              <button 
-                onClick={() => copyToClipboard(message.grievance_ticket.tracking_id)} 
-                className="text-slate-500 hover:text-slate-800 cursor-pointer p-0.5"
-                title="Copy ID"
+              <button
+                onClick={() => copyToClipboard(message.grievance_ticket.tracking_id)}
+                className="text-slate-400 hover:text-slate-700 cursor-pointer p-0.5"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-700" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
             </div>
 
-            {/* Receipt Download & Print Buttons */}
+            {/* Action buttons */}
             <div className="flex gap-1.5">
               <button
                 type="button"
                 onClick={() => printGrievanceReceipt(message.grievance_ticket, currentUser)}
-                className="flex-1 py-1.5 px-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border border-emerald-600/50"
-                title="Print or Save Receipt as PDF"
+                className="flex-1 py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <Printer className="w-3.5 h-3.5 text-amber-400" />
+                <Printer className="w-3 h-3" />
                 <span>{t.printReceipt}</span>
               </button>
               <button
                 type="button"
                 onClick={() => downloadReceiptFile(message.grievance_ticket, currentUser)}
-                className="py-1.5 px-3 rounded-lg bg-white border border-amber-300 hover:bg-amber-100 text-amber-950 font-bold text-xs transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1"
-                title="Download HTML file"
+                className="py-1.5 px-3 rounded-xl bg-white border border-amber-200 hover:bg-amber-50 text-amber-900 font-bold text-xs transition-all cursor-pointer flex items-center gap-1"
               >
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3 h-3" />
                 <span className="hidden sm:inline">{t.downloadSlip}</span>
               </button>
             </div>
 
             <button
               onClick={() => onTrackTicket(message.grievance_ticket.tracking_id)}
-              className="w-full py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1"
+              className="w-full py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-1"
             >
               <span>{t.trackBtn}</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <ChevronRight className="w-3 h-3" />
             </button>
           </div>
         )}
 
-        {/* Cited Legal Clauses & Guidelines */}
+        {/* Legal References */}
         {message.sources && message.sources.length > 0 && (
-          <div className="mt-3 pt-2.5 border-t border-slate-100 font-sans">
-            <div className="flex items-center gap-1 mb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              <BookOpen className="w-3 h-3 text-emerald-800" />
-              <span>{t.legalRef}</span>
+          <div className="mt-3 pt-2.5 border-t border-slate-100">
+            <div className="flex items-center gap-1 mb-2">
+              <BookOpen className="w-3 h-3 text-slate-400" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t.legalRef}</span>
             </div>
             <div className="space-y-1.5">
               {message.sources.map((src, i) => (
-                <div key={i} className="p-2 rounded-lg bg-slate-50 border border-slate-100 text-[11px] leading-snug">
-                  <div className="flex items-center justify-between font-bold text-emerald-950">
+                <div key={i} className="px-2.5 py-2 rounded-lg bg-slate-50 border border-slate-100 text-[11px] leading-snug">
+                  <div className="flex items-center justify-between font-semibold text-slate-800 mb-0.5">
                     <span>{src.act_or_scheme}</span>
-                    <span className="text-[10px] text-emerald-800 font-semibold">{src.section}</span>
+                    <span className="text-emerald-700 text-[10px]">{src.section}</span>
                   </div>
-                  <p className="text-slate-600 mt-0.5">{src.clause_text}</p>
+                  <p className="text-slate-500">{src.clause_text}</p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Suggested Next Action Chips */}
+        {/* Suggested Action Chips */}
         {message.suggested_actions && message.suggested_actions.length > 0 && (
-          <div className="mt-2.5 pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
             {message.suggested_actions.map((act, i) => {
-              const isGrievance = 
-                act.toLowerCase().includes('complaint') || 
-                act.toLowerCase().includes('grievance') || 
-                act.includes('ఫిర్యాదు') || 
+              const isGrievance =
+                act.toLowerCase().includes('complaint') ||
+                act.toLowerCase().includes('grievance') ||
+                act.includes('ఫిర్యాదు') ||
                 act.includes('शिकायत');
 
               return (
@@ -274,13 +265,17 @@ export default function ChatMessage({
                       onSelectSuggestion(act);
                     }
                   }}
-                  className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer text-left flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer text-left flex items-center gap-1 ${
                     isGrievance
-                      ? 'bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 shadow-xs font-bold'
-                      : 'bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-950 border border-slate-200/60 hover:border-emerald-200'
+                      ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+                      : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-200'
                   }`}
                 >
-                  {isGrievance ? <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0" /> : <span>👉</span>}
+                  {isGrievance ? (
+                    <AlertCircle className="w-3 h-3 text-amber-600 shrink-0" />
+                  ) : (
+                    <ChevronRight className="w-3 h-3 shrink-0 opacity-50" />
+                  )}
                   <span>{act}</span>
                 </button>
               );
@@ -291,4 +286,3 @@ export default function ChatMessage({
     </div>
   );
 }
-

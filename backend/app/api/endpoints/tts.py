@@ -17,10 +17,30 @@ VOICE_MAP = {
     "mr": "mr-IN-ManoharNeural",     # Clear Marathi male voice
 }
 
+# Abbreviations that must be spelled letter-by-letter, not read as words
+SPELL_OUT_ABBREVIATIONS = [
+    "PACS", "PMFBY", "DCCB", "ARCS", "NCD", "KCC", "DAP",
+    "MSP", "RRB", "NABARD", "SHG", "FPO", "MIS", "OTP",
+    "SMS", "DPI", "PRI", "PAC"
+]
+
+
 class TTSRequest(BaseModel):
     text: str
     language: Optional[str] = "te"
     gender: Optional[str] = "male"
+
+
+def expand_abbreviations_for_speech(text: str) -> str:
+    """
+    Expands acronyms like PACS to 'P. A. C. S.' so neural voices
+    spell each letter individually instead of pronouncing it as a word.
+    """
+    for abbr in SPELL_OUT_ABBREVIATIONS:
+        spaced = " ".join(f"{ch}." for ch in abbr)
+        text = re.sub(r'\b' + re.escape(abbr) + r'\b', spaced, text)
+    return text
+
 
 def sanitize_text_for_speech(text: str) -> str:
     """Strip markdown formatting, emojis, tables, and citations for fluent human speech."""
@@ -32,9 +52,18 @@ def sanitize_text_for_speech(text: str) -> str:
     text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
     # Strip markdown citations [1], [Ref: 12]
     text = re.sub(r"\[\s*(ref:?)?\s*\d+\s*\]", "", text, flags=re.IGNORECASE)
-    # Strip emojis and symbols
-    text = re.sub(r"[\U00010000-\U0010ffff]", " ", text)
-    text = re.sub(r"[🌾🏛️🚜⚡👉⚖️📜✅❌⚠️🔹🔸📌•]", " ", text)
+
+    # Strip emojis cleanly
+    emoji_regex = re.compile(
+        "[\U00010000-\U0010ffff"
+        "\u2600-\u26ff"
+        "\u2700-\u27bf"
+        "\ufe0f"
+        "]+",
+        flags=re.UNICODE
+    )
+    text = emoji_regex.sub(" ", text)
+
     # Strip markdown headers, table bars, formatting
     text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
     text = re.sub(r"\|", ", ", text)
@@ -43,16 +72,23 @@ def sanitize_text_for_speech(text: str) -> str:
     # Smooth list bullets
     text = re.sub(r"^\s*[-*+]\s+", ". ", text, flags=re.MULTILINE)
     text = re.sub(r"^\s*\d+\.\s+", ". ", text, flags=re.MULTILINE)
+
+    # Expand abbreviations for letter-by-letter pronunciation
+    text = expand_abbreviations_for_speech(text)
+
     # Clean whitespace
     text = re.sub(r"\s+", " ", text).strip()
     # Cap at 1500 chars to ensure responsive streaming
     return text[:1500]
 
+
 async def stream_neural_audio(clean_text: str, voice_name: str):
+    """Streams studio-quality neural audio directly from Azure Neural via edge-tts."""
     communicate = edge_tts.Communicate(clean_text, voice_name)
     async for chunk in communicate.stream():
         if chunk["type"] == "audio":
             yield chunk["data"]
+
 
 @router.post("/tts")
 async def generate_speech_post(req: TTSRequest):
@@ -66,6 +102,7 @@ async def generate_speech_post(req: TTSRequest):
         media_type="audio/mpeg",
         headers={"Content-Disposition": "inline; filename=speech.mp3"}
     )
+
 
 @router.get("/tts")
 async def generate_speech_get(

@@ -604,16 +604,16 @@ const apiFetch = async (endpoint, options = {}) => {
               ))}
 
               {loading && (
-                <div className="flex items-center gap-2.5 my-2">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 text-amber-300 flex items-center justify-center shrink-0 text-xs shadow-md border border-emerald-500/50">
-                    🌾
+                <div className="flex items-center gap-2 my-2">
+                  <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center shrink-0">
+                    <span className="text-xs">🌾</span>
                   </div>
-                  <div className="p-3 rounded-2xl rounded-tl-xs bg-white border border-slate-200/80 shadow-xs flex items-center gap-2 text-xs text-slate-600 font-medium">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-900 shrink-0" />
+                  <div className="px-4 py-2.5 rounded-2xl rounded-tl-sm bg-white border border-slate-100 shadow-sm flex items-center gap-2 text-xs text-slate-600 font-medium">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-600 shrink-0" />
                     <span>
                       {language === 'en' 
-                        ? 'Consulting Cooperative Law Knowledge Base & Groq AI...' 
-                        : (language === 'hi' ? 'सहकारिता नियमों और एआई से परामर्श किया जा रहा है...' : 'సహకార చట్ట నిబంధనలను శోధిస్తోంది...')}
+                        ? 'Consulting PACS Knowledge Base & Groq AI...' 
+                        : (language === 'hi' ? 'सहकारिता नियमों और एआई से परामर्श हो रहा है...' : 'సహకార సమాచారాన్ని శోధిస్తోంది...')}
                     </span>
                   </div>
                 </div>

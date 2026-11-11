@@ -62,73 +62,73 @@ export default function PortalNavbar({
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-1.5">
+          <div className="hidden lg:flex items-center gap-1">
             <button
               onClick={() => handleNavClick('home')}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer ${
                 currentPage === 'home' 
-                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                  ? 'bg-slate-100 text-slate-900 font-semibold' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium'
               }`}
             >
               Home
             </button>
             <button
               onClick={() => handleNavClick('about')}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer ${
                 currentPage === 'about' 
-                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                  ? 'bg-slate-100 text-slate-900 font-semibold' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium'
               }`}
             >
               About PACS
             </button>
             <button
               onClick={() => handleNavClick('schemes')}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer ${
                 currentPage === 'schemes' 
-                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                  ? 'bg-slate-100 text-slate-900 font-semibold' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium'
               }`}
             >
               Schemes & Law
             </button>
             <button
               onClick={() => handleNavClick('grievances')}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer ${
                 currentPage === 'grievances' 
-                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-200/80 shadow-2xs' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                  ? 'bg-slate-100 text-slate-900 font-semibold' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium'
               }`}
             >
               Grievance Redressal
             </button>
             <button
               onClick={onOpenStock}
-              className="px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <PackageCheck className="w-3.5 h-3.5 text-emerald-700" />
+              <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span>Fertilizer Stock</span>
             </button>
             <button
               onClick={onOpenHelplines}
-              className="px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <PhoneCall className="w-3.5 h-3.5 text-amber-700" />
+              <PhoneCall className="w-3.5 h-3.5 text-amber-600" />
               <span>Helplines</span>
             </button>
           </div>
 
           {/* Right Action Area */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
             {/* Primary CTA Button: Launch Kiosk / Voice Assistant */}
             <button
               onClick={onLaunchKiosk}
-              className="px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 active:scale-98 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-700/25 transition-all cursor-pointer flex items-center gap-2 border border-emerald-500/50"
+              className="px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold text-xs sm:text-sm shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <Bot className="w-4 h-4 text-amber-300 shrink-0" />
+              <Bot className="w-4 h-4 text-white shrink-0" />
               <span>Talk to Raithu Velugu</span>
-              <ArrowRight className="w-3.5 h-3.5 text-emerald-100" />
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-200" />
             </button>
 
             {/* Mobile Hamburger Toggle */}
