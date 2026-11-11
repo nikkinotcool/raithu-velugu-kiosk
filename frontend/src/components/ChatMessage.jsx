@@ -84,6 +84,7 @@ export default function ChatMessage({
       stopSpeech();
       setIsPlayingTTS(false);
     } else {
+      setIsPlayingTTS(true);
       speakMessage({
         text: message.content,
         language: lang,

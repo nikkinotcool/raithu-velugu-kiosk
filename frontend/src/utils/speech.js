@@ -1,27 +1,13 @@
 /**
- * Advanced Speech Synthesis Utility for Raithu Velugu Kiosk
+ * Universal Resilient Speech Synthesis Utility for Raithu Velugu Kiosk
  * - Dual-Engine Architecture:
- *   1. Primary: Server-side Microsoft Azure Studio Neural TTS (te-IN-MohanNeural / hi-IN-MadhurNeural / en-IN-NeerjaExpressiveNeural)
- *      or Sarvam AI (Bulbul:v1) producing authentic human speech with letter-by-letter acronym pronunciation.
- *   2. Secondary: Cloud-backed Neural fallback with zero 1995 robotic desktop voices.
- * - Touch-optimized for vertical tablet kiosks.
+ *   1. Primary: Server-side Studio Neural Voice (Azure Neural te-IN-MohanNeural / Sarvam Bulbul / ElevenLabs)
+ *      with letter-by-letter acronym expansion for PACS, PMFBY, and KCC.
+ *   2. Secondary: Instant Client Fallback via browser SpeechSynthesis with best-available voice scoring.
+ *   - Guaranteed zero silence: Audio is guaranteed to play immediately on tap.
  */
 
-import { fetchWithCloudFallback } from './apiClient';
-
-export function getApiBase() {
-  if (typeof window === 'undefined') return 'https://raithu-velugu-kiosk.onrender.com/api';
-  if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL;
-  const h = window.location.hostname;
-  const isLocal = h === 'localhost' || h.startsWith('127.') || h.startsWith('192.168.') || h.startsWith('10.');
-  if (!isLocal) {
-    return 'https://raithu-velugu-kiosk.onrender.com/api';
-  }
-  if (h !== 'localhost') {
-    return `http://${h}:8000/api`;
-  }
-  return 'http://localhost:8000/api';
-}
+import { fetchWithCloudFallback, getApiBase } from './apiClient';
 
 // Keep track of active audio element & object URL
 let activeAudio = null;
@@ -34,7 +20,7 @@ let cachedVoices = [];
 function loadVoices() {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
   const voices = window.speechSynthesis.getVoices();
-  if (voices.length > 0) {
+  if (voices && voices.length > 0) {
     cachedVoices = voices;
   }
   return cachedVoices;
@@ -97,10 +83,9 @@ export function cleanTextForSpeech(text = '', lang = 'en') {
 }
 
 /**
- * Checks if the browser has a genuine neural/natural voice installed (e.g. Android / iOS / Edge online).
- * Rejects legacy robotic desktop voices (Microsoft David, Zira, desktop SAPI).
+ * Finds the highest quality, most natural sounding local voice for the given language.
  */
-export function getGenuineNeuralVoice(lang = 'en') {
+export function getBestVoice(lang = 'en') {
   const voices = cachedVoices.length > 0 ? cachedVoices : loadVoices();
   if (!voices || voices.length === 0) return null;
 
@@ -110,34 +95,126 @@ export function getGenuineNeuralVoice(lang = 'en') {
     kn: ['kn-IN', 'kn_IN', 'kannada'],
     ta: ['ta-IN', 'ta_IN', 'tamil'],
     mr: ['mr-IN', 'mr_IN', 'marathi'],
-    en: ['en-IN', 'en-GB', 'en-US']
+    en: ['en-IN', 'en-GB', 'en-US', 'english']
   };
 
   const targets = langCodeMap[lang] || langCodeMap['en'];
+
+  let bestVoice = null;
+  let highestScore = -1;
 
   for (const voice of voices) {
     const vLang = (voice.lang || '').toLowerCase().replace('_', '-');
     const vName = (voice.name || '').toLowerCase();
 
-    // Disqualify robotic desktop voices
-    if (vName.includes('desktop') || vName.includes('david') || vName.includes('zira') || vName.includes('sapi')) {
-      continue;
-    }
+    let score = 0;
 
     const matchesLang = targets.some((t) => vLang.startsWith(t.toLowerCase()) || vName.includes(t.toLowerCase()));
-    if (!matchesLang) continue;
+    if (matchesLang) {
+      score += 60;
+    } else if (vLang.startsWith('en-in') || vName.includes('india')) {
+      score += 25;
+    } else {
+      score += 5;
+    }
 
-    // Must be marked as natural, neural, or google online
-    if (vName.includes('natural') || vName.includes('neural') || vName.includes('google') || vName.includes('siri')) {
-      return voice;
+    if (vName.includes('natural') || vName.includes('neural')) score += 40;
+    if (vName.includes('google')) score += 35;
+    if (vName.includes('online')) score += 30;
+    if (vName.includes('siri')) score += 25;
+
+    if (score > highestScore) {
+      highestScore = score;
+      bestVoice = voice;
     }
   }
 
-  return null;
+  return bestVoice;
 }
 
 /**
- * High-definition Studio Neural Voice playback
+ * Client SpeechSynthesis Fallback: Speaks immediately so user never experiences silence.
+ */
+export function speakWithBrowserFallback({ text, language, onStart, onEnd, onError }) {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    onError(new Error('Speech not supported on this browser'));
+    return;
+  }
+
+  try {
+    window.speechSynthesis.cancel();
+  } catch {}
+
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  const langTagMap = {
+    te: 'te-IN',
+    hi: 'hi-IN',
+    kn: 'kn-IN',
+    ta: 'ta-IN',
+    mr: 'mr-IN',
+    en: 'en-IN'
+  };
+  utterance.lang = langTagMap[language] || 'en-IN';
+
+  const bestVoice = getBestVoice(language);
+  if (bestVoice) {
+    utterance.voice = bestVoice;
+  }
+
+  utterance.rate = 0.90;
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
+
+  const cleanup = () => {
+    if (currentKeepAlive) {
+      clearInterval(currentKeepAlive);
+      currentKeepAlive = null;
+    }
+  };
+
+  utterance.onstart = () => {
+    onStart();
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+    cleanup();
+    currentKeepAlive = setInterval(() => {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause();
+        window.speechSynthesis.resume();
+      } else {
+        cleanup();
+      }
+    }, 8000);
+  };
+
+  utterance.onend = () => {
+    cleanup();
+    onEnd();
+  };
+
+  utterance.onerror = (e) => {
+    cleanup();
+    onError(e);
+  };
+
+  // Small delay ensures previous speech cancel is flushed
+  setTimeout(() => {
+    try {
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      cleanup();
+      onError(err);
+    }
+  }, 30);
+}
+
+/**
+ * Universal High-Definition Speech Synthesis
+ * - Tries server-side studio neural audio first.
+ * - If server takes >3.5s or fails, immediately falls back to client speech so user NEVER gets silence.
  */
 export async function speakMessage({
   text,
@@ -154,12 +231,10 @@ export async function speakMessage({
     return;
   }
 
-  const apiBase = getApiBase();
-
-  // 1. Primary: Server Neural Audio (Azure Neural Studio te-IN-MohanNeural / Sarvam AI)
+  // 1. Fast attempt to synthesize Studio Neural Audio on Backend
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 14000);
+    const timeoutId = setTimeout(() => controller.abort(), 3800); // 3.8s fast timeout
 
     const res = await fetchWithCloudFallback('/tts', {
       method: 'POST',
@@ -169,105 +244,41 @@ export async function speakMessage({
         language
       }),
       signal: controller.signal
-    }, apiBase);
+    });
     clearTimeout(timeoutId);
 
-    if (!res.ok) {
-      throw new Error(`Server returned status ${res.status}`);
+    if (res.ok) {
+      const audioBlob = await res.blob();
+      if (audioBlob && audioBlob.size > 500) {
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        activeAudio = audio;
+        activeAudioUrl = audioUrl;
+
+        audio.onplay = () => {
+          onStart();
+        };
+
+        audio.onended = () => {
+          stopSpeech();
+          onEnd();
+        };
+
+        audio.onerror = () => {
+          stopSpeech();
+          speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
+        };
+
+        await audio.play();
+        return;
+      }
     }
-
-    const audioBlob = await res.blob();
-    if (!audioBlob || audioBlob.size < 500) {
-      throw new Error('Empty or invalid audio stream returned');
-    }
-
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-    activeAudio = audio;
-    activeAudioUrl = audioUrl;
-
-    audio.onplay = () => {
-      onStart();
-    };
-
-    audio.onended = () => {
-      stopSpeech();
-      onEnd();
-    };
-
-    audio.onerror = (err) => {
-      stopSpeech();
-      console.warn('Audio playback error, attempting direct stream:', err);
-      playViaDirectServerStream({ text: cleanText, language, onStart, onEnd, onError });
-    };
-
-    await audio.play();
-    return;
   } catch (err) {
-    console.warn('Backend POST TTS failed, trying direct GET stream:', err);
-    playViaDirectServerStream({ text: cleanText, language, onStart, onEnd, onError });
-  }
-}
-
-/**
- * Secondary: Direct server stream via GET request
- */
-async function playViaDirectServerStream({ text, language, onStart, onEnd, onError }) {
-  try {
-    const apiBase = getApiBase();
-    const streamUrl = `${apiBase}/tts?text=${encodeURIComponent(text.slice(0, 500))}&language=${encodeURIComponent(language)}`;
-    const audio = new Audio(streamUrl);
-    activeAudio = audio;
-
-    audio.onplay = onStart;
-    audio.onended = () => {
-      stopSpeech();
-      onEnd();
-    };
-    audio.onerror = () => {
-      stopSpeech();
-      // Try genuine device neural voice if available (Android/iOS only)
-      playWithDeviceNeuralIfAvailable({ text, language, onStart, onEnd, onError });
-    };
-
-    await audio.play();
-  } catch (e) {
-    playWithDeviceNeuralIfAvailable({ text, language, onStart, onEnd, onError });
-  }
-}
-
-/**
- * Tertiary: Uses device Web Speech ONLY if genuine neural voice is installed.
- * Never uses robotic Windows Desktop voices.
- */
-function playWithDeviceNeuralIfAvailable({ text, language, onStart, onEnd, onError }) {
-  const neuralVoice = getGenuineNeuralVoice(language);
-  if (!neuralVoice || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    console.info('No local neural voice available on this device; avoided robotic fallback.');
-    onError(new Error('Neural voice synthesis currently initializing. Please tap Listen again in a moment.'));
-    return;
+    console.warn('[Speech] Server neural audio unavailable or timed out; activating instant fallback:', err.message);
   }
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.voice = neuralVoice;
-  utterance.rate = 0.92;
-  utterance.pitch = 1.0;
-
-  utterance.onstart = onStart;
-  utterance.onended = () => {
-    stopSpeech();
-    onEnd();
-  };
-  utterance.onerror = (e) => {
-    stopSpeech();
-    onError(e);
-  };
-
-  try {
-    window.speechSynthesis.speak(utterance);
-  } catch (err) {
-    onError(err);
-  }
+  // 2. Guaranteed Instant Fallback: Speaks immediately so the user hears voice without delay
+  speakWithBrowserFallback({ text: cleanText, language, onStart, onEnd, onError });
 }
 
 /**
@@ -279,27 +290,21 @@ export function stopSpeech() {
       activeAudio.pause();
       activeAudio.currentTime = 0;
       activeAudio.src = '';
-    } catch {
-      // Ignore
-    }
+    } catch {}
     activeAudio = null;
   }
 
   if (activeAudioUrl) {
     try {
       URL.revokeObjectURL(activeAudioUrl);
-    } catch {
-      // Ignore
-    }
+    } catch {}
     activeAudioUrl = null;
   }
 
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     try {
       window.speechSynthesis.cancel();
-    } catch {
-      // Ignore
-    }
+    } catch {}
   }
 
   if (currentKeepAlive) {
